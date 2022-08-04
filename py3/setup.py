@@ -31,8 +31,8 @@ requires = [
 # print('Requirements: %s' % ','.join(requires))
 
 scripts = [
-    "./bin/bx-vault.cs",
-    "./bin/bx-crypt.cs",
+    "./bin/bpo-vault.cs",
+    "./bin/bpo-gpg.cs",
 ]
 
 
