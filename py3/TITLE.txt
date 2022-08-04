@@ -1,0 +1,1 @@
+bisos.crypt: python libraries and Command Services that provide vault, symetric and PKCS encryption, decryption, and hashing capabilities.
