@@ -175,6 +175,8 @@ class examples(icm.Cmnd):
         execLineEx(f"""gpg --list-key  # Includes keyId""")
         execLineEx(f"""env | grep -i gpg""")
         execLineEx(f"""gpg --send-key [keyId]""")
+        execLineEx(f"""gpg -e -r mohsen.byname@gmail.com -o /bxo/usg/bystar/.password-store/anotherVar.gpg --quiet --yes --compress-algo=none --no-encrypt-to""")
+        execLineEx(f"""gpg -d --quiet --yes --compress-algo=none --no-encrypt-to /bxo/usg/bystar/.password-store/myPass.gpg""")
 
         return(cmndOutcome)
 

@@ -171,19 +171,67 @@ class BpoVault(object):
     def vaultFilePath_obtain(
 ####+END:
             self,
+            vault,
     ) -> pathlib.Path:
         """ #+begin_org
 *** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Confirm that bpoBaseDir+envRelPath exists, then append var.
         #+end_org """
+
+        vaultFileName = f"{vault}.kdbx"
+        repoBase = self.repoBasePath_obtain()
+
         return (
             pathlib.Path(
                 os.path.join(
-                    self.bpo.bpoBaseDir,
-                    'vault',
-                    'bpoPasswords.kdbx'
+                    repoBase,
+                    vaultFileName,
                 )
             )
         )
+
+
+####+BEGIN: bx:icm:py3:method :methodName "vaultCreate" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultCreate/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def vaultCreate(
+####+END:
+            self,
+            vault,
+            passwd,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Use ph (passhole) as a command to create an empty database.
+*** TODO Add passhole to panel.
+        #+end_org """
+
+        vaultFilePath = vaultFilePath_obtain(vault)
+
+        if not os.path.exists(vaultFilePath):
+            log.info("No database file found at {0}".format(password_file))
+            log.info("Creating it...")
+            shutil.copy(template_password_file, password_file)
+
+
+        password_file = os.path.expanduser('~/.passhole.kdbx')
+
+        base_dir = os.path.dirname(os.path.realpath(__file__))
+        # taken from http://www.mit.edu/~ecprice/wordlist.10000
+        wordlist = os.path.join(base_dir, 'wordlist.10000')
+        template_password_file = os.path.join(base_dir, '.passhole.kdbx')
+
+        # create database if necessary
+        if not os.path.exists(password_file):
+            log.info("No database file found at {0}".format(password_file))
+            log.info("Creating it...")
+            shutil.copy(template_password_file, password_file)
+
+        # load database
+        kp = PyKeePass(password_file, password='shatpass')
+
+        kp = pykeepass_cache.PyKeePass(self.vaultFilePath_obtain(vault), passwd,)
+
 
 
 ####+BEGIN: bx:icm:py3:method :methodName "vaultFileEnsure" :deco "default"
@@ -228,8 +276,8 @@ class BpoVault(object):
         """ #+begin_org
 *** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Confirm that bpoBaseDir+envRelPath exists, then append var.
         #+end_org """
-        kp = pykeepass_cache.PyKeePass(self.vaultFilePath_obtain(), passwd,)
-        # kp = pykeepass.PyKeePass(self.vaultFilePath_obtain(), passwd,)
+
+        kp = pykeepass_cache.PyKeePass(self.vaultFilePath_obtain(vault), passwd,)
 
         group = kp.find_groups(name='ServiceProviders', first=True)
 
@@ -401,9 +449,74 @@ class bpoVaultList(icm.Cmnd):
 
         thisBpo.vaultFileList(vault, passwd)
 
+        return cmndOutcome
+
+
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "databasesList" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<databasesList>> parsMand= parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class databasesList(icm.Cmnd):
+    cmndParamsMandatory = [ ]
+    cmndParamsOptional = [ ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+
+        callParamsDict = {}
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Get a dictionary of currently cached databases.
+        #+end_org """)
+
+        # Should open the data bases first.
+        dataBases = pykeepass_cache.cached_databases()
+
+        print(dataBases)
 
         return cmndOutcome
 
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "serverClose" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<serverClose>> parsMand= parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class serverClose(icm.Cmnd):
+    cmndParamsMandatory = [ ]
+    cmndParamsOptional = [ ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+
+        callParamsDict = {}
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Manually kill the server.
+        #+end_org """)
+
+        pykeepass_cache.close()
+
+        return cmndOutcome
 
 
 ####+BEGIN: bx:icm:python:section :title "End Of Editable Text"
