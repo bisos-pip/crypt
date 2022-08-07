@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """ #+begin_org
-* *[Summary]* :: A =CS-Lib= for creating and updating run bases (var,log,tmp, ...) for a bpo and runEnvs.
+* *[Summary]* :: A =CS-Lib= for creating and managing BPO's vaults.
 #+end_org """
 
 ####+BEGIN: b:prog:file/proclamations :outLevel 1
@@ -95,13 +95,13 @@ import pathlib
 
 from bisos.bpo import bpo
 #from bisos.pals import palsSis
-from bisos.icm import fpath
+#from bisos.icm import fpath
 
 from bisos import bpf
 
-import logging
+#import logging
 
-import shutil
+#import shutil
 
 import pykeepass_cache
 import pykeepass
@@ -113,7 +113,7 @@ import pykeepass
 class BpoVault(object):
 ####+END:
     """
-** Abstraction of the base ByStar Portable Object
+** Abstraction of the Vaults of BPOs (ByStar Portable Object)
 """
 ####+BEGIN: bx:icm:py3:method :methodName "__init__" :deco "default"
     """
@@ -154,14 +154,17 @@ class BpoVault(object):
         """ #+begin_org
 *** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Confirm that bpoBaseDir+envRelPath exists, then append var.
         #+end_org """
-        return (
-            pathlib.Path(
-                os.path.join(
-                    self.bpo.bpoBaseDir,
-                    'vault',
-                )
+
+        bpoVaultsBaseDir = pathlib.Path(
+            os.path.join(
+                self.bpo.bpoBaseDir,
+                'vault',
             )
         )
+        if not os.path.exists(bpoVaultsBaseDir):
+            self.repoBasePrep()
+
+        return bpoVaultsBaseDir
 
 ####+BEGIN: bx:icm:py3:method :methodName "vaultFilePath_obtain" :deco "default"
     """
@@ -190,12 +193,185 @@ class BpoVault(object):
         )
 
 
-####+BEGIN: bx:icm:py3:method :methodName "vaultCreate" :deco "default"
+####+BEGIN: bx:icm:py3:method :methodName "vaultCreate_wOp" :methodType "wOp" :retType "OpOutcome" :deco "default" :argsList "typed"
     """
-**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultCreate/ deco=default  [[elisp:(org-cycle)][| ]]
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-wOp    :: /vaultCreate_wOp/ deco=default  [[elisp:(org-cycle)][| ]]
 #+end_org """
     @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def vaultCreate(
+    def vaultCreate_wOp(
+####+END:
+            self,
+            vault,
+            passwd,
+            outcome: typing.Optional[bpf.op.Outcome] = None,
+    ) -> bpf.op.Outcome:
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| DocStr| ]]  Use ph (passhole) as a command to create an empty database.
+*** TODO Add passhole to panel.
+        #+end_org """
+
+        if not outcome:
+           outcome = bpf.op.Outcome()
+
+        vaultFilePath = self.vaultFilePath_obtain(vault)
+
+        if os.path.exists(vaultFilePath):
+            icm.ANN_write(f"""{vaultFilePath} Exists. Creation Skipped""")
+            return outcome
+        else:
+            icm.ANN_write(f"No database file found at {vaultFilePath}")
+            icm.ANN_write("Creating it...")
+
+        # DEBUG -- invkedBy=outcome
+        if bpf.subProc.WOpW(log=1).bash(
+                f"""ph init --name {vault} --database {vaultFilePath} --password {passwd}""",
+        ).isProblematic():  return(icm.EH_badOutcome(outcome))
+
+        print(vaultFilePath)
+
+        return outcome
+
+####+BEGIN: bx:icm:py3:method :methodName "vaultOpen" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultOpen/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def vaultOpen(
+####+END:
+            self,
+            vault,
+            passwd,
+    ):
+    # ) -> typing.Optional[pykeepass.PyKeePass]:
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Use ph (passhole) as a command to create an empty database.
+*** TODO Add passhole to panel.
+        #+end_org """
+
+        vaultFilePath = self.vaultFilePath_obtain(vault)
+
+        if not os.path.exists(vaultFilePath):
+            icm.EH_problem_usageError(f"""Missing {vaultFilePath}""")
+
+        #kp = pykeepass_cache.PyKeePass(vaultFilePath, passwd, timeout=1000)
+        kp = pykeepass_cache.PyKeePass(vaultFilePath, passwd)
+
+        return typing.cast(pykeepass.PyKeePass, kp)
+
+####+BEGIN: bx:icm:py3:method :methodName "vaultClose" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultClose/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def vaultClose(
+####+END:
+            self,
+            vault,
+    ):
+        """ #+begin_org
+*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  UnImplemented.
+        #+end_org """
+
+        return vault
+
+
+####+BEGIN: bx:icm:py3:method :methodName "vaultGroupAdd" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultGroupAdd/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def vaultGroupAdd(
+####+END:
+            self,
+            vault,
+            passwd,
+            groupName,
+    ):
+        """ #+begin_org
+*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Incomplete implementation, should read args. for now is just doing group=bisos
+        #+end_org """
+
+        kp = self.vaultOpen(vault, passwd)
+
+        group = kp.add_group(kp.root_group, groupName)
+
+        if passwd:
+            kp.save()
+        else:
+            icm.ANN_write(f"Group -- {groupName} updated but not saved")
+
+        return group
+
+
+####+BEGIN: bx:icm:py3:method :methodName "vaultEntryUpdate" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultEntryUpdate/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def vaultEntryUpdate(
+####+END:
+            self,
+            vault,
+            passwd,
+            group,
+            entryName,
+            entryValue,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Use ph (passhole) as a command to create an empty database.
+*** TODO Add passhole to panel.
+        >>> kp.add_entry(group, 'gmail', 'myusername', 'myPassw0rdXX')
+Entry: "email/gmail (myusername)"
+
+# save database
+>>> kp.save()
+        #+end_org """
+
+        kp = self.vaultOpen(vault, passwd)
+
+        group = kp.find_groups(name=group, first=True)
+
+        print(f"KKK {entryName}, {entryValue}")
+
+        kp.add_entry(group, entryName, entryName, entryValue)
+        #kp.add_entry(group, 'gmail', 'myusername', 'myPassw0rdXX')
+
+        if passwd:
+            kp.save()
+
+        return kp
+
+####+BEGIN: bx:icm:py3:method :methodName "vaultEntryRead" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultEntryRead/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def vaultEntryRead(
+####+END:
+            self,
+            vault,
+            passwd,
+            title,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Use ph (passhole) as a command to create an empty database.
+*** TODO Add passhole to panel.
+        #+end_org """
+
+        kp = self.vaultOpen(vault, passwd)
+
+        entry = kp.find_entries(title=title, first=True)
+
+        print(f"{title} -- {entry} {entry.username} {entry.password}")
+
+        return entry
+
+####+BEGIN: bx:icm:py3:method :methodName "vaultEntriesList" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultEntriesList/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def vaultEntriesList(
 ####+END:
             self,
             vault,
@@ -206,85 +382,32 @@ class BpoVault(object):
 *** TODO Add passhole to panel.
         #+end_org """
 
-        vaultFilePath = vaultFilePath_obtain(vault)
+        kp = self.vaultOpen(vault, passwd)
 
-        if not os.path.exists(vaultFilePath):
-            log.info("No database file found at {0}".format(password_file))
-            log.info("Creating it...")
-            shutil.copy(template_password_file, password_file)
+        print(f"Entries == {kp.entries}")
 
-
-        password_file = os.path.expanduser('~/.passhole.kdbx')
-
-        base_dir = os.path.dirname(os.path.realpath(__file__))
-        # taken from http://www.mit.edu/~ecprice/wordlist.10000
-        wordlist = os.path.join(base_dir, 'wordlist.10000')
-        template_password_file = os.path.join(base_dir, '.passhole.kdbx')
-
-        # create database if necessary
-        if not os.path.exists(password_file):
-            log.info("No database file found at {0}".format(password_file))
-            log.info("Creating it...")
-            shutil.copy(template_password_file, password_file)
-
-        # load database
-        kp = PyKeePass(password_file, password='shatpass')
-
-        kp = pykeepass_cache.PyKeePass(self.vaultFilePath_obtain(vault), passwd,)
+        return kp.entries
 
 
 
-####+BEGIN: bx:icm:py3:method :methodName "vaultFileEnsure" :deco "default"
+
+####+BEGIN: bx:icm:py3:method :methodName "vaultEntryDelete" :deco "default"
     """
-**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultFileEnsure/ deco=default  [[elisp:(org-cycle)][| ]]
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultEntryDelete/ deco=default  [[elisp:(org-cycle)][| ]]
 #+end_org """
     @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def vaultFileEnsure(
-####+END:
-            self,
-    ):
-        """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Confirm that bpoBaseDir+envRelPath exists, then append var.
-        #+end_org """
-        password_file = os.path.expanduser('~/.passhole.kdbx')
-
-        base_dir = os.path.dirname(os.path.realpath(__file__))
-        # taken from http://www.mit.edu/~ecprice/wordlist.10000
-        wordlist = os.path.join(base_dir, 'wordlist.10000')
-        template_password_file = os.path.join(base_dir, '.passhole.kdbx')
-
-        # create database if necessary
-        if not os.path.exists(password_file):
-            log.info("No database file found at {0}".format(password_file))
-            log.info("Creating it...")
-            shutil.copy(template_password_file, password_file)
-
-        # load database
-        kp = PyKeePass(password_file, password='shatpass')
-
-####+BEGIN: bx:icm:py3:method :methodName "vaultFileList" :deco "default"
-    """
-**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultFileList/ deco=default  [[elisp:(org-cycle)][| ]]
-#+end_org """
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def vaultFileList(
+    def vaultEntryDelete(
 ####+END:
             self,
             vault,
             passwd,
     ):
         """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Confirm that bpoBaseDir+envRelPath exists, then append var.
+*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  UnImpelemted
         #+end_org """
 
         kp = pykeepass_cache.PyKeePass(self.vaultFilePath_obtain(vault), passwd,)
-
-        group = kp.find_groups(name='ServiceProviders', first=True)
-
-        print(kp)
-        print(group)
-        print(group.entries)
-
+        return kp
 
 ####+BEGIN: bx:icm:py3:section :title "Common Parameters Specification"
 """ #+begin_org
@@ -352,6 +475,47 @@ def examples_bpo_vault(
     if not oneBpo:
         return
 
+    icm.cmndExampleMenuChapter('*Primary Commands*')
+
+    cmndName = "vaultCreate"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultOpen"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultClose"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultGroupAdd"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultEntryUpdate"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultEntryRead"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+
+    cmndName = "vaultEntryDelete"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+
+    icm.cmndExampleMenuChapter('*Secondary Commands*')
+
     cmndName = "bpoVaultPrep"
     cmndArgs = ""
     cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
@@ -362,18 +526,23 @@ def examples_bpo_vault(
     cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
     menuItem(verbosity='none')
 
-
-####+BEGIN: bx:dblock:python:section :title "ICM Commands"
-"""
-*  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *ICM Commands*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]]
-"""
+####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "CmndSvcs" :anchor ""  :extraInfo "Command Services Section"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*     [[elisp:(outline-show-subtree+toggle)][| _CmndSvcs_: |]]  Command Services Section  [[elisp:(org-shifttab)][<)]] E|
+#+end_org """
 ####+END:
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "bpoVaultPrep" :parsMand "bpoId vault passwd" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+####+BEGIN: bx:icm:py3:section :title "Primary Command Services"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<bpoVaultPrep>> parsMand=bpoId vault passwd parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Primary Command Services*  [[elisp:(org-cycle)][| ]]
 #+end_org """
-class bpoVaultPrep(icm.Cmnd):
+####+END:
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "vaultCreate" :parsMand "bpoId vault passwd" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<vaultCreate>> parsMand=bpoId vault passwd parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class vaultCreate(icm.Cmnd):
     cmndParamsMandatory = [ 'bpoId', 'vault', 'passwd', ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
@@ -404,10 +573,393 @@ class bpoVaultPrep(icm.Cmnd):
 
         thisBpo = BpoVault(bpoId,)
 
-        vaultBase = thisBpo.repoBasePrep()
-        print(vaultBase)
+        cmndOutcome = thisBpo.vaultCreate_wOp(vault, passwd, outcome=None)
 
         return cmndOutcome
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "vaultOpen" :parsMand "bpoId vault passwd" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<vaultOpen>> parsMand=bpoId vault passwd parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class vaultOpen(icm.Cmnd):
+    cmndParamsMandatory = [ 'bpoId', 'vault', 'passwd', ]
+    cmndParamsOptional = [ ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+        bpoId=None,         # or Cmnd-Input
+        vault=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+
+        callParamsDict = {'bpoId': bpoId, 'vault': vault, 'passwd': passwd, }
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+        bpoId = callParamsDict['bpoId']
+        vault = callParamsDict['vault']
+        passwd = callParamsDict['passwd']
+
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Wrpper around class method.
+        #+end_org """)
+
+        thisBpo = BpoVault(bpoId,)
+
+        thisBpo.vaultOpen(vault, passwd)
+
+        return cmndOutcome
+
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "vaultClose" :parsMand "" :parsOpt "vault" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<vaultClose>> parsMand= parsOpt=vault argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class vaultClose(icm.Cmnd):
+    cmndParamsMandatory = [ ]
+    cmndParamsOptional = [ 'vault', ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+        vault=None,         # or Cmnd-Input
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+
+        callParamsDict = {'vault': vault, }
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+        vault = callParamsDict['vault']
+
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** TODO [[elisp:(org-cycle)][| *CmndDesc:* | ]] UnImplemented -- Manually kill the server.
+        #+end_org """)
+
+        #pykeepass_cache.close()
+
+        return cmndOutcome
+
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "vaultGroupAdd" :parsMand "bpoId vault" :parsOpt "passwd" :argsMin "0" :argsMax "999" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<vaultGroupAdd>> parsMand=bpoId vault parsOpt=passwd argsMin=0 argsMax=999 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class vaultGroupAdd(icm.Cmnd):
+    cmndParamsMandatory = [ 'bpoId', 'vault', ]
+    cmndParamsOptional = [ 'passwd', ]
+    cmndArgsLen = {'Min': 0, 'Max': 999,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+        bpoId=None,         # or Cmnd-Input
+        vault=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
+        argsList=[],         # or Args-Input
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+            effectiveArgsList = G.icmRunArgsGet().cmndArgs  # type: ignore
+        else:
+            effectiveArgsList = argsList
+
+        callParamsDict = {'bpoId': bpoId, 'vault': vault, 'passwd': passwd, }
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+        bpoId = callParamsDict['bpoId']
+        vault = callParamsDict['vault']
+        passwd = callParamsDict['passwd']
+
+        cmndArgsSpecDict = self.cmndArgsSpec()
+        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
+            return cmndOutcome
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Manually kill the server.
+        #+end_org """)
+
+        thisBpo = BpoVault(bpoId,)
+
+        cmndArgs = self.cmndArgsGet("0&-1", cmndArgsSpecDict, effectiveArgsList)
+
+        # Any number of Name=Value can be passed as args
+        for each in typing.cast(list, cmndArgs):
+            group = thisBpo.vaultGroupAdd(vault, passwd, each)
+            print(group)
+
+        return cmndOutcome
+
+####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self):
+####+END:
+        """
+***** Cmnd Args Specification
+"""
+        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict.argsDictAdd(
+            argPosition="0&-1",
+            argName="cmndArgs",
+            argDefault=None,
+            argChoices='any',
+            argDescription="A sequence of varName=varValue"
+        )
+
+        return typing.cast(dict, cmndArgsSpecDict)
+
+
+
+
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "vaultEntryUpdate" :parsMand "bpoId vault passwd" :parsOpt "" :argsMin "0" :argsMax "999" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<vaultEntryUpdate>> parsMand=bpoId vault passwd parsOpt= argsMin=0 argsMax=999 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class vaultEntryUpdate(icm.Cmnd):
+    cmndParamsMandatory = [ 'bpoId', 'vault', 'passwd', ]
+    cmndParamsOptional = [ ]
+    cmndArgsLen = {'Min': 0, 'Max': 999,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+        bpoId=None,         # or Cmnd-Input
+        vault=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
+        argsList=[],         # or Args-Input
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+            effectiveArgsList = G.icmRunArgsGet().cmndArgs  # type: ignore
+        else:
+            effectiveArgsList = argsList
+
+        callParamsDict = {'bpoId': bpoId, 'vault': vault, 'passwd': passwd, }
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+        bpoId = callParamsDict['bpoId']
+        vault = callParamsDict['vault']
+        passwd = callParamsDict['passwd']
+
+        cmndArgsSpecDict = self.cmndArgsSpec()
+        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
+            return cmndOutcome
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Manually kill the server.
+        #+end_org """)
+
+        thisBpo = BpoVault(bpoId,)
+
+        cmndArgs = self.cmndArgsGet("0&-1", cmndArgsSpecDict, effectiveArgsList)
+
+        # Any number of Name=Value can be passed as args
+        for each in typing.cast(list, cmndArgs):
+            varNameValue = each.split('=')
+            parValue=varNameValue[1]
+            print(f"{varNameValue} {parValue}")
+            thisBpo.vaultEntryUpdate(vault, passwd, 'bisos', varNameValue[0], varNameValue[1])
+
+        return cmndOutcome
+
+####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self):
+####+END:
+        """
+***** Cmnd Args Specification
+"""
+        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict.argsDictAdd(
+            argPosition="0&-1",
+            argName="cmndArgs",
+            argDefault=None,
+            argChoices='any',
+            argDescription="A sequence of varName=varValue"
+        )
+
+        return cmndArgsSpecDict
+
+
+
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "vaultEntryRead" :parsMand "bpoId vault" :parsOpt "passwd" :argsMin "0" :argsMax "999" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<vaultEntryRead>> parsMand=bpoId vault parsOpt=passwd argsMin=0 argsMax=999 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class vaultEntryRead(icm.Cmnd):
+    cmndParamsMandatory = [ 'bpoId', 'vault', ]
+    cmndParamsOptional = [ 'passwd', ]
+    cmndArgsLen = {'Min': 0, 'Max': 999,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+        bpoId=None,         # or Cmnd-Input
+        vault=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
+        argsList=[],         # or Args-Input
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+            effectiveArgsList = G.icmRunArgsGet().cmndArgs  # type: ignore
+        else:
+            effectiveArgsList = argsList
+
+        callParamsDict = {'bpoId': bpoId, 'vault': vault, 'passwd': passwd, }
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+        bpoId = callParamsDict['bpoId']
+        vault = callParamsDict['vault']
+        passwd = callParamsDict['passwd']
+
+        cmndArgsSpecDict = self.cmndArgsSpec()
+        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
+            return cmndOutcome
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Manually kill the server.
+        #+end_org """)
+
+        thisBpo = BpoVault(bpoId,)
+
+        cmndArgs = self.cmndArgsGet("0&-1", cmndArgsSpecDict, effectiveArgsList)
+
+        # Any number of Name=Value can be passed as args
+        for each in typing.cast(list, cmndArgs):
+            thisBpo.vaultEntryRead(vault, passwd, each)
+
+        return cmndOutcome
+
+
+####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self):
+####+END:
+        """
+***** Cmnd Args Specification
+"""
+        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict.argsDictAdd(
+            argPosition="0&-1",
+            argName="cmndArgs",
+            argDefault=None,
+            argChoices='any',
+            argDescription="A sequence of varName=varValue"
+        )
+
+        return cmndArgsSpecDict
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "vaultEntriesList" :parsMand "bpoId vault" :parsOpt "passwd" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<vaultEntriesList>> parsMand=bpoId vault parsOpt=passwd argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class vaultEntriesList(icm.Cmnd):
+    cmndParamsMandatory = [ 'bpoId', 'vault', ]
+    cmndParamsOptional = [ 'passwd', ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+        bpoId=None,         # or Cmnd-Input
+        vault=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+
+        callParamsDict = {'bpoId': bpoId, 'vault': vault, 'passwd': passwd, }
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+        bpoId = callParamsDict['bpoId']
+        vault = callParamsDict['vault']
+        passwd = callParamsDict['passwd']
+
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Manually kill the server.
+        #+end_org """)
+
+        thisBpo = BpoVault(bpoId,)
+
+        thisBpo.vaultEntriesList(vault, passwd)
+
+        return cmndOutcome
+
+
+
+
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "vaultEntryDelete" :parsMand "" :parsOpt "vault" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<vaultEntryDelete>> parsMand= parsOpt=vault argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class vaultEntryDelete(icm.Cmnd):
+    cmndParamsMandatory = [ ]
+    cmndParamsOptional = [ 'vault', ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+        interactive=False,        # Can also be called non-interactively
+        vault=None,         # or Cmnd-Input
+    ) -> icm.OpOutcome:
+        cmndOutcome = self.getOpOutcome()
+        if interactive:
+            if not self.cmndLineValidate(outcome=cmndOutcome):
+                return cmndOutcome
+
+        callParamsDict = {'vault': vault, }
+        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+            return cmndOutcome
+        vault = callParamsDict['vault']
+
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Manually kill the server.
+        #+end_org """)
+
+        #pykeepass_cache.close()
+
+        return cmndOutcome
+
+
+
+
+####+BEGIN: bx:icm:py3:section :title "Secondary Command Services"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Secondary Command Services*  [[elisp:(org-cycle)][| ]]
+#+end_org """
+####+END:
 
 
 ####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "bpoVaultList" :parsMand "bpoId vault passwd" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
@@ -443,11 +995,11 @@ class bpoVaultList(icm.Cmnd):
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Wrpper around class method.
         #+end_org """)
 
-        thisBpo = BpoVault(bpoId,)
+        #thisBpo = BpoVault(bpoId,)
 
-        vaultBase = thisBpo.repoBasePrep()
+        #vaultBase = thisBpo.repoBasePrep()
 
-        thisBpo.vaultFileList(vault, passwd)
+        #thisBpo.vaulList(vault, passwd)
 
         return cmndOutcome
 
@@ -487,36 +1039,6 @@ class databasesList(icm.Cmnd):
 
         return cmndOutcome
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "serverClose" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<serverClose>> parsMand= parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
-#+end_org """
-class serverClose(icm.Cmnd):
-    cmndParamsMandatory = [ ]
-    cmndParamsOptional = [ ]
-    cmndArgsLen = {'Min': 0, 'Max': 0,}
-
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-    ) -> icm.OpOutcome:
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-
-        callParamsDict = {}
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-
-####+END:
-        self.cmndDocStr(f""" #+begin_org
-** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Manually kill the server.
-        #+end_org """)
-
-        pykeepass_cache.close()
-
-        return cmndOutcome
 
 
 ####+BEGIN: bx:icm:python:section :title "End Of Editable Text"
