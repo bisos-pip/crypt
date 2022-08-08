@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ #+begin_org
-* *[Summary]* :: A =CmndSvc= for interfacing and using gnupg and python-gnupg
+* *[Summary]* :: A =CmndSvc= for for setting up BPO Crypt. Vault and GPG.
 #+end_org """
 
 ####+BEGIN: b:prog:file/proclamations :outLevel 1
@@ -27,22 +27,19 @@
 * *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
 #+end_org """
 import typing
-icmInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['bx-gpg'], }
-icmInfo['version'] = '202207274334'
+icmInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['aasMarmeeManage'], }
+icmInfo['version'] = '202207112635'
 icmInfo['status']  = 'inUse'
-icmInfo['panel'] = 'bx-gpg-Panel.org'
+icmInfo['panel'] = 'aasMarmeeManage-Panel.org'
 icmInfo['groupingType'] = 'IcmGroupingType-pkged'
 icmInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
 
 """ #+begin_org
-* /[[elisp:(org-cycle)][| Description |]]/ :: Active --- In Progress
-Module description comes here.
-** Pre-req installations:
-apt install gnupg
-pip3 install python-gnupg
-pip3 install fs
-Emacs -- (require epa)  --- EasyPg Assistant
+* /[[elisp:(org-cycle)][| Description |]]/ :: [[file:/bisos/git/auth/bxRepos/blee-binders/bisos-core/COMEEGA/_nodeBase_/fullUsagePanel-en.org][BISOS COMEEGA Panel]]
+A =CmndSvc= for for setting up Marmee (Multi-Account Resident Mail Exchange Environment) AAS (Accessible Abstract Service).
+Manages Mail Account Profiles. Sets up currents. Works with -niche.
+** Relevant Panels:
 ** Status: In use with blee3
 ** /[[elisp:(org-cycle)][| Planned Improvements |]]/ :
 *** TODO complete fileName in particulars.
@@ -80,25 +77,30 @@ G = icm.IcmGlobalContext()
 from blee.icmPlayer import bleep
 ####+END:
 
+import sys
 import collections
-from bisos import bpf
+
+from bisos.marmee import marmeAcctsLib, marmeeCurrentsLib
+from bisos.currents import currentsConfig
 
 from bisos.bpo import bpo
-from bisos.crypt import bpoGpg
+
+#from bisos.icm import clsMethod
+
+from bisos import bpf
+
+from bisos.crypt import bpoVault
 
 
-import gnupg
-# import fs
-
-####+BEGIN: b:python:cs:framework/importCmndsModules :cmndsModules ("blee.icmPlayer.bleep" "bisos.bpo.bpo" "bisos.crypt.bpoGpg")
+####+BEGIN: b:python:cs:framework/importCmndsModules :cmndsModules ("blee.icmPlayer.bleep" "bisos.bpo.bpo" "bisos.crypt.bpoVault")
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_importedCmndsModules~ (blee.icmPlayer.bleep bisos.bpo.bpo bisos.crypt.bpoGpg)
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_importedCmndsModules~ (blee.icmPlayer.bleep bisos.bpo.bpo bisos.crypt.bpoVault)
 #+end_org """
 
 g_importedCmndsModules = [       # Enumerate modules from which CMNDs become invokable
     'blee.icmPlayer.bleep',
     'bisos.bpo.bpo',
-    'bisos.crypt.bpoGpg',
+    'bisos.crypt.bpoVault',
 ]
 
 ####+END:
@@ -122,12 +124,43 @@ def g_paramsExtraSpecify(
 
     bpo.commonParamsSpecify(icmParams)
 
+    bpoVault.commonParamsSpecify(icmParams)
+
     icm.argsparseBasedOnIcmParams(parser, icmParams)
 
     # So that it can be processed later as well.
     G.icmParamDictSet(icmParams)
 
     return
+
+
+####+BEGIN: blee:bxPanel:foldingSection :outLevel 1 :title "CmndSvc-s" :extraInfo "class someCommand(icm.Cmnd)"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*       [[elisp:(outline-show-subtree+toggle)][| *CmndSvc-s:* |]]  class someCommand(icm.Cmnd)  [[elisp:(org-shifttab)][<)]] E|
+#+end_org """
+####+END:
+
+def g_opSysExit(opOutcome):
+    print(opOutcome.error)
+    sys.exit()
+
+g_outcome = bpf.op.Outcome()
+
+####+BEGIN: b:python:cs:module/cur_paramsAssign  :curParsList ("usage_bpoId" "vaultName" "vaultPasswd")
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Currents   [[elisp:(outline-show-subtree+toggle)][||]] ~cur_examples~ (usage_bpoId vaultName vaultPasswd)
+#+end_org """
+_parNamesList = [ 'usage_bpoId', 'vaultName', 'vaultPasswd',]
+if not (curParsDictValue := currentsConfig.curParsGetAsDictValue_wOp(_parNamesList, outcome=g_outcome).results): g_opSysExit(g_outcome)
+cur_usage_bpoId = curParsDictValue['usage_bpoId']
+cur_vaultName = curParsDictValue['vaultName']
+cur_vaultPasswd = curParsDictValue['vaultPasswd']
+def cur_examples():
+    icm.ex_gExecMenuItem(execLine='bx-currents.cs')
+    icm.ex_gExecMenuItem(execLine='bx-currents.cs -i usgCursParsGet')
+    for each in _parNamesList:
+        icm.ex_gExecMenuItem(execLine=f'bx-currents.cs -v 20 -i usgCursParsSet {each}={curParsDictValue[each]}')
+####+END:
 
 ####+BEGIN: icm:py3:cmnd:classHead :cmndName "examples" :cmndType ""  :comment "FrameWrk: ICM Examples" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
 """ #+begin_org
@@ -142,24 +175,15 @@ class examples(icm.Cmnd):
     def cmnd(self,
         interactive=False,        # Can also be called non-interactively
     ) -> icm.OpOutcome:
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-
-        callParamsDict = {}
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-
         """FrameWrk: ICM Examples"""
 ####+END:
-        self.cmndDocStr(f""" #+begin_org
-** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Conventional top level example.
+        self.cmndDocStr(f""" #+begin_org ***** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Conventional top level example.
         #+end_org """)
 
+        cmndOutcome = self.getOpOutcome()
+
         def cpsInit(): return collections.OrderedDict()
-        def menuItem(verbosity): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity=verbosity,
-                         comment='none', icmWrapper=None, icmName=None) # verbosity: 'little' 'basic' 'none'
+        def menuItem(): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='little') # type: ignore
         def execLineEx(cmndStr): icm.ex_gExecMenuItem(execLine=cmndStr)
 
         logControler = icm.LOG_Control()
@@ -171,22 +195,29 @@ class examples(icm.Cmnd):
 
         bleep.examples_icmBasic()
 
-        icm.cmndExampleMenuChapter('*This Feature Commands*')
+        icm.cmndExampleMenuChapter('*Currents Examples Settings*')
+        cur_examples()
 
-        cmndName = "gpg_genKey" ; cmndArgs = "" ; cps=cpsInit(); menuItem(verbosity='none')
-        cmndName = "pySymEncrypt" ; cmndArgs = "" ; cps=cpsInit(); menuItem(verbosity='none')
-        cmndName = "pyEncrypt" ; cmndArgs = "/tmp/ttt1" ; cps=cpsInit(); menuItem(verbosity='none')
+        #  RunBases Examples
+        bpoVault.examples_bpo_vault(cur_usage_bpoId, cur_vaultName, cur_vaultPasswd, sectionTitle="default")
 
-        icm.cmndExampleMenuChapter('*GPG Commands*')
+####+BEGIN: bx:icm:python:cmnd:subSection :title "marmeAcctsLib Examples"
+        """
+**  [[elisp:(beginning-of-buffer)][Top]] ================ [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]          *withVenv Run PIP Commands*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]]
+"""
+####+END:
 
-        execLineEx(f"""sudo apt -y install gnupg""")
-        execLineEx(f"""gpg --list-key  # Includes keyId""")
-        execLineEx(f"""env | grep -i gpg""")
-        execLineEx(f"""gpg --send-key [keyId]""")
-        execLineEx(f"""gpg -e -r mohsen.byname@gmail.com -o /bxo/usg/bystar/.password-store/anotherVar.gpg --quiet --yes --compress-algo=none --no-encrypt-to""")
-        execLineEx(f"""gpg -d --quiet --yes --compress-algo=none --no-encrypt-to /bxo/usg/bystar/.password-store/myPass.gpg""")
+        icm.cmndExampleMenuChapter('*InMail --- Marmee Svc Access Instance (SAI)*')
+
+
+        execLineEx("""marmeeSaiInMail.cs""")
+        execLineEx("""echo marmeeSaiInMail.cs --bpoId="piu_mbFullUsage" --envRelPath="marmee/gmail/inMail/mohsen.byname"  -i inMailAcctAccessParsSet userName="UserName" userPasswd="UserPasswd" imapServer="IMAPServer" """)
+
+        bpf.niche.examplesNicheRun("usageEnvs")
 
         return(cmndOutcome)
+
+
 
 ####+BEGIN: b:python:cs:framework/main :csInfo "icmInfo" :noCmndEntry "examples" :extraParamsHook "g_paramsExtraSpecify" :importedCmndsModules "g_importedCmndsModules"
 """ #+begin_org

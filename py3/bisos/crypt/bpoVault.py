@@ -128,20 +128,6 @@ class BpoVault(object):
         self.bpoId = bpoId
         self.bpo = bpo.EffectiveBpos.givenBpoIdObtainBpo(bpoId, bpo.Bpo)
 
-####+BEGIN: bx:icm:py3:method :methodName "repoBasePrep" :deco "default"
-    """
-**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /repoBasePrep/ deco=default  [[elisp:(org-cycle)][| ]]
-#+end_org """
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def repoBasePrep(
-####+END:
-            self,
-    ):
-        repoBase = self.repoBasePath_obtain()
-        repoBase.mkdir(parents=True, exist_ok=True)
-        return repoBase
-
-
 ####+BEGIN: bx:icm:py3:method :methodName "repoBasePath_obtain" :deco "default"
     """
 **  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /repoBasePath_obtain/ deco=default  [[elisp:(org-cycle)][| ]]
@@ -152,7 +138,7 @@ class BpoVault(object):
             self,
     ) -> pathlib.Path:
         """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Confirm that bpoBaseDir+envRelPath exists, then append var.
+*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]] Rename vault, vaults ---  Confirm that ~bpoVaultsBaseDir~ exists and return that.
         #+end_org """
 
         bpoVaultsBaseDir = pathlib.Path(
@@ -162,7 +148,7 @@ class BpoVault(object):
             )
         )
         if not os.path.exists(bpoVaultsBaseDir):
-            self.repoBasePrep()
+            bpoVaultsBaseDir.mkdir(parents=True, exist_ok=True)
 
         return bpoVaultsBaseDir
 
@@ -177,7 +163,7 @@ class BpoVault(object):
             vault,
     ) -> pathlib.Path:
         """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Confirm that bpoBaseDir+envRelPath exists, then append var.
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Based on =vault= create BPO's {vault}.kdbx. Return that path.
         #+end_org """
 
         vaultFileName = f"{vault}.kdbx"
@@ -206,8 +192,8 @@ class BpoVault(object):
             outcome: typing.Optional[bpf.op.Outcome] = None,
     ) -> bpf.op.Outcome:
         """ #+begin_org
-*** [[elisp:(org-cycle)][| DocStr| ]]  Use ph (passhole) as a command to create an empty database.
-*** TODO Add passhole to panel.
+*** [[elisp:(org-cycle)][| DocStr| ]]  Create an empty database if it does not exist. Implemented with ph (passhole) as a command.
+*** TODO dependence on ph is un-necessary. relevant part of passhole should be merged with pykeepass.
         #+end_org """
 
         if not outcome:
@@ -244,14 +230,20 @@ class BpoVault(object):
     ):
     # ) -> typing.Optional[pykeepass.PyKeePass]:
         """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Use ph (passhole) as a command to create an empty database.
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Open the vault and return a kp. vault must exist. passwd is mandatory.
+        Thereafter, for a while actions can be performed without the password.
 *** TODO Add passhole to panel.
         #+end_org """
 
         vaultFilePath = self.vaultFilePath_obtain(vault)
 
         if not os.path.exists(vaultFilePath):
-            icm.EH_problem_usageError(f"""Missing {vaultFilePath}""")
+            icm.EH_problem_usageError(f"""Missing vault={vaultFilePath}""")
+            return typing.cast(pykeepass.PyKeePass, None)
+
+        if not passwd:
+            icm.EH_problem_usageError(f"""Missing passwd""")
+            return typing.cast(pykeepass.PyKeePass, None)
 
         #kp = pykeepass_cache.PyKeePass(vaultFilePath, passwd, timeout=1000)
         kp = pykeepass_cache.PyKeePass(vaultFilePath, passwd)
@@ -267,12 +259,13 @@ class BpoVault(object):
 ####+END:
             self,
             vault,
+            passwd,
     ):
         """ #+begin_org
-*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  UnImplemented.
+*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  UnImplemented. Close the vault.
         #+end_org """
 
-        return vault
+        return vault, passwd
 
 
 ####+BEGIN: bx:icm:py3:method :methodName "vaultGroupAdd" :deco "default"
@@ -288,7 +281,7 @@ class BpoVault(object):
             groupName,
     ):
         """ #+begin_org
-*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Incomplete implementation, should read args. for now is just doing group=bisos
+*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Add =groupName= to specified vault. Becomes persistent only when =passwd= is provided.
         #+end_org """
 
         kp = self.vaultOpen(vault, passwd)
@@ -318,13 +311,7 @@ class BpoVault(object):
             entryValue,
     ):
         """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Use ph (passhole) as a command to create an empty database.
-*** TODO Add passhole to panel.
-        >>> kp.add_entry(group, 'gmail', 'myusername', 'myPassw0rdXX')
-Entry: "email/gmail (myusername)"
-
-# save database
->>> kp.save()
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Create a new entry or update an exisiting one. Becomes persistent only when =passwd= is provided.
         #+end_org """
 
         kp = self.vaultOpen(vault, passwd)
@@ -354,8 +341,7 @@ Entry: "email/gmail (myusername)"
             title,
     ):
         """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Use ph (passhole) as a command to create an empty database.
-*** TODO Add passhole to panel.
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Return an entry given =title=.
         #+end_org """
 
         kp = self.vaultOpen(vault, passwd)
@@ -378,8 +364,7 @@ Entry: "email/gmail (myusername)"
             passwd,
     ):
         """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Use ph (passhole) as a command to create an empty database.
-*** TODO Add passhole to panel.
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  List existing entries.
         #+end_org """
 
         kp = self.vaultOpen(vault, passwd)
@@ -401,13 +386,14 @@ Entry: "email/gmail (myusername)"
             self,
             vault,
             passwd,
+            title,
     ):
         """ #+begin_org
-*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  UnImpelemted
+*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  UnImpelemted. Delete the entry specified by =title=
         #+end_org """
 
         kp = pykeepass_cache.PyKeePass(self.vaultFilePath_obtain(vault), passwd,)
-        return kp
+        return title, kp
 
 ####+BEGIN: bx:icm:py3:section :title "Common Parameters Specification"
 """ #+begin_org

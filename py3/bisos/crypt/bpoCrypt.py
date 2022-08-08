@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """ #+begin_org
-* *[Summary]* :: A =CS-Lib= for
+* *[Summary]* :: A =CS-Lib= for creating and managing BPO's crypt facilities (vault and gpg).
 #+end_org """
 
 ####+BEGIN: b:prog:file/proclamations :outLevel 1
@@ -26,16 +26,16 @@
 * *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
 #+end_org """
 import typing
-icmInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['vault'], }
-icmInfo['version'] = '202208035800'
+icmInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['bpoVault'], }
+icmInfo['version'] = '202207155149'
 icmInfo['status']  = 'inUse'
-icmInfo['panel'] = 'vault-Panel.org'
+icmInfo['panel'] = 'bpoVault-Panel.org'
 icmInfo['groupingType'] = 'IcmGroupingType-pkged'
 icmInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
 
 """ #+begin_org
-* /[[elisp:(org-cycle)][| Description |]]/ :: [[file:/bisos/git/auth/bxRepos/blee-binders/bisos-core/COMEEGA/_nodeBase_/fullUsagePanel-en.org][BISOS COMEEGA Panel]]
+* /[[elisp:(org-cycle)][| Description |]]/ :: [[file:/bisos/git/auth/bxRepos/blee-binders/bisos-core/PyFwrk/bisos.crypt/_nodeBase_/fullUsagePanel-en.org][PyFwrk bisos.crypt Panel]]
 Module description comes here.
 ** Relevant Panels:
 ** Status: In use with blee3
@@ -75,88 +75,162 @@ G = icm.IcmGlobalContext()
 from blee.icmPlayer import bleep
 ####+END:
 
+import os
+# import pwd
+# import grp
+# import collections
+# import enum
+#
+
+#import traceback
+
 import collections
+
+import pathlib
+
+# from bisos.platform import bxPlatformConfig
+# from bisos.platform import bxPlatformThis
+
+# from bisos.basics import pattern
+
+from bisos.bpo import bpo
+#from bisos.pals import palsSis
+#from bisos.icm import fpath
+
+from bisos import bpf
+
+#import logging
+
+#import shutil
+
+
+####+BEGIN: bx:icm:py3:section :title "Common Parameters Specification"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Common Parameters Specification*  [[elisp:(org-cycle)][| ]]
+#+end_org """
+####+END:
+
 ####+BEGIN: bx:icm:py3:section :title "CS-Lib Examples"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *CS-Lib Examples*  [[elisp:(org-cycle)][| ]]
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:icm:py3:func :funcName "examples_modName" :funcType "eType" :retType "" :deco "default" :argsList ""
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-eType    [[elisp:(outline-show-subtree+toggle)][||]] /examples_modName/ deco=default  [[elisp:(org-cycle)][| ]]
-#+end_org """
-@icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-def examples_modName(
-####+END:
-        bpoId: typing.Optional[str],
-        envRelPath: typing.Optional[str],
-        sectionTitle: typing.AnyStr = '',
-) -> None:
-    """ #+begin_org
-** [[elisp:(org-cycle)][| *DocStr | ] Examples of Service Access Instance Commands.
-    #+end_org """
 
+####+BEGIN: bx:dblock:python:func :funcName "examples_bpo_crypt" :comment "Show/Verify/Update For relevant PBDs" :funcType "examples" :retType "none" :deco "" :argsList "oneBpo sectionTitle=None"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-examples [[elisp:(outline-show-subtree+toggle)][||]] /examples_bpo_crypt/ =Show/Verify/Update For relevant PBDs= retType=none argsList=(oneBpo sectionTitle=None)  [[elisp:(org-cycle)][| ]]
+#+end_org """
+def examples_bpo_crypt(
+    oneBpo,
+    sectionTitle=None,
+):
+####+END:
+    """
+** Common examples.
+"""
     def cpsInit(): return collections.OrderedDict()
     def menuItem(verbosity): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity=verbosity) # 'little' or 'none'
+    # def execLineEx(cmndStr): icm.ex_gExecMenuItem(execLine=cmndStr)
 
-    if sectionTitle == 'default':
-        icm.cmndExampleMenuChapter('*inMail --- Service Access Instance Commands*')
+    if sectionTitle == "default":
+        icm.cmndExampleMenuChapter('*Manage BPO Vault*')
 
-    if bpoId == None:
+    if not oneBpo:
         return
 
-    if envRelPath == None:
-        cmndName = 'bpoRunBasesUpdate'
-        cmndArgs = ''
-        cps = cpsInit() ; cps['bpoId'] = bpoId
-        menuItem(verbosity='none')
-        # menuItem(verbosity='full')
-    else:
-        cmndName = 'someCmnd'
-        cmndArgs = ''
-        cps = cpsInit() ; cps['bpoId'] = bpoId
-        cps['envRelPath'] = envRelPath
-        menuItem(verbosity='none')
-        # menuItem(verbosity='full')
+    icm.cmndExampleMenuChapter('*Primary Commands*')
+
+    cmndName = "vaultCreate"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultOpen"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultClose"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultGroupAdd"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultEntryUpdate"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+    cmndName = "vaultEntryRead"
+    cmndArgs = ""
+    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
+    menuItem(verbosity='none')
+
+
 ####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "CmndSvcs" :anchor ""  :extraInfo "Command Services Section"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*     [[elisp:(outline-show-subtree+toggle)][| _CmndSvcs_: |]]  Command Services Section  [[elisp:(org-shifttab)][<)]] E|
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "someCmnd" :comment "" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+####+BEGIN: bx:icm:py3:section :title "Primary Command Services"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<someCmnd>> parsMand= parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Primary Command Services*  [[elisp:(org-cycle)][| ]]
 #+end_org """
-class someCmnd(icm.Cmnd):
-    cmndParamsMandatory = [ ]
+####+END:
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "placeHolder" :parsMand "bpoId vault passwd" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<placeHolder>> parsMand=bpoId vault passwd parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class placeHolder(icm.Cmnd):
+    cmndParamsMandatory = [ 'bpoId', 'vault', 'passwd', ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
     @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
         interactive=False,        # Can also be called non-interactively
+        bpoId=None,         # or Cmnd-Input
+        vault=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
     ) -> icm.OpOutcome:
         cmndOutcome = self.getOpOutcome()
         if interactive:
             if not self.cmndLineValidate(outcome=cmndOutcome):
                 return cmndOutcome
 
-        callParamsDict = {}
+        callParamsDict = {'bpoId': bpoId, 'vault': vault, 'passwd': passwd, }
         if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
             return cmndOutcome
+        bpoId = callParamsDict['bpoId']
+        vault = callParamsDict['vault']
+        passwd = callParamsDict['passwd']
 
 ####+END:
         self.cmndDocStr(f""" #+begin_org
-** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  A starting point command.
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Wrpper around class method.
         #+end_org """)
 
-        if bpf.subProc.WOpW(invedBy=self, log=1).bash(
-                f"""echo hello World""",
-        ).isProblematic():  return(icm.EH_badOutcome(cmndOutcome))
 
-        return(cmndOutcome)
+        return cmndOutcome
+
+
+####+BEGIN: bx:icm:python:section :title "End Of Editable Text"
+"""
+*  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *End Of Editable Text*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]]
+"""
+####+END:
+
+####+BEGIN: bx:dblock:global:file-insert-cond :cond "./blee.el" :file "/bisos/apps/defaults/software/plusOrg/dblock/inserts/endOfFileControls.org"
+#+STARTUP: showall
+####+END:
+
 
 ####+BEGIN: b:prog:file/endOfFile :extraParams nil
 """ #+begin_org
