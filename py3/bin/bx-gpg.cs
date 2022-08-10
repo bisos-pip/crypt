@@ -83,16 +83,26 @@ from blee.icmPlayer import bleep
 import collections
 from bisos import bpf
 
+import sys
+
+from bisos.currents import currentsConfig
+
+from bisos.bpo import bpo
+from bisos.crypt import bpoGpg
+from bisos.crypt import bpoVault
+from bisos.crypt import gpgSym
+
 import gnupg
 import fs
 
-####+BEGIN: b:python:cs:framework/importCmndsModules :cmndsModules ("blee.icmPlayer.bleep")
+####+BEGIN: b:python:cs:framework/importCmndsModules :cmndsModules ("blee.icmPlayer.bleep" "bisos.crypt.gpgSym")
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_importedCmndsModules~ (blee.icmPlayer.bleep)
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_importedCmndsModules~ (blee.icmPlayer.bleep bisos.crypt.gpgSym)
 #+end_org """
 
 g_importedCmndsModules = [       # Enumerate modules from which CMNDs become invokable
     'blee.icmPlayer.bleep',
+    'bisos.crypt.gpgSym',
 ]
 
 ####+END:
@@ -114,12 +124,51 @@ def g_paramsExtraSpecify(
 
     bleep.commonParamsSpecify(icmParams)
 
+    bpoGpg.commonParamsSpecify(icmParams)
+
     icm.argsparseBasedOnIcmParams(parser, icmParams)
 
     # So that it can be processed later as well.
     G.icmParamDictSet(icmParams)
 
     return
+
+####+BEGIN: blee:bxPanel:foldingSection :outLevel 1 :title "CmndSvc-s" :extraInfo "class someCommand(icm.Cmnd)"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*       [[elisp:(outline-show-subtree+toggle)][| *CmndSvc-s:* |]]  class someCommand(icm.Cmnd)  [[elisp:(org-shifttab)][<)]] E|
+#+end_org """
+####+END:
+
+def g_opSysExit(opOutcome):
+    print(opOutcome.error)
+    sys.exit()
+
+g_outcome = bpf.op.Outcome()
+
+####+BEGIN: b:python:cs:module/cur_paramsAssign  :curParsList ("usage_bpoId" "keysBase" "keyName" "passwd")
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Currents   [[elisp:(outline-show-subtree+toggle)][||]] ~cur_examples~ (usage_bpoId keysBase keyName passwd)
+#+end_org """
+_parNamesList = [ 'usage_bpoId', 'keysBase', 'keyName', 'passwd',]
+if not (curParsDictValue := currentsConfig.curParsGetAsDictValue_wOp(_parNamesList, outcome=g_outcome).results): g_opSysExit(g_outcome)
+cur_usage_bpoId = curParsDictValue['usage_bpoId']
+cur_keysBase = curParsDictValue['keysBase']
+cur_keyName = curParsDictValue['keyName']
+cur_passwd = curParsDictValue['passwd']
+def cur_examples():
+    icm.ex_gExecMenuItem(execLine='bx-currents.cs')
+    icm.ex_gExecMenuItem(execLine='bx-currents.cs -i usgCursParsGet')
+    for each in _parNamesList:
+        icm.ex_gExecMenuItem(execLine=f'bx-currents.cs -v 20 -i usgCursParsSet {each}={curParsDictValue[each]}')
+####+END:
+
+####+BEGIN: bx:icm:py3:section :title "CS-Examples"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *CS-Examples*  [[elisp:(org-cycle)][| ]]
+#+end_org """
+####+END:
+
+
 
 ####+BEGIN: icm:py3:cmnd:classHead :cmndName "examples" :cmndType ""  :comment "FrameWrk: ICM Examples" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
 """ #+begin_org
@@ -168,6 +217,12 @@ class examples(icm.Cmnd):
         cmndName = "gpg_genKey" ; cmndArgs = "" ; cps=cpsInit(); menuItem(verbosity='none')
         cmndName = "pySymEncrypt" ; cmndArgs = "" ; cps=cpsInit(); menuItem(verbosity='none')
         cmndName = "pyEncrypt" ; cmndArgs = "/tmp/ttt1" ; cps=cpsInit(); menuItem(verbosity='none')
+
+        gpgSym.examples_gpgSymCrypt(
+            cur_passwd,
+            sectionTitle="default"
+        )
+
 
         icm.cmndExampleMenuChapter('*GPG Commands*')
 

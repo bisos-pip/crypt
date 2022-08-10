@@ -77,7 +77,7 @@ from blee.icmPlayer import bleep
 
 import os
 import sys
-import select
+#import select
 
 # import pwd
 # import grp
@@ -411,7 +411,6 @@ def examples_bpo_gpg(
 ** Common examples.
 """
 
-
     if sectionTitle == "default":
         icm.cmndExampleMenuChapter('*Manage BPO Gpg -- Generate Keys, Encypt and Decrypt*')
 
@@ -429,16 +428,18 @@ def examples_bpo_gpg(
         cps['keyName'] = keyName ; cps['passwd'] = passwd ;
         icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')
 
-    icm.cmndExampleMenuSection('*Generate Keys*')
+    icm.cmndExampleMenuSection('*Generate PKCS Keys*')
 
     cmndCommonParsWithArgs(cmndName="gpg_genKey")
 
-    icm.cmndExampleMenuSection('*Encrypt*')
+    icm.cmndExampleMenuSection('*GPG PKCS Encryption*')
 
-    execLineEx(f"""cp /etc/motd /tmp/gpgEx1""")
+    clearFile = "/tmp/gpgPkcsEx1"
+    cipherFile = "/tmp/gpgPkcsEx1.gpg"
 
-    cmndCommonParsWithArgs(cmndName="gpg_pkcsEncrypt", cmndArgs="/tmp/gpgEx1")
+    execLineEx(f"""cp /etc/motd {clearFile}""")
 
+    cmndCommonParsWithArgs(cmndName="gpg_pkcsEncrypt", cmndArgs=f"{clearFile}")
 
     def cmndStdinEncrypt(cmndName): # type: ignore
         icmWrapper = "echo HereComes Some ClearText | "
@@ -446,8 +447,7 @@ def examples_bpo_gpg(
         cps['keyName'] = keyName ; cps['passwd'] = passwd ; cmndArgs = ""
         return icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
     encryptCmndStr = cmndStdinEncrypt("gpg_pkcsEncrypt")
-    print(f"{encryptCmndStr}")
-
+    #print(f"{encryptCmndStr}")
 
 ####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Decrypt"
     """
@@ -455,16 +455,16 @@ def examples_bpo_gpg(
 """
 ####+END:
 
-    icm.cmndExampleMenuSection('*Decrypt*')
+    icm.cmndExampleMenuSection('*GPG Symmetric Decryption*')
 
-    cmndCommonParsWithArgs(cmndName="gpg_pkcsDecrypt", cmndArgs="/tmp/gpgEx1.gpg")
+    cmndCommonParsWithArgs(cmndName="gpg_pkcsDecrypt", cmndArgs=f"{cipherFile}")
 
     def cmndStdinDecrypt(cmndName, icmWrapper): # type: ignore
         cps = cpsInit() ; cps['bpoId'] = bpoId ; cps['keysBase'] = keysBase ;
         cps['keyName'] = keyName ; cps['passwd'] = passwd ; cmndArgs = ""
         return icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
 
-    cmndStdinDecrypt("gpg_pkcsDecrypt", icmWrapper=f"cat /tmp/gpgEx1.gpg | ")
+    cmndStdinDecrypt("gpg_pkcsDecrypt", icmWrapper=f"cat {cipherFile} | ")
 
     cmndStdinDecrypt("gpg_pkcsDecrypt", icmWrapper=f"{encryptCmndStr} | ")
 
@@ -534,9 +534,9 @@ class gpg_genKey(icm.Cmnd):
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_pkcsEncrypt" :comment "Input is stdin as clearText" :parsMand "bpoId keysBase keyName passwd" :parsOpt "outFile" :argsMin "0" :argsMax "9999" :asFunc "clearText" :interactiveP ""
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_pkcsEncrypt" :comment "stdin as clearText" :parsMand "bpoId keysBase keyName passwd" :parsOpt "outFile" :argsMin "0" :argsMax "9999" :asFunc "clearText" :interactiveP ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_pkcsEncrypt>> =Input is args as inFiles or stdin= parsMand=bpoId keysBase keyName passwd parsOpt=outFile argsMin=0 argsMax=9999 asFunc=clearText interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_pkcsEncrypt>> =stdin as clearText= parsMand=bpoId keysBase keyName passwd parsOpt=outFile argsMin=0 argsMax=9999 asFunc=clearText interactive=  [[elisp:(org-cycle)][| ]]
 #+end_org """
 class gpg_pkcsEncrypt(icm.Cmnd):
     cmndParamsMandatory = [ 'bpoId', 'keysBase', 'keyName', 'passwd', ]
@@ -574,7 +574,7 @@ class gpg_pkcsEncrypt(icm.Cmnd):
         cmndArgsSpecDict = self.cmndArgsSpec()
         if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
             return cmndOutcome
-        """Input is args as inFiles or stdin"""
+        """stdin as clearText"""
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]
@@ -643,9 +643,9 @@ class gpg_pkcsEncrypt(icm.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_pkcsDecrypt" :comment "" :parsMand "bpoId keysBase keyName passwd" :parsOpt "outFile" :argsMin "0" :argsMax "9999" :asFunc "cipherText" :interactiveP ""
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_pkcsDecrypt" :comment "stdin as cipherText" :parsMand "bpoId keysBase keyName passwd" :parsOpt "outFile" :argsMin "0" :argsMax "9999" :asFunc "cipherText" :interactiveP ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_pkcsDecrypt>> parsMand=bpoId keysBase keyName passwd parsOpt=outFile argsMin=0 argsMax=9999 asFunc=cipherText interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_pkcsDecrypt>> =stdin as cipherText= parsMand=bpoId keysBase keyName passwd parsOpt=outFile argsMin=0 argsMax=9999 asFunc=cipherText interactive=  [[elisp:(org-cycle)][| ]]
 #+end_org """
 class gpg_pkcsDecrypt(icm.Cmnd):
     cmndParamsMandatory = [ 'bpoId', 'keysBase', 'keyName', 'passwd', ]
@@ -683,6 +683,7 @@ class gpg_pkcsDecrypt(icm.Cmnd):
         cmndArgsSpecDict = self.cmndArgsSpec()
         if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
             return cmndOutcome
+        """stdin as cipherText"""
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]

@@ -90,19 +90,21 @@ from bisos.currents import currentsConfig
 from bisos.bpo import bpo
 from bisos.crypt import bpoGpg
 from bisos.crypt import bpoVault
+from bisos.crypt import gpgSym
 
 import gnupg
 # import fs
 
-####+BEGIN: b:python:cs:framework/importCmndsModules :cmndsModules ("blee.icmPlayer.bleep" "bisos.bpo.bpo" "bisos.crypt.bpoGpg")
+####+BEGIN: b:python:cs:framework/importCmndsModules :cmndsModules ("blee.icmPlayer.bleep" "bisos.bpo.bpo" "bisos.crypt.bpoGpg" "bisos.crypt.gpgSym")
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_importedCmndsModules~ (blee.icmPlayer.bleep bisos.bpo.bpo bisos.crypt.bpoGpg)
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_importedCmndsModules~ (blee.icmPlayer.bleep bisos.bpo.bpo bisos.crypt.bpoGpg bisos.crypt.gpgSym)
 #+end_org """
 
 g_importedCmndsModules = [       # Enumerate modules from which CMNDs become invokable
     'blee.icmPlayer.bleep',
     'bisos.bpo.bpo',
     'bisos.crypt.bpoGpg',
+    'bisos.crypt.gpgSym',
 ]
 
 ####+END:
@@ -219,7 +221,6 @@ class examples(icm.Cmnd):
         icm.cmndExampleMenuChapter('*Currents Settings*')
         cur_examples()
 
-        #  RunBases Examples
         bpoGpg.examples_bpo_gpg(
             cur_usage_bpoId,
             cur_keysBase,
@@ -227,6 +228,12 @@ class examples(icm.Cmnd):
             cur_passwd,
             sectionTitle="default"
         )
+
+        gpgSym.examples_gpgSymCrypt(
+            cur_passwd,
+            sectionTitle="default"
+        )
+
 
         return(cmndOutcome)
 
