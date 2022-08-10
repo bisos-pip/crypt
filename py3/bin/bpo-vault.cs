@@ -216,7 +216,7 @@ class examples(icm.Cmnd):
 
         bleep.examples_icmBasic()
 
-        icm.cmndExampleMenuChapter('*Currents Examples Settings*')
+        icm.cmndExampleMenuChapter('*Currents Settings*')
         cur_examples()
 
         #  RunBases Examples

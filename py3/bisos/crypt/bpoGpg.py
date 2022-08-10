@@ -76,6 +76,9 @@ from blee.icmPlayer import bleep
 ####+END:
 
 import os
+import sys
+import select
+
 # import pwd
 # import grp
 # import collections
@@ -183,7 +186,7 @@ class BpoGpg(object):
         return gpgBaseDir
 
 
-####+BEGIN: bx:icm:py3:method :methodName "genKey" :deco "default"
+####+BEGIN: bx:icm:py3:method :methodName "pkcsFileEncript" :deco "default"
     """
 **  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /genKey/ deco=default  [[elisp:(org-cycle)][| ]]
 #+end_org """
@@ -210,56 +213,132 @@ class BpoGpg(object):
         print(key)
 
 
-
-####+BEGIN: bx:icm:py3:method :methodName "encryptStr" :deco "default"
+####+BEGIN: bx:icm:py3:method :methodName "pkcsEncryptFile" :deco "default"
     """
-**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /encryptStr/ deco=default  [[elisp:(org-cycle)][| ]]
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /pkcsEncryptFile/ deco=default  [[elisp:(org-cycle)][| ]]
 #+end_org """
     @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def encryptStr(
+    def pkcsEncryptFile(
 ####+END:
             self,
-            vault,
-            passwd,
+            gpgFileName,
+            nameEmail,
+            passphrase,
+            fileObj,
+            output,
     ):
-    # ) -> typing.Optional[pykeepass.PyKeePass]:
         """ #+begin_org
-*** [[elisp:(org-cycle)][| *MethodDesc:* | ]]  Open the vault and return a kp. vault must exist. passwd is mandatory.
-        Thereafter, for a while actions can be performed without the password.
-*** TODO Add passhole to panel.
+*** [[elisp:(org-cycle)][| DocStr| ]]  Generate Key.
         #+end_org """
+        keysBaseDir = self.keysFilePath_obtain(gpgFileName,)
 
-        vaultFilePath = self.vaultFilePath_obtain(vault)
+        gpg = gnupg.GPG(gnupghome=keysBaseDir)
 
-        if not os.path.exists(vaultFilePath):
-            icm.EH_problem_usageError(f"""Missing vault={vaultFilePath}""")
-            return typing.cast(pykeepass.PyKeePass, None)
+        status = gpg.encrypt_file(
+            fileObj,
+            recipients=[nameEmail],
+            passphrase=passphrase,
+            output=output,
+        )
+        print("ok: ", status.ok)
+        print("status: ", status.status)
+        print("stderr: ", status.stderr)
 
-        if not passwd:
-            icm.EH_problem_usageError(f"""Missing passwd""")
-            return typing.cast(pykeepass.PyKeePass, None)
-
-        #kp = pykeepass_cache.PyKeePass(vaultFilePath, passwd, timeout=1000)
-        kp = pykeepass_cache.PyKeePass(vaultFilePath, passwd)
-
-        return typing.cast(pykeepass.PyKeePass, kp)
-
-####+BEGIN: bx:icm:py3:method :methodName "vaultClose" :deco "default"
+####+BEGIN: bx:icm:py3:method :methodName "pkcsEncrypt" :deco "default"
     """
-**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /vaultClose/ deco=default  [[elisp:(org-cycle)][| ]]
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /pkcsEncrypt/ deco=default  [[elisp:(org-cycle)][| ]]
 #+end_org """
     @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def vaultClose(
+    def pkcsEncrypt(
 ####+END:
             self,
-            vault,
-            passwd,
+            keysBase,
+            keyName,
+            passphrase,
+            data,
     ):
         """ #+begin_org
-*** TODO [[elisp:(org-cycle)][| *MethodDesc:* | ]]  UnImplemented. Close the vault.
+*** [[elisp:(org-cycle)][| DocStr| ]]  Generate Key.
         #+end_org """
 
-        return vault, passwd
+        keysBaseDir = self.keysFilePath_obtain(keysBase,)
+
+        gpg = gnupg.GPG(gnupghome=keysBaseDir)
+
+        status = gpg.encrypt(
+            data,
+            recipients=[keyName],
+            passphrase=passphrase,
+        )
+        icm.LOG_here(f"ok: {status.ok}")
+        icm.LOG_here(f"status: {status.status}")
+        icm.LOG_here(f"stderr: {status.stderr}")
+        icm.LOG_here(f"data: {status.data}")
+
+        return status
+
+####+BEGIN: bx:icm:py3:method :methodName "pkcsDecryptFile" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /pkcsDecryptFile/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def pkcsDecryptFile(
+####+END:
+            self,
+            gpgFileName,
+            fileObj,
+            output,
+            passphrase,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| DocStr| ]]  Generate Key.
+        #+end_org """
+        keysBaseDir = self.keysFilePath_obtain(gpgFileName,)
+
+        gpg = gnupg.GPG(gnupghome=keysBaseDir)
+
+        status = gpg.decrypt_file(
+            fileObj,
+            passphrase=passphrase,
+            output=output,
+        )
+        print("ok: ", status.ok)
+        print("status: ", status.status)
+        print("stderr: ", status.stderr)
+
+        return status
+
+####+BEGIN: bx:icm:py3:method :methodName "pkcsDecrypt" :deco "default"
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-       :: /pkcsDecrypt/ deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def pkcsDecrypt(
+####+END:
+            self,
+            keysBase,
+            passphrase,
+            data,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| DocStr| ]]  Generate Key.
+        #+end_org """
+        keysBaseDir = self.keysFilePath_obtain(keysBase,)
+
+        gpg = gnupg.GPG(gnupghome=keysBaseDir)
+
+        print(data)
+
+        status = gpg.decrypt(
+            data,
+            passphrase=passphrase,
+        )
+        print("ok: ", status.ok)
+        print("status: ", status.status)
+        print("stderr: ", status.stderr)
+        print("data: ", status.data)
+
+        return status
 
 
 ####+BEGIN: bx:icm:py3:section :title "Common Parameters Specification"
@@ -277,25 +356,37 @@ def commonParamsSpecify(
 ):
 ####+END:
     icmParams.parDictAdd(
-        parName='vault',
-        parDescription="Gpg Name -- uniq within bpo/vault",
+        parName='keysBase',
+        parDescription="NOTYET",
         parDataType=None,
-        parDefault='fpGpg',
+        parDefault='bisos',
         parChoices=["any"],
         # parScope=icm.ICM_ParamScope.TargetParam,
         argparseShortOpt=None,
-        argparseLongOpt='--vault',
+        argparseLongOpt='--keysBase',
     )
     icmParams.parDictAdd(
-        parName='passwd',
-        parDescription="Password (General Purpose)",
+        parName='keyName',
+        parDescription="NOTYET",
         parDataType=None,
         parDefault=None,
         parChoices=["any"],
         # parScope=icm.ICM_ParamScope.TargetParam,
         argparseShortOpt=None,
-        argparseLongOpt='--passwd',
+        argparseLongOpt='--keyName',
     )
+    icmParams.parDictAdd(
+        parName='outFile',
+        parDescription="NOTYET",
+        parDataType=None,
+        parDefault=None,
+        parChoices=["any"],
+        # parScope=icm.ICM_ParamScope.TargetParam,
+        argparseShortOpt=None,
+        argparseLongOpt='--outFile',
+    )
+
+
 
 ####+BEGIN: bx:icm:py3:section :title "CS-Lib Examples"
 """ #+begin_org
@@ -304,13 +395,14 @@ def commonParamsSpecify(
 ####+END:
 
 
-####+BEGIN: bx:dblock:python:func :funcName "examples_bpo_gpg" :comment "Show/Verify/Update For relevant PBDs" :funcType "examples" :retType "none" :deco "" :argsList "oneBpo vault passwd sectionTitle=None"
+####+BEGIN: bx:dblock:python:func :funcName "examples_bpo_gpg" :comment "Show/Verify/Update For relevant PBDs" :funcType "examples" :retType "none" :deco "" :argsList "bpoId keysBase keyName passwd sectionTitle=None"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-examples [[elisp:(outline-show-subtree+toggle)][||]] /examples_bpo_gpg/ =Show/Verify/Update For relevant PBDs= retType=none argsList=(oneBpo vault passwd sectionTitle=None)  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-examples [[elisp:(outline-show-subtree+toggle)][||]] /examples_bpo_gpg/ =Show/Verify/Update For relevant PBDs= retType=none argsList=(bpoId keysBase keyName passwd sectionTitle=None)  [[elisp:(org-cycle)][| ]]
 #+end_org """
 def examples_bpo_gpg(
-    oneBpo,
-    vault,
+    bpoId,
+    keysBase,
+    keyName,
     passwd,
     sectionTitle=None,
 ):
@@ -318,66 +410,63 @@ def examples_bpo_gpg(
     """
 ** Common examples.
 """
-    def cpsInit(): return collections.OrderedDict()
-    def menuItem(verbosity): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity=verbosity) # 'little' or 'none'
-    # def execLineEx(cmndStr): icm.ex_gExecMenuItem(execLine=cmndStr)
+
 
     if sectionTitle == "default":
-        icm.cmndExampleMenuChapter('*Manage BPO Gpg*')
+        icm.cmndExampleMenuChapter('*Manage BPO Gpg -- Generate Keys, Encypt and Decrypt*')
 
-    if not oneBpo:
+    if not bpoId:
         return
 
-    icm.cmndExampleMenuChapter('*Primary Commands*')
+    def cpsInit(): return collections.OrderedDict()
+    def menuItem(verbosity): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity=verbosity) # 'little' or 'none'
+    #def menuItemVerbose(): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='little')
+    #def menuItemTerse(): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')
+    def execLineEx(cmndStr): icm.ex_gExecMenuItem(execLine=cmndStr)
 
-    cmndName = "vaultCreate"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    def cmndCommonParsWithArgs(cmndName, cmndArgs=""): # type: ignore
+        cps = cpsInit() ; cps['bpoId'] = bpoId ; cps['keysBase'] = keysBase ;
+        cps['keyName'] = keyName ; cps['passwd'] = passwd ;
+        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')
 
-    cmndName = "vaultOpen"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    icm.cmndExampleMenuSection('*Generate Keys*')
 
-    cmndName = "vaultClose"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    cmndCommonParsWithArgs(cmndName="gpg_genKey")
 
-    cmndName = "vaultGroupAdd"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    icm.cmndExampleMenuSection('*Encrypt*')
 
-    cmndName = "vaultEntryUpdate"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    execLineEx(f"""cp /etc/motd /tmp/gpgEx1""")
 
-    cmndName = "vaultEntryRead"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    cmndCommonParsWithArgs(cmndName="gpg_pkcsEncrypt", cmndArgs="/tmp/gpgEx1")
 
 
-    cmndName = "vaultEntryDelete"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    def cmndStdinEncrypt(cmndName): # type: ignore
+        icmWrapper = "echo HereComes Some ClearText | "
+        cps = cpsInit() ; cps['bpoId'] = bpoId ; cps['keysBase'] = keysBase ;
+        cps['keyName'] = keyName ; cps['passwd'] = passwd ; cmndArgs = ""
+        return icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+    encryptCmndStr = cmndStdinEncrypt("gpg_pkcsEncrypt")
+    print(f"{encryptCmndStr}")
 
 
-    icm.cmndExampleMenuChapter('*Secondary Commands*')
+####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Decrypt"
+    """
+**   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Decrypt*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]]
+"""
+####+END:
 
-    cmndName = "bpoGpgPrep"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    icm.cmndExampleMenuSection('*Decrypt*')
 
-    cmndName = "bpoGpgList"
-    cmndArgs = ""
-    cps = cpsInit() ; cps['bpoId'] = oneBpo ; cps['vault'] = vault ; cps['passwd'] = passwd
-    menuItem(verbosity='none')
+    cmndCommonParsWithArgs(cmndName="gpg_pkcsDecrypt", cmndArgs="/tmp/gpgEx1.gpg")
+
+    def cmndStdinDecrypt(cmndName, icmWrapper): # type: ignore
+        cps = cpsInit() ; cps['bpoId'] = bpoId ; cps['keysBase'] = keysBase ;
+        cps['keyName'] = keyName ; cps['passwd'] = passwd ; cmndArgs = ""
+        return icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+
+    cmndStdinDecrypt("gpg_pkcsDecrypt", icmWrapper=f"cat /tmp/gpgEx1.gpg | ")
+
+    cmndStdinDecrypt("gpg_pkcsDecrypt", icmWrapper=f"{encryptCmndStr} | ")
 
 ####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "CmndSvcs" :anchor ""  :extraInfo "Command Services Section"
 """ #+begin_org
@@ -385,19 +474,19 @@ def examples_bpo_gpg(
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:icm:py3:section :title "Primary Command Services"
+####+BEGIN: bx:icm:py3:section :title "Keys Generation"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Primary Command Services*  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Keys Generation*  [[elisp:(org-cycle)][| ]]
 #+end_org """
 ####+END:
 
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_genKey" :comment "" :parsMand "bpoId" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_genKey" :comment "" :parsMand "bpoId keysBase keyName passwd" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_genKey>> parsMand=bpoId parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_genKey>> parsMand=bpoId keysBase keyName passwd parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
 #+end_org """
 class gpg_genKey(icm.Cmnd):
-    cmndParamsMandatory = [ 'bpoId', ]
+    cmndParamsMandatory = [ 'bpoId', 'keysBase', 'keyName', 'passwd', ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
@@ -405,16 +494,22 @@ class gpg_genKey(icm.Cmnd):
     def cmnd(self,
         interactive=False,        # Can also be called non-interactively
         bpoId=None,         # or Cmnd-Input
+        keysBase=None,         # or Cmnd-Input
+        keyName=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
     ) -> icm.OpOutcome:
         cmndOutcome = self.getOpOutcome()
         if interactive:
             if not self.cmndLineValidate(outcome=cmndOutcome):
                 return cmndOutcome
 
-        callParamsDict = {'bpoId': bpoId, }
+        callParamsDict = {'bpoId': bpoId, 'keysBase': keysBase, 'keyName': keyName, 'passwd': passwd, }
         if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
             return cmndOutcome
         bpoId = callParamsDict['bpoId']
+        keysBase = callParamsDict['keysBase']
+        keyName = callParamsDict['keyName']
+        passwd = callParamsDict['passwd']
 
 ####+END:
         self.cmndDocStr(f""" #+begin_org
@@ -427,25 +522,37 @@ class gpg_genKey(icm.Cmnd):
 
         thisBpo = BpoGpg(bpoId,)
 
-        thisBpo.genKey('bisos', 'bisos@example.com' , 'passphrase')
+        #thisBpo.genKey('bisos', 'bisos@example.com' , 'passphrase')
+        thisBpo.genKey(keysBase, keyName, passwd)
 
 
         return cmndOutcome
 
-
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "pyEncrypt" :comment "" :parsMand "" :parsOpt "" :argsMin "1" :argsMax "9999" :asFunc "" :interactiveP ""
+####+BEGIN: bx:icm:py3:section :title "PKCS Encrypt/Decrypt"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<pyEncrypt>> parsMand= parsOpt= argsMin=1 argsMax=9999 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *PKCS Encrypt/Decrypt*  [[elisp:(org-cycle)][| ]]
 #+end_org """
-class pyEncrypt(icm.Cmnd):
-    cmndParamsMandatory = [ ]
-    cmndParamsOptional = [ ]
-    cmndArgsLen = {'Min': 1, 'Max': 9999,}
+####+END:
+
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_pkcsEncrypt" :comment "Input is stdin as clearText" :parsMand "bpoId keysBase keyName passwd" :parsOpt "outFile" :argsMin "0" :argsMax "9999" :asFunc "clearText" :interactiveP ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_pkcsEncrypt>> =Input is args as inFiles or stdin= parsMand=bpoId keysBase keyName passwd parsOpt=outFile argsMin=0 argsMax=9999 asFunc=clearText interactive=  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class gpg_pkcsEncrypt(icm.Cmnd):
+    cmndParamsMandatory = [ 'bpoId', 'keysBase', 'keyName', 'passwd', ]
+    cmndParamsOptional = [ 'outFile', ]
+    cmndArgsLen = {'Min': 0, 'Max': 9999,}
 
     @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
         interactive=False,        # Can also be called non-interactively
+        bpoId=None,         # or Cmnd-Input
+        keysBase=None,         # or Cmnd-Input
+        keyName=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
+        outFile=None,         # or Cmnd-Input
         argsList=[],         # or Args-Input
+        clearText=None,         # asFunc when interactive==False
     ) -> icm.OpOutcome:
         cmndOutcome = self.getOpOutcome()
         if interactive:
@@ -455,34 +562,63 @@ class pyEncrypt(icm.Cmnd):
         else:
             effectiveArgsList = argsList
 
-        callParamsDict = {}
+        callParamsDict = {'bpoId': bpoId, 'keysBase': keysBase, 'keyName': keyName, 'passwd': passwd, 'outFile': outFile, }
         if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
             return cmndOutcome
+        bpoId = callParamsDict['bpoId']
+        keysBase = callParamsDict['keysBase']
+        keyName = callParamsDict['keyName']
+        passwd = callParamsDict['passwd']
+        outFile = callParamsDict['outFile']
 
         cmndArgsSpecDict = self.cmndArgsSpec()
         if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
             return cmndOutcome
+        """Input is args as inFiles or stdin"""
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]
         #+end_org """)
 
-        gpg = gnupg.GPG()   # gpg = gnupg.GPG(gnupghome="/home/sammy/.gnupg")
-        #home_fs = fs.open_fs(".")
+        thisBpo = BpoGpg(bpoId,)
 
         cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, effectiveArgsList)
 
-        for each in cmndArgs:
-            with open(each, "rb") as f:
-
-                status = gpg.encrypt_file(
-                    f,
-                    recipients=["mohsen.byname@gmail.com"],
-                    output= f"{each}.gpg"
+        filesProcessed = False
+        for each in typing.cast(list, cmndArgs):
+            filesProcessed = True
+            with open(each, "rb") as fileObj:
+                thisBpo.pkcsEncryptFile(
+                    keysBase,
+                    keyName,
+                    passwd,
+                    fileObj,
+                    f"{each}.gpg"
                 )
-                print("ok: ", status.ok)
-                print("status: ", status.status)
-                print("stderr: ", status.stderr)
+                print(f"{each}.gpg")
+
+
+        if not clearText:
+            clearText = io_stdin_read()
+
+        if not clearText and not filesProcessed:
+            icm.EH_problem_usageError(f"noFiles and no clearText")
+            return cmndOutcome
+
+        if clearText:
+            gpgStatus = thisBpo.pkcsEncrypt(
+                keysBase,
+                keyName,
+                passwd,
+                clearText,
+            )
+
+            cipheredText = gpgStatus.data
+
+            icm.LOG_here(f"""clearText={clearText}""")
+            icm.LOG_here(f"""cipheredText={cipheredText}""")
+
+            sys.stdout.buffer.write(cipheredText)  # print does not work.
 
         return cmndOutcome
 
@@ -507,55 +643,132 @@ class pyEncrypt(icm.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "pySymEncrypt" :comment "" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_pkcsDecrypt" :comment "" :parsMand "bpoId keysBase keyName passwd" :parsOpt "outFile" :argsMin "0" :argsMax "9999" :asFunc "cipherText" :interactiveP ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<pySymEncrypt>> parsMand= parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_pkcsDecrypt>> parsMand=bpoId keysBase keyName passwd parsOpt=outFile argsMin=0 argsMax=9999 asFunc=cipherText interactive=  [[elisp:(org-cycle)][| ]]
 #+end_org """
-class pySymEncrypt(icm.Cmnd):
-    cmndParamsMandatory = [ ]
-    cmndParamsOptional = [ ]
-    cmndArgsLen = {'Min': 0, 'Max': 0,}
+class gpg_pkcsDecrypt(icm.Cmnd):
+    cmndParamsMandatory = [ 'bpoId', 'keysBase', 'keyName', 'passwd', ]
+    cmndParamsOptional = [ 'outFile', ]
+    cmndArgsLen = {'Min': 0, 'Max': 9999,}
 
     @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
         interactive=False,        # Can also be called non-interactively
+        bpoId=None,         # or Cmnd-Input
+        keysBase=None,         # or Cmnd-Input
+        keyName=None,         # or Cmnd-Input
+        passwd=None,         # or Cmnd-Input
+        outFile=None,         # or Cmnd-Input
+        argsList=[],         # or Args-Input
+        cipherText=None,         # asFunc when interactive==False
     ) -> icm.OpOutcome:
         cmndOutcome = self.getOpOutcome()
         if interactive:
             if not self.cmndLineValidate(outcome=cmndOutcome):
                 return cmndOutcome
+            effectiveArgsList = G.icmRunArgsGet().cmndArgs  # type: ignore
+        else:
+            effectiveArgsList = argsList
 
-        callParamsDict = {}
+        callParamsDict = {'bpoId': bpoId, 'keysBase': keysBase, 'keyName': keyName, 'passwd': passwd, 'outFile': outFile, }
         if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
             return cmndOutcome
+        bpoId = callParamsDict['bpoId']
+        keysBase = callParamsDict['keysBase']
+        keyName = callParamsDict['keyName']
+        passwd = callParamsDict['passwd']
+        outFile = callParamsDict['outFile']
 
+        cmndArgsSpecDict = self.cmndArgsSpec()
+        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
+            return cmndOutcome
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]
         #+end_org """)
 
-        gpg = gnupg.GPG()
-        data = 'the quick brown fow jumps over the laxy dog.'
-        passphrase='12345'
-        crypt = gpg.encrypt(
-            data,
-            recipients=None,
-            symmetric='AES256',
-            passphrase=passphrase,
-            armor=False,
-        )
-        print(crypt.data)
+        thisBpo = BpoGpg(bpoId,)
 
-        clear = gpg.decrypt(
-            crypt.data,
-            passphrase=passphrase,
+        cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, effectiveArgsList)
+
+        filesProcessed = False
+        for each in typing.cast(list, cmndArgs):
+            filesProcessed = True
+            with open(each, "rb") as fileObj:
+                thisBpo.pkcsDecryptFile(
+                    keysBase,
+                    fileObj,
+                    f"{each}.clear",
+                    passwd,
+                )
+
+        if not cipherText:
+            cipherText = io_stdin_read()
+
+        if not cipherText and not filesProcessed:
+            icm.EH_problem_usageError(f"noFiles and no cipheredText")
+            return cmndOutcome
+
+        gpgStatus = thisBpo.pkcsDecrypt(
+            keysBase,
+            passwd,
+            cipherText,
         )
 
-        print(clear)
+        clearText = gpgStatus.data
+
+        icm.LOG_here(f"""clearText={clearText}""")
+        icm.LOG_here(f"""cipherText={cipherText}""")
+
+        sys.stdout.buffer.write(clearText)  # print does not work.
 
         return cmndOutcome
 
 
+####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
+    """
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
+#+end_org """
+    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self):
+####+END:
+        """  #+begin_org
+** [[elisp:(org-cycle)][| *cmndArgsSpec:* | ]]
+        #+end_org """
+        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict.argsDictAdd(
+            argPosition="0&9999",
+            argName="cmndArgs",
+            argChoices=[],
+            argDescription="List Of CmndArgs To Be Processed. Each As Any."
+        )
+
+        return cmndArgsSpecDict
+
+####+BEGIN: bx:icm:py3:func :funcName "io_stdin_read" :funcType "extTyped" :retType "extTyped" :deco "icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)" :argsList ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-extTyped [[elisp:(outline-show-subtree+toggle)][||]] /io_stdin_read/ deco=icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)  [[elisp:(org-cycle)][| ]]
+#+end_org """
+@icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+def io_stdin_read(
+####+END:
+) -> str:
+    """ #+begin_org
+** [[elisp:(org-cycle)][| *DocStr | ] Reads stdin. Returns a string. -- Uses mutable list.
+    #+end_org """
+
+    stdinAsStr = ""
+    #if select.select([sys.stdin, ], [], [], 0.0)[0]:
+    if not sys.stdin.isatty():
+
+        msgAsList = []
+        for line in sys.stdin:
+            msgAsList.append(str(line))
+
+        stdinAsStr = str("".join(msgAsList),)
+
+    return stdinAsStr
 
 ####+BEGIN: bx:icm:python:section :title "End Of Editable Text"
 """
