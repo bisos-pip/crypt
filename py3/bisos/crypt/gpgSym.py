@@ -1,22 +1,34 @@
 # -*- coding: utf-8 -*-
 
 """ #+begin_org
-* *[Summary]* :: A =CS-Lib= for creating and managing symetric gpg  encryption/decryption.
+* ~[Summary]~ :: A =CS-Lib= for creating and managing symetric gpg  encryption/decryption.
 #+end_org """
+
+####+BEGIN: b:py3:cs:file/dblockControls :classification "cs-u"
+""" #+begin_org
+* [[elisp:(org-cycle)][| /Control Parameters Of This File/ |]] :: dblk ctrls classifications=cs-u
+#+BEGIN_SRC emacs-lisp
+(setq-local b:dblockControls t) ; (setq-local b:dblockControls nil)
+(put 'b:dblockControls 'py3:cs:Classification "cs-u") ; one of cs-mu, cs-u, cs-lib, b-lib, pyLibPure
+#+END_SRC
+#+RESULTS:
+: cs-mu
+#+end_org """
+####+END:
 
 ####+BEGIN: b:prog:file/proclamations :outLevel 1
 """ #+begin_org
-* *[[elisp:(org-cycle)][| Proclamations |]]* :: Libre-Halaal Software --- Part Of Blee ---  Poly-COMEEGA Format.
-** This is Libre-Halaal Software. © Libre-Halaal Foundation. Subject to AGPL.
-** It is not part of Emacs. It is part of Blee.
-** Best read and edited  with Poly-COMEEGA (Polymode Colaborative Org-Mode Enhance Emacs Generalized Authorship)
+* *[[elisp:(org-cycle)][| Proclamations |]]* :: Libre-Halaal Software --- Part Of BISOS ---  Poly-COMEEGA Format.
+** This is Libre-Halaal Software. © Neda Communications, Inc. Subject to AGPL.
+** It is part of BISOS (ByStar Internet Services OS)
+** Best read and edited  with Blee in Poly-COMEEGA (Polymode Colaborative Org-Mode Enhance Emacs Generalized Authorship)
 #+end_org """
 ####+END:
 
 ####+BEGIN: b:prog:file/particulars :authors ("./inserts/authors-mb.org")
 """ #+begin_org
 * *[[elisp:(org-cycle)][| Particulars |]]* :: Authors, version
-** This File: NOTYET
+** This File: /bisos/git/auth/bxRepos/bisos-pip/crypt/py3/bisos/crypt/gpgSym.py
 ** Authors: Mohsen BANAN, http://mohsen.banan.1.byname.net/contact
 #+end_org """
 ####+END:
@@ -26,12 +38,12 @@
 * *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
 #+end_org """
 import typing
-icmInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['gpgSym'], }
-icmInfo['version'] = '202208070017'
-icmInfo['status']  = 'inUse'
-icmInfo['panel'] = 'gpgSym-Panel.org'
-icmInfo['groupingType'] = 'IcmGroupingType-pkged'
-icmInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
+csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['gpgSym'], }
+csInfo['version'] = '202209261325'
+csInfo['status']  = 'inUse'
+csInfo['panel'] = 'gpgSym-Panel.org'
+csInfo['groupingType'] = 'IcmGroupingType-pkged'
+csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
 
 """ #+begin_org
@@ -56,86 +68,65 @@ Module description comes here.
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:icm:python:icmItem :itemType "=PyImports= " :itemTitle "*Py Library IMPORTS*"
+####+BEGIN: bx:cs:python:icmItem :itemType "=PyImports= " :itemTitle "*Py Library IMPORTS*"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  =PyImports=  [[elisp:(outline-show-subtree+toggle)][||]] *Py Library IMPORTS*  [[elisp:(org-cycle)][| ]]
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:dblock:global:file-insert-cond :cond "./blee.el" :file "/bisos/apps/defaults/update/sw/icm/py/importUcfIcmBleepG.py"
-from unisos import ucf
-from unisos import icm
-
-icm.unusedSuppressForEval(ucf.__file__)  # in case icm and ucf are not used
-
-G = icm.IcmGlobalContext()
-# G.icmLibsAppend = __file__
-# G.icmCmndsLibsAppend = __file__
-
-from blee.icmPlayer import bleep
+####+BEGIN: b:py3:cs:orgItem/basic :type "=PyImports= " :title "*Py Library IMPORTS*" :comment "-- with classification based framework/imports"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  =PyImports=  [[elisp:(outline-show-subtree+toggle)][||]] *Py Library IMPORTS* -- with classification based framework/imports  [[elisp:(org-cycle)][| ]]
+#+end_org """
 ####+END:
 
-import os
+####+BEGIN: b:py3:cs:framework/imports :basedOn "classification"
+""" #+begin_org
+** Imports Based On Classification=cs-lib
+#+end_org """
+from bisos import b
+from bisos.b import cs
+from bisos.b import b_io
+
+####+END:
+
 import sys
-# import pwd
-# import grp
-# import collections
-# import enum
-#
-
-#import traceback
-
 import collections
-
-import pathlib
-
-# from bisos.platform import bxPlatformConfig
-# from bisos.platform import bxPlatformThis
-
-# from bisos.basics import pattern
-
-from bisos.bpo import bpo
-#from bisos.pals import palsSis
-#from bisos.icm import fpath
-
-from bisos import bpf
-
 import gnupg
 
-####+BEGIN: bx:icm:py3:section :title "CS-Lib Examples"
+
+####+BEGIN: b:py3:cs:orgItem/section :title "CSU-Lib Examples" :comment "-- Providing examples_csu"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *CS-Lib Examples*  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *CSU-Lib Examples* -- Providing examples_csu  [[elisp:(org-cycle)][| ]]
 #+end_org """
 ####+END:
 
-
-####+BEGIN: bx:dblock:python:func :funcName "examples_gpgSymCrypt" :comment "Show/Verify/Update For relevant PBDs" :funcType "examples" :retType "none" :deco "" :argsList "passwd sectionTitle=None"
+####+BEGIN: b:py3:cs:func/typing :funcName "examples_csu" :comment "~CSU Specification~" :funcType "eType" :retType "" :deco "default" :argsList ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-examples [[elisp:(outline-show-subtree+toggle)][||]] /examples_gpgSymCrypt/ =Show/Verify/Update For relevant PBDs= retType=none argsList=(passwd sectionTitle=None)  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-T-eType  [[elisp:(outline-show-subtree+toggle)][||]] /examples_csu/  ~CSU Specification~ deco=default  [[elisp:(org-cycle)][| ]]
 #+end_org """
-def examples_gpgSymCrypt(
-    passwd,
-    sectionTitle=None,
-):
+@cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+def examples_csu(
 ####+END:
-    """
-** Common examples.
-"""
-
-    if sectionTitle == "default":
-        icm.cmndExampleMenuChapter('*Manage Symmetric Gpg -- Encypt and Decrypt*')
+        passwd: str,
+        sectionTitle: typing.AnyStr = '',
+) -> None:
+    """ #+begin_org
+** [[elisp:(org-cycle)][| *DocStr* |]] Examples of Cmnds provided by this CSU-Lib
+    #+end_org """
 
     def cpsInit(): return collections.OrderedDict()
-    def menuItem(verbosity): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity=verbosity) # 'little' or 'none'
-    #def menuItemVerbose(): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='little')
-    #def menuItemTerse(): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')
-    def execLineEx(cmndStr): icm.ex_gExecMenuItem(execLine=cmndStr)
+    def menuItem(verbosity): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity=verbosity) # 'little' or 'none'
+    def execLineEx(cmndStr): cs.examples.execInsert(execLine=cmndStr)
+
+    if sectionTitle == 'default':
+        cs.examples.menuChapter('*Manage Symmetric Gpg -- Encypt and Decrypt*')
 
     def cmndCommonParsWithArgs(cmndName, cmndArgs=""): # type: ignore
         cps = cpsInit() ; cps['passwd'] = passwd ;
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')
 
-    icm.cmndExampleMenuSection('*GPG Symmetric Encryption*')
+    cs.examples.menuSection('*GPG Symmetric Encryption*')
 
     clearFile = "/tmp/gpgSymEx1"
     cipherFile = "/tmp/gpgSymEx1.gpg"
@@ -147,24 +138,85 @@ def examples_gpgSymCrypt(
     def cmndStdinEncrypt(cmndName): # type: ignore
         icmWrapper = "echo HereComes Some ClearText | "
         cps = cpsInit() ; cps['passwd'] = passwd ; cmndArgs = ""
-        return icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+        #return cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+        return cs.examples.csCmndLine(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
     encryptCmndStr = cmndStdinEncrypt("gpg_symEncrypt")
     #print(f"{encryptCmndStr}")
 
 
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Decrypt"
-    """
-**   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Decrypt*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]]
-"""
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Decrypt"
+
 ####+END:
 
-    icm.cmndExampleMenuSection('*GPG Symmetric Decryption*')
+    cs.examples.menuSection('*GPG Symmetric Decryption*')
 
     cmndCommonParsWithArgs(cmndName="gpg_symDecrypt", cmndArgs=f"{cipherFile}")
 
     def cmndStdinDecrypt(cmndName, icmWrapper): # type: ignore
         cps = cpsInit() ; cps['passwd'] = passwd ; cmndArgs = ""
-        return icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+        return cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+
+    cmndStdinDecrypt("gpg_symDecrypt", icmWrapper=f"cat {cipherFile} | ")
+
+    cmndStdinDecrypt("gpg_symDecrypt", icmWrapper=f"{encryptCmndStr} | ")
+
+
+
+
+####+BEGIN: bx:dblock:python:func :funcName "examples_gpgSymCrypt_Ok2Del" :comment "Show/Verify/Update For relevant PBDs" :funcType "examples" :retType "none" :deco "" :argsList "passwd sectionTitle=None"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-examples [[elisp:(outline-show-subtree+toggle)][||]] /examples_gpgSymCrypt_Ok2Del/ =Show/Verify/Update For relevant PBDs= retType=none argsList=(passwd sectionTitle=None)  [[elisp:(org-cycle)][| ]]
+#+end_org """
+def examples_gpgSymCrypt_Ok2Del(
+    passwd,
+    sectionTitle=None,
+):
+####+END:
+    """
+** Common examples.
+"""
+
+    if sectionTitle == "default":
+        cs.examples.menuChapter('*Manage Symmetric Gpg -- Encypt and Decrypt*')
+
+    def cpsInit(): return collections.OrderedDict()
+    def menuItem(verbosity): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity=verbosity) # 'little' or 'none'
+    #def menuItemVerbose(): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='little')
+    #def menuItemTerse(): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')
+    def execLineEx(cmndStr): cs.examples.execInsert(execLine=cmndStr)
+
+    def cmndCommonParsWithArgs(cmndName, cmndArgs=""): # type: ignore
+        cps = cpsInit() ; cps['passwd'] = passwd ;
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')
+
+    cs.examples.menuSection('*GPG Symmetric Encryption*')
+
+    clearFile = "/tmp/gpgSymEx1"
+    cipherFile = "/tmp/gpgSymEx1.gpg"
+
+    execLineEx(f"""cp /etc/motd {clearFile}""")
+
+    cmndCommonParsWithArgs(cmndName="gpg_symEncrypt", cmndArgs=f"{clearFile}")
+
+    def cmndStdinEncrypt(cmndName): # type: ignore
+        icmWrapper = "echo HereComes Some ClearText | "
+        cps = cpsInit() ; cps['passwd'] = passwd ; cmndArgs = ""
+        return cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+    encryptCmndStr = cmndStdinEncrypt("gpg_symEncrypt")
+    #print(f"{encryptCmndStr}")
+
+
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Decrypt"
+
+####+END:
+
+    cs.examples.menuSection('*GPG Symmetric Decryption*')
+
+    cmndCommonParsWithArgs(cmndName="gpg_symDecrypt", cmndArgs=f"{cipherFile}")
+
+    def cmndStdinDecrypt(cmndName, icmWrapper): # type: ignore
+        cps = cpsInit() ; cps['passwd'] = passwd ; cmndArgs = ""
+        return cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
 
     cmndStdinDecrypt("gpg_symDecrypt", icmWrapper=f"cat {cipherFile} | ")
 
@@ -176,34 +228,27 @@ def examples_gpgSymCrypt(
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:icm:py3:section :title "Primary Command Services"
+####+BEGIN: bx:cs:py3:section :title "Primary Command Services"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Primary Command Services*  [[elisp:(org-cycle)][| ]]
 #+end_org """
 ####+END:
 
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpgSymEncryptDecyptExample" :comment "" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpgSymEncryptDecyptExample" :comment "" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpgSymEncryptDecyptExample>> parsMand= parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpgSymEncryptDecyptExample>> ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
-class gpgSymEncryptDecyptExample(icm.Cmnd):
+class gpgSymEncryptDecyptExample(cs.Cmnd):
     cmndParamsMandatory = [ ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-    ) -> icm.OpOutcome:
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-
-        callParamsDict = {}
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+    ) -> b.op.Outcome:
 
 ####+END:
         self.cmndDocStr(f""" #+begin_org
@@ -232,40 +277,24 @@ class gpgSymEncryptDecyptExample(icm.Cmnd):
         return cmndOutcome
 
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_symEncrypt" :comment "stdin as clearText" :parsMand "passwd" :parsOpt "outFile" :argsMin "0" :argsMax "9999" :asFunc "clearText" :interactiveP ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpg_symEncrypt" :comment "stdin as clearText" :parsMand "passwd" :parsOpt "outFile" :argsMin 0 :argsMax 9999 :pyInv "clearText"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symEncrypt>> =stdin as clearText= parsMand=passwd parsOpt=outFile argsMin=0 argsMax=9999 asFunc=clearText interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symEncrypt>>  *stdin as clearText* parsMand=passwd parsOpt=outFile argsMax=9999 ro=cli pyInv=clearText   [[elisp:(org-cycle)][| ]]
 #+end_org """
-class gpg_symEncrypt(icm.Cmnd):
+class gpg_symEncrypt(cs.Cmnd):
     cmndParamsMandatory = [ 'passwd', ]
     cmndParamsOptional = [ 'outFile', ]
     cmndArgsLen = {'Min': 0, 'Max': 9999,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        passwd=None,         # or Cmnd-Input
-        outFile=None,         # or Cmnd-Input
-        argsList=[],         # or Args-Input
-        clearText=None,         # asFunc when interactive==False
-    ) -> icm.OpOutcome:
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-            effectiveArgsList = G.icmRunArgsGet().cmndArgs  # type: ignore
-        else:
-            effectiveArgsList = argsList
-
-        callParamsDict = {'passwd': passwd, 'outFile': outFile, }
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-        passwd = callParamsDict['passwd']
-        outFile = callParamsDict['outFile']
-
-        cmndArgsSpecDict = self.cmndArgsSpec()
-        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
-            return cmndOutcome
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             passwd: typing.Optional[str]=None,  # Cs Mandatory Param
+             outFile: typing.Optional[str]=None,  # Cs Optional Param
+             argsList: typing.Optional[list[str]]=None,  # CsArgs
+             clearText: typing.Any=None,   # pyInv Argument
+    ) -> b.op.Outcome:
         """stdin as clearText"""
 ####+END:
         self.cmndDocStr(f""" #+begin_org
@@ -274,7 +303,7 @@ class gpg_symEncrypt(icm.Cmnd):
 
         gpg = gnupg.GPG()
 
-        cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, effectiveArgsList)
+        cmndArgs = self.cmndArgsGet("0&9999", self.cmndArgsSpec(), argsList)
 
         filesProcessed = False
         for each in typing.cast(list, cmndArgs):
@@ -287,12 +316,13 @@ class gpg_symEncrypt(icm.Cmnd):
                     passphrase=passwd,
                     #armor=False,
                 )
+                b_io.tm.here(f"""Processed File={each}""")
 
         if not clearText:
-            clearText = io_stdin_read()
+            clearText = b_io.stdin.read()
 
         if not clearText and not filesProcessed:
-            icm.EH_problem_usageError(f"noFiles and no clearText")
+            b_io.eh.problem_usageError(f"noFiles and no clearText")
             return cmndOutcome
 
         if clearText:
@@ -306,24 +336,24 @@ class gpg_symEncrypt(icm.Cmnd):
 
             cipheredText = gpgStatus.data
 
-            icm.LOG_here(f"""clearText={clearText}""")
-            icm.LOG_here(f"""cipheredText={cipheredText}""")
+            b_io.tm.here(f"""clearText={clearText}""")
+            b_io.tm.here(f"""cipheredText={cipheredText}""")
 
             sys.stdout.buffer.write(cipheredText)  # print does not work.
 
         return cmndOutcome
 
-####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-#+end_org """
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndArgsSpec(self):
+####+BEGIN: b:py3:cs:method/args :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /cmndArgsSpec/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self, ):
 ####+END:
         """  #+begin_org
 ** [[elisp:(org-cycle)][| *cmndArgsSpec:* | ]]
         #+end_org """
-        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict = cs.CmndArgsSpecDict()
         cmndArgsSpecDict.argsDictAdd(
             argPosition="0&9999",
             argName="cmndArgs",
@@ -334,41 +364,29 @@ class gpg_symEncrypt(icm.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "gpg_symDecrypt" :comment "stdin as cipherText" :parsMand "passwd" :parsOpt "outFile" :argsMin "0" :argsMax "9999" :asFunc "cipherText" :interactiveP ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpg_symDecrypt" :extent "verify" :comment "stdin as cipherText" :parsMand "passwd" :parsOpt "outFile" :argsMin 0 :argsMax 9999 :pyInv "cipherText"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symDecrypt>> =stdin as cipherText= parsMand=passwd parsOpt=outFile argsMin=0 argsMax=9999 asFunc=cipherText interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symDecrypt>>  *stdin as cipherText*  =verify= parsMand=passwd parsOpt=outFile argsMax=9999 ro=cli pyInv=cipherText   [[elisp:(org-cycle)][| ]]
 #+end_org """
-class gpg_symDecrypt(icm.Cmnd):
+class gpg_symDecrypt(cs.Cmnd):
     cmndParamsMandatory = [ 'passwd', ]
     cmndParamsOptional = [ 'outFile', ]
     cmndArgsLen = {'Min': 0, 'Max': 9999,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        passwd=None,         # or Cmnd-Input
-        outFile=None,         # or Cmnd-Input
-        argsList=[],         # or Args-Input
-        cipherText=None,         # asFunc when interactive==False
-    ) -> icm.OpOutcome:
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-            effectiveArgsList = G.icmRunArgsGet().cmndArgs  # type: ignore
-        else:
-            effectiveArgsList = argsList
-
-        callParamsDict = {'passwd': passwd, 'outFile': outFile, }
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-        passwd = callParamsDict['passwd']
-        outFile = callParamsDict['outFile']
-
-        cmndArgsSpecDict = self.cmndArgsSpec()
-        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
-            return cmndOutcome
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             passwd: typing.Optional[str]=None,  # Cs Mandatory Param
+             outFile: typing.Optional[str]=None,  # Cs Optional Param
+             argsList: typing.Optional[list[str]]=None,  # CsArgs
+             cipherText: typing.Any=None,   # pyInv Argument
+    ) -> b.op.Outcome:
         """stdin as cipherText"""
+        callParamsDict = {'passwd': passwd, 'outFile': outFile, }
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
+            return b_io.eh.badOutcome(cmndOutcome)
+        cmndArgsSpecDict = self.cmndArgsSpec()
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]
@@ -376,7 +394,7 @@ class gpg_symDecrypt(icm.Cmnd):
 
         gpg = gnupg.GPG()
 
-        cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, effectiveArgsList)
+        cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, argsList)
 
         filesProcessed = False
         for each in typing.cast(list, cmndArgs):
@@ -390,10 +408,10 @@ class gpg_symDecrypt(icm.Cmnd):
 
 
         if not cipherText:
-            cipherText = io_stdin_read()
+            cipherText = b_io.stdin.read()
 
         if not cipherText and not filesProcessed:
-            icm.EH_problem_usageError(f"noFiles and no cipheredText")
+            b_io.eh.problem_usageError(f"noFiles and no cipheredText")
             return cmndOutcome
 
         if cipherText:
@@ -405,25 +423,25 @@ class gpg_symDecrypt(icm.Cmnd):
 
             clearText = gpgStatus.data
 
-            icm.LOG_here(f"""clearText={clearText}""")
-            icm.LOG_here(f"""cipheredText={cipherText}""")
+            b_io.tm.here(f"""clearText={clearText}""")
+            b_io.tm.here(f"""cipheredText={cipherText}""")
 
             sys.stdout.buffer.write(clearText)  # print does not work.
 
         return cmndOutcome
 
 
-####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-#+end_org """
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndArgsSpec(self):
+####+BEGIN: b:py3:cs:method/args :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /cmndArgsSpec/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self, ):
 ####+END:
         """  #+begin_org
 ** [[elisp:(org-cycle)][| *cmndArgsSpec:* | ]]
         #+end_org """
-        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict = cs.CmndArgsSpecDict()
         cmndArgsSpecDict.argsDictAdd(
             argPosition="0&9999",
             argName="cmndArgs",
@@ -434,12 +452,12 @@ class gpg_symDecrypt(icm.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: bx:icm:py3:func :funcName "io_stdin_read" :funcType "extTyped" :retType "extTyped" :deco "icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)" :argsList ""
+####+BEGIN: b:py3:cs:func/typing :funcName "io_stdin_read_OBSOLETED" :funcType "extTyped" :retType "extTyped" :deco "default" :argsList ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-extTyped [[elisp:(outline-show-subtree+toggle)][||]] /io_stdin_read/ deco=icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-T-extTyped [[elisp:(outline-show-subtree+toggle)][||]] /io_stdin_read_OBSOLETED/  deco=default  [[elisp:(org-cycle)][| ]]
 #+end_org """
-@icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-def io_stdin_read(
+@cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+def io_stdin_read_OBSOLETED(
 ####+END:
 ) -> str:
     """ #+begin_org
@@ -458,22 +476,13 @@ def io_stdin_read(
 
     return stdinAsStr
 
-
-####+BEGIN: bx:icm:python:section :title "End Of Editable Text"
-"""
-*  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *End Of Editable Text*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]]
-"""
-####+END:
-
-####+BEGIN: bx:dblock:global:file-insert-cond :cond "./blee.el" :file "/bisos/apps/defaults/software/plusOrg/dblock/inserts/endOfFileControls.org"
-#+STARTUP: showall
-####+END:
-
-
-####+BEGIN: b:prog:file/endOfFile :extraParams nil
+####+BEGIN: b:py3:cs:framework/endOfFile :basedOn "classification"
 """ #+begin_org
-* *[[elisp:(org-cycle)][| END-OF-FILE |]]* :: emacs and org variables and control parameters
+* [[elisp:(org-cycle)][| *End-Of-Editable-Text* |]] :: emacs and org variables and control parameters
 #+end_org """
+
+#+STARTUP: showall
+
 ### local variables:
 ### no-byte-compile: t
 ### end:

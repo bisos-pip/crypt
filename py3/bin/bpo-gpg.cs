@@ -27,12 +27,12 @@
 * *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
 #+end_org """
 import typing
-icmInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['bx-gpg'], }
-icmInfo['version'] = '202207274334'
-icmInfo['status']  = 'inUse'
-icmInfo['panel'] = 'bx-gpg-Panel.org'
-icmInfo['groupingType'] = 'IcmGroupingType-pkged'
-icmInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
+csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['bx-gpg'], }
+csInfo['version'] = '202207274334'
+csInfo['status']  = 'inUse'
+csInfo['panel'] = 'bx-gpg-Panel.org'
+csInfo['groupingType'] = 'IcmGroupingType-pkged'
+csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
 
 """ #+begin_org
@@ -61,7 +61,7 @@ Emacs -- (require epa)  --- EasyPg Assistant
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:icm:python:icmItem :itemType "=PyImports= " :itemTitle "*Py Library IMPORTS*"
+####+BEGIN: bx:cs:python:icmItem :itemType "=PyImports= " :itemTitle "*Py Library IMPORTS*"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  =PyImports=  [[elisp:(outline-show-subtree+toggle)][||]] *Py Library IMPORTS*  [[elisp:(org-cycle)][| ]]
 #+end_org """
@@ -73,15 +73,15 @@ from unisos import icm
 
 icm.unusedSuppressForEval(ucf.__file__)  # in case icm and ucf are not used
 
-G = icm.IcmGlobalContext()
+G = cs.globalContext.get()
 # G.icmLibsAppend = __file__
-# G.icmCmndsLibsAppend = __file__
+# G.csCmndsLibsAppend = __file__
 
 from blee.icmPlayer import bleep
 ####+END:
 
 import collections
-from bisos import bpf
+from bisos import b
 
 import sys
 
@@ -109,7 +109,7 @@ g_importedCmndsModules = [       # Enumerate modules from which CMNDs become inv
 
 ####+END:
 
-####+BEGIN: bx:icm:python:func :funcType "CsFrmWrk" :funcName "g_paramsExtraSpecify" :comment "FmWrk: ArgsSpec"  :retType "Void" :deco "" :argsList "parser"
+####+BEGIN: bx:cs:python:func :funcType "CsFrmWrk" :funcName "g_paramsExtraSpecify" :comment "FmWrk: ArgsSpec"  :retType "Void" :deco "" :argsList "parser"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-CsFrmWrk [[elisp:(outline-show-subtree+toggle)][||]] /g_paramsExtraSpecify/ =FmWrk: ArgsSpec= retType=Void argsList=(parser)  [[elisp:(org-cycle)][| ]]
 #+end_org """
@@ -121,28 +121,28 @@ def g_paramsExtraSpecify(
 ** Module Specific Command Line Parameters. This func is passed to G_main and can not be decorated.
 #+end_org """
 
-    G = icm.IcmGlobalContext()
-    icmParams = icm.ICM_ParamDict()
+    G = cs.globalContext.get()
+    csParams = cs.CmndParamDict()
 
-    bleep.commonParamsSpecify(icmParams)
+    bleep.commonParamsSpecify(csParams)
 
-    bpo.commonParamsSpecify(icmParams)
+    bpo.commonParamsSpecify(csParams)
 
-    bpoGpg.commonParamsSpecify(icmParams)
+    bpoGpg.commonParamsSpecify(csParams)
 
-    bpoVault.commonParamsSpecify(icmParams)
+    bpoVault.commonParamsSpecify(csParams)
 
 
-    icm.argsparseBasedOnIcmParams(parser, icmParams)
+    cs.argsparseBasedOnCsParams(parser, csParams)
 
     # So that it can be processed later as well.
-    G.icmParamDictSet(icmParams)
+    G.icmParamDictSet(csParams)
 
     return
 
-####+BEGIN: blee:bxPanel:foldingSection :outLevel 1 :title "CmndSvc-s" :extraInfo "class someCommand(icm.Cmnd)"
+####+BEGIN: blee:bxPanel:foldingSection :outLevel 1 :title "CmndSvc-s" :extraInfo "class someCommand(cs.Cmnd)"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*       [[elisp:(outline-show-subtree+toggle)][| *CmndSvc-s:* |]]  class someCommand(icm.Cmnd)  [[elisp:(org-shifttab)][<)]] E|
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*       [[elisp:(outline-show-subtree+toggle)][| *CmndSvc-s:* |]]  class someCommand(cs.Cmnd)  [[elisp:(org-shifttab)][<)]] E|
 #+end_org """
 ####+END:
 
@@ -150,7 +150,7 @@ def g_opSysExit(opOutcome):
     print(opOutcome.error)
     sys.exit()
 
-g_outcome = bpf.op.Outcome()
+g_outcome = b.op.Outcome()
 
 ####+BEGIN: b:python:cs:module/cur_paramsAssign  :curParsList ("usage_bpoId" "keysBase" "keyName" "passwd")
 """ #+begin_org
@@ -163,39 +163,39 @@ cur_keysBase = curParsDictValue['keysBase']
 cur_keyName = curParsDictValue['keyName']
 cur_passwd = curParsDictValue['passwd']
 def cur_examples():
-    icm.ex_gExecMenuItem(execLine='bx-currents.cs')
-    icm.ex_gExecMenuItem(execLine='bx-currents.cs -i usgCursParsGet')
+    cs.examples.execInsert(execLine='bx-currents.cs')
+    cs.examples.execInsert(execLine='bx-currents.cs -i usgCursParsGet')
     for each in _parNamesList:
-        icm.ex_gExecMenuItem(execLine=f'bx-currents.cs -v 20 -i usgCursParsSet {each}={curParsDictValue[each]}')
+        cs.examples.execInsert(execLine=f'bx-currents.cs -v 20 -i usgCursParsSet {each}={curParsDictValue[each]}')
 ####+END:
 
-####+BEGIN: bx:icm:py3:section :title "CS-Examples"
+####+BEGIN: bx:cs:py3:section :title "CS-Examples"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *CS-Examples*  [[elisp:(org-cycle)][| ]]
 #+end_org """
 ####+END:
 
 
-####+BEGIN: icm:py3:cmnd:classHead :cmndName "examples" :cmndType ""  :comment "FrameWrk: ICM Examples" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples" :cmndType ""  :comment "FrameWrk: ICM Examples" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<examples>> =FrameWrk: ICM Examples= parsMand= parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
 #+end_org """
-class examples(icm.Cmnd):
+class examples(cs.Cmnd):
     cmndParamsMandatory = [ ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @io.track.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
         interactive=False,        # Can also be called non-interactively
-    ) -> icm.OpOutcome:
+    ) -> b.op.Outcome:
         cmndOutcome = self.getOpOutcome()
         if interactive:
             if not self.cmndLineValidate(outcome=cmndOutcome):
                 return cmndOutcome
 
         callParamsDict = {}
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
+        if not cs.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
             return cmndOutcome
 
         """FrameWrk: ICM Examples"""
@@ -205,20 +205,20 @@ class examples(icm.Cmnd):
         #+end_org """)
 
         #def cpsInit(): return collections.OrderedDict()
-        #def menuItem(verbosity): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity=verbosity,
+        #def menuItem(verbosity): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity=verbosity,
         #                comment='none', icmWrapper=None, icmName=None) # verbosity: 'little' 'basic' 'none'
-        #def execLineEx(cmndStr): icm.ex_gExecMenuItem(execLine=cmndStr)
+        #def execLineEx(cmndStr): cs.examples.execInsert(execLine=cmndStr)
 
-        logControler = icm.LOG_Control()
+        logControler = b_io.log.Control()
         logControler.loggerSetLevel(20)
 
-        icm.icmExampleMyName(G.icmMyName(), G.icmMyFullName())
+        cs.examples.myName(G.icmMyName(), G.icmMyFullName())
 
-        icm.G_commonBriefExamples()
+        cs.examples.commonBrief()
 
         bleep.examples_icmBasic()
 
-        icm.cmndExampleMenuChapter('*Currents Settings*')
+        cs.examples.menuChapter('*Currents Settings*')
         cur_examples()
 
         bpoGpg.examples_bpo_gpg(
@@ -237,14 +237,14 @@ class examples(icm.Cmnd):
 
         return(cmndOutcome)
 
-####+BEGIN: b:python:cs:framework/main :csInfo "icmInfo" :noCmndEntry "examples" :extraParamsHook "g_paramsExtraSpecify" :importedCmndsModules "g_importedCmndsModules"
+####+BEGIN: b:python:cs:framework/main :csInfo "csInfo" :noCmndEntry "examples" :extraParamsHook "g_paramsExtraSpecify" :importedCmndsModules "g_importedCmndsModules"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_icmMain~ (icmInfo, _examples_, g_paramsExtraSpecify, g_importedCmndsModules)
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_icmMain~ (csInfo, _examples_, g_paramsExtraSpecify, g_importedCmndsModules)
 #+end_org """
 
 if __name__ == '__main__':
-    icm.g_icmMain(
-        icmInfo=icmInfo,
+    cs.g_csMain(
+        csInfo=csInfo,
         noCmndEntry=examples,  # specify a Cmnd name
         extraParamsHook=g_paramsExtraSpecify,
         importedCmndsModules=g_importedCmndsModules,
