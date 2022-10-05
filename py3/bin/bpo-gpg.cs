@@ -2,22 +2,34 @@
 # -*- coding: utf-8 -*-
 
 """ #+begin_org
-* *[Summary]* :: A =CmndSvc= for interfacing and using gnupg and python-gnupg
+* ~[Summary]~ :: A =CmndSvc= for bpo based interfacing and using gnupg and python-gnupg
 #+end_org """
+
+####+BEGIN: b:py3:cs:file/dblockControls :classification "cs-mu"
+""" #+begin_org
+* [[elisp:(org-cycle)][| /Control Parameters Of This File/ |]] :: dblk ctrls classifications=cs-mu
+#+BEGIN_SRC emacs-lisp
+(setq-local b:dblockControls t) ; (setq-local b:dblockControls nil)
+(put 'b:dblockControls 'py3:cs:Classification "cs-mu") ; one of cs-mu, cs-u, cs-lib, b-lib, pyLibPure
+#+END_SRC
+#+RESULTS:
+: cs-mu
+#+end_org """
+####+END:
 
 ####+BEGIN: b:prog:file/proclamations :outLevel 1
 """ #+begin_org
-* *[[elisp:(org-cycle)][| Proclamations |]]* :: Libre-Halaal Software --- Part Of Blee ---  Poly-COMEEGA Format.
-** This is Libre-Halaal Software. © Libre-Halaal Foundation. Subject to AGPL.
-** It is not part of Emacs. It is part of Blee.
-** Best read and edited  with Poly-COMEEGA (Polymode Colaborative Org-Mode Enhance Emacs Generalized Authorship)
+* *[[elisp:(org-cycle)][| Proclamations |]]* :: Libre-Halaal Software --- Part Of BISOS ---  Poly-COMEEGA Format.
+** This is Libre-Halaal Software. © Neda Communications, Inc. Subject to AGPL.
+** It is part of BISOS (ByStar Internet Services OS)
+** Best read and edited  with Blee in Poly-COMEEGA (Polymode Colaborative Org-Mode Enhance Emacs Generalized Authorship)
 #+end_org """
 ####+END:
 
 ####+BEGIN: b:prog:file/particulars :authors ("./inserts/authors-mb.org")
 """ #+begin_org
 * *[[elisp:(org-cycle)][| Particulars |]]* :: Authors, version
-** This File: NOTYET
+** This File: /bisos/git/auth/bxRepos/bisos-pip/crypt/py3/bin/bpo-gpg.cs
 ** Authors: Mohsen BANAN, http://mohsen.banan.1.byname.net/contact
 #+end_org """
 ####+END:
@@ -27,16 +39,16 @@
 * *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
 #+end_org """
 import typing
-csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['bx-gpg'], }
-csInfo['version'] = '202207274334'
+csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['bpo-gpg'], }
+csInfo['version'] = '202210042844'
 csInfo['status']  = 'inUse'
-csInfo['panel'] = 'bx-gpg-Panel.org'
+csInfo['panel'] = 'bpo-gpg-Panel.org'
 csInfo['groupingType'] = 'IcmGroupingType-pkged'
 csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
 
 """ #+begin_org
-* /[[elisp:(org-cycle)][| Description |]]/ :: Active --- In Progress
+* [[elisp:(org-cycle)][| ~Description~ |]] :: Active --- In Progress
 Module description comes here.
 ** Pre-req installations:
 apt install gnupg
@@ -67,25 +79,65 @@ Emacs -- (require epa)  --- EasyPg Assistant
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:dblock:global:file-insert-cond :cond "./blee.el" :file "/bisos/apps/defaults/update/sw/icm/py/importUcfIcmBleepG.py"
-from unisos import ucf
-from unisos import icm
-
-icm.unusedSuppressForEval(ucf.__file__)  # in case icm and ucf are not used
-
-G = cs.globalContext.get()
-# G.icmLibsAppend = __file__
-# G.csCmndsLibsAppend = __file__
-
-from blee.icmPlayer import bleep
-####+END:
+####+BEGIN: b:py3:cs:framework/imports :basedOn "classification"
+""" #+begin_org
+** Imports Based On Classification=cs-mu
+#+end_org """
+from bisos import b
+from bisos.b import cs
+from bisos.b import b_io
 
 import collections
-from bisos import b
+####+END:
+
+
 
 import sys
 
 from bisos.currents import currentsConfig
+
+
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~csuList emacs-list Specifications~  [[elisp:(blee:org:code-block/above-run)][ /Eval Below/ ]] [[elisp:(org-cycle)][| ]]
+#+BEGIN_SRC emacs-lisp
+(setq  b:py:cs:csuList
+  (list
+   "bisos.b.cs.ro"
+   "blee.icmPlayer.bleep"
+   "bisos.bpo.bpo"
+   "bisos.crypt.bpoGpg"
+   "bisos.crypt.gpgSym"
+   "bisos.crypt.bpoVault"
+ ))
+#+END_SRC
+#+RESULTS:
+| bisos.b.cs.ro | blee.icmPlayer.bleep | bisos.bpo.bpo | bisos.crypt.bpoGpg | bisos.crypt.gpgSym | bisos.crypt.bpoVault |
+#+end_org """
+
+####+BEGIN: b:py3:cs:framework/csuListProc :pyImports t :csuImports t :csuParams t
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] =Process CSU List= with /6/ in csuList pyImports=t csuImports=t csuParams=t
+#+end_org """
+
+from bisos.b.cs import ro
+from blee.icmPlayer import bleep
+from bisos.bpo import bpo
+from bisos.crypt import bpoGpg
+from bisos.crypt import gpgSym
+from bisos.crypt import bpoVault
+
+
+csuList = [ 'bisos.b.cs.ro', 'blee.icmPlayer.bleep', 'bisos.bpo.bpo', 'bisos.crypt.bpoGpg', 'bisos.crypt.gpgSym', 'bisos.crypt.bpoVault', ]
+
+g_importedCmndsModules = cs.csuList_importedModules(csuList)
+
+def g_extraParams():
+    csParams = cs.param.CmndParamDict()
+    cs.csuList_commonParamsSpecify(csuList, csParams)
+    cs.argsparseBasedOnCsParams(csParams)
+
+####+END:
+
 
 from bisos.bpo import bpo
 from bisos.crypt import bpoGpg
@@ -95,79 +147,6 @@ from bisos.crypt import gpgSym
 import gnupg
 # import fs
 
-####+BEGIN: b:python:cs:framework/importCmndsModules :cmndsModules ("blee.icmPlayer.bleep" "bisos.bpo.bpo" "bisos.crypt.bpoGpg" "bisos.crypt.gpgSym")
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_importedCmndsModules~ (blee.icmPlayer.bleep bisos.bpo.bpo bisos.crypt.bpoGpg bisos.crypt.gpgSym)
-#+end_org """
-
-g_importedCmndsModules = [       # Enumerate modules from which CMNDs become invokable
-    'blee.icmPlayer.bleep',
-    'bisos.bpo.bpo',
-    'bisos.crypt.bpoGpg',
-    'bisos.crypt.gpgSym',
-]
-
-####+END:
-
-####+BEGIN: bx:cs:python:func :funcType "CsFrmWrk" :funcName "g_paramsExtraSpecify" :comment "FmWrk: ArgsSpec"  :retType "Void" :deco "" :argsList "parser"
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-CsFrmWrk [[elisp:(outline-show-subtree+toggle)][||]] /g_paramsExtraSpecify/ =FmWrk: ArgsSpec= retType=Void argsList=(parser)  [[elisp:(org-cycle)][| ]]
-#+end_org """
-def g_paramsExtraSpecify(
-    parser,
-):
-####+END:
-    """  #+begin_org
-** Module Specific Command Line Parameters. This func is passed to G_main and can not be decorated.
-#+end_org """
-
-    G = cs.globalContext.get()
-    csParams = cs.CmndParamDict()
-
-    bleep.commonParamsSpecify(csParams)
-
-    bpo.commonParamsSpecify(csParams)
-
-    bpoGpg.commonParamsSpecify(csParams)
-
-    bpoVault.commonParamsSpecify(csParams)
-
-
-    cs.argsparseBasedOnCsParams(parser, csParams)
-
-    # So that it can be processed later as well.
-    G.icmParamDictSet(csParams)
-
-    return
-
-####+BEGIN: blee:bxPanel:foldingSection :outLevel 1 :title "CmndSvc-s" :extraInfo "class someCommand(cs.Cmnd)"
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*       [[elisp:(outline-show-subtree+toggle)][| *CmndSvc-s:* |]]  class someCommand(cs.Cmnd)  [[elisp:(org-shifttab)][<)]] E|
-#+end_org """
-####+END:
-
-def g_opSysExit(opOutcome):
-    print(opOutcome.error)
-    sys.exit()
-
-g_outcome = b.op.Outcome()
-
-####+BEGIN: b:python:cs:module/cur_paramsAssign  :curParsList ("usage_bpoId" "keysBase" "keyName" "passwd")
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Currents   [[elisp:(outline-show-subtree+toggle)][||]] ~cur_examples~ (usage_bpoId keysBase keyName passwd)
-#+end_org """
-_parNamesList = [ 'usage_bpoId', 'keysBase', 'keyName', 'passwd',]
-if not (curParsDictValue := currentsConfig.curParsGetAsDictValue_wOp(_parNamesList, outcome=g_outcome).results): g_opSysExit(g_outcome)
-cur_usage_bpoId = curParsDictValue['usage_bpoId']
-cur_keysBase = curParsDictValue['keysBase']
-cur_keyName = curParsDictValue['keyName']
-cur_passwd = curParsDictValue['passwd']
-def cur_examples():
-    cs.examples.execInsert(execLine='bx-currents.cs')
-    cs.examples.execInsert(execLine='bx-currents.cs -i usgCursParsGet')
-    for each in _parNamesList:
-        cs.examples.execInsert(execLine=f'bx-currents.cs -v 20 -i usgCursParsSet {each}={curParsDictValue[each]}')
-####+END:
 
 ####+BEGIN: bx:cs:py3:section :title "CS-Examples"
 """ #+begin_org
@@ -178,41 +157,54 @@ def cur_examples():
 
 ####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples" :cmndType ""  :comment "FrameWrk: ICM Examples" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc    [[elisp:(outline-show-subtree+toggle)][||]] <<examples>> =FrameWrk: ICM Examples= parsMand= parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<examples>>  *FrameWrk: ICM Examples*  =verify= ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
 class examples(cs.Cmnd):
     cmndParamsMandatory = [ ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
-    @io.track.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
     ) -> b.op.Outcome:
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-
-        callParamsDict = {}
-        if not cs.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-
         """FrameWrk: ICM Examples"""
+        callParamsDict = {}
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
+            return b_io.eh.badOutcome(cmndOutcome)
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Conventional top level example.
         #+end_org """)
+
+####+BEGIN: b:py3:cs:module/cur_paramsAssign  :curParsList ("usage_bpoId" "keysBase" "keyName" "passwd")
+        """ #+begin_org
+***  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Currents   [[elisp:(outline-show-subtree+toggle)][||]] ~cur_examples~ (usage_bpoId keysBase keyName passwd)
+        #+end_org """
+        _parNamesList = [ 'usage_bpoId', 'keysBase', 'keyName', 'passwd',]
+        if not (curParsDictValue := currentsConfig.curParsGetAsDictValue_wOp(_parNamesList, outcome=cmndOutcome).results): return(cmndOutcome)
+        cur_usage_bpoId = curParsDictValue['usage_bpoId']
+        cur_keysBase = curParsDictValue['keysBase']
+        cur_keyName = curParsDictValue['keyName']
+        cur_passwd = curParsDictValue['passwd']
+        def cur_examples():
+            cs.examples.execInsert(execLine='bx-currents.cs')
+            cs.examples.execInsert(execLine='bx-currents.cs -i usgCursParsGet')
+            for each in _parNamesList:
+                cs.examples.execInsert(execLine=f'bx-currents.cs -v 20 -i usgCursParsSet {each}={curParsDictValue[each]}')
+####+END:
+
 
         #def cpsInit(): return collections.OrderedDict()
         #def menuItem(verbosity): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity=verbosity,
         #                comment='none', icmWrapper=None, icmName=None) # verbosity: 'little' 'basic' 'none'
         #def execLineEx(cmndStr): cs.examples.execInsert(execLine=cmndStr)
 
-        logControler = b_io.log.Control()
-        logControler.loggerSetLevel(20)
+        # logControler = b_io.log.Control()
+        # logControler.loggerSetLevel(20)
 
-        cs.examples.myName(G.icmMyName(), G.icmMyFullName())
+        cs.examples.myName(cs.G.icmMyName(), cs.G.icmMyFullName())
 
         cs.examples.commonBrief()
 
@@ -229,7 +221,7 @@ class examples(cs.Cmnd):
             sectionTitle="default"
         )
 
-        gpgSym.examples_gpgSymCrypt(
+        gpgSym.examples_csu(
             cur_passwd,
             sectionTitle="default"
         )
@@ -237,16 +229,17 @@ class examples(cs.Cmnd):
 
         return(cmndOutcome)
 
-####+BEGIN: b:python:cs:framework/main :csInfo "csInfo" :noCmndEntry "examples" :extraParamsHook "g_paramsExtraSpecify" :importedCmndsModules "g_importedCmndsModules"
+
+####+BEGIN: b:py3:cs:framework/main :csInfo "csInfo" :noCmndEntry "examples" :extraParamsHook "g_extraParams" :importedCmndsModules "g_importedCmndsModules"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~g_icmMain~ (csInfo, _examples_, g_paramsExtraSpecify, g_importedCmndsModules)
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] =g_csMain= (csInfo, _examples_, g_extraParams, g_importedCmndsModules)
 #+end_org """
 
 if __name__ == '__main__':
-    cs.g_csMain(
+    cs.main.g_csMain(
         csInfo=csInfo,
         noCmndEntry=examples,  # specify a Cmnd name
-        extraParamsHook=g_paramsExtraSpecify,
+        extraParamsHook=g_extraParams,
         importedCmndsModules=g_importedCmndsModules,
     )
 

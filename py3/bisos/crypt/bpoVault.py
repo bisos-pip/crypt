@@ -781,6 +781,8 @@ class vaultEntryRead(cs.Cmnd):
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]] Manually kill the server.
         #+end_org """)
 
+        # bpoId = bpo.effectiveId(bpoId)
+
         thisBpo = BpoVault(bpoId,)
 
         cmndArgs = self.cmndArgsGet("0&-1", cmndArgsSpecDict, argsList)

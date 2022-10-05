@@ -142,31 +142,6 @@ def g_extraParams():
 #+end_org """
 ####+END:
 
-def g_opSysExit(opOutcome):
-    print(opOutcome.error)
-    sys.exit()
-
-g_outcome = b.op.Outcome()
-
-####+BEGIN: b:python:cs:module/cur_paramsAssign  :curParsList ("usage_bpoId" "keysBase" "keyName" "passwd")
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Currents   [[elisp:(outline-show-subtree+toggle)][||]] ~cur_examples~ (usage_bpoId keysBase keyName passwd)
-#+end_org """
-_parNamesList = [ 'usage_bpoId', 'keysBase', 'keyName', 'passwd',]
-if not (curParsDictValue := currentsConfig.curParsGetAsDictValue_wOp(_parNamesList, outcome=g_outcome).results): g_opSysExit(g_outcome)
-cur_usage_bpoId = curParsDictValue['usage_bpoId']
-cur_keysBase = curParsDictValue['keysBase']
-cur_keyName = curParsDictValue['keyName']
-cur_passwd = curParsDictValue['passwd']
-def cur_examples():
-    cs.examples.execInsert(execLine='bx-currents.cs')
-    cs.examples.execInsert(execLine='bx-currents.cs -i usgCursParsGet')
-    for each in _parNamesList:
-        cs.examples.execInsert(execLine=f'bx-currents.cs -v 20 -i usgCursParsSet {each}={curParsDictValue[each]}')
-####+END:
-
-
-
 ####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "CmndSvcs" :anchor ""  :extraInfo "Command Services Section"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*     [[elisp:(outline-show-subtree+toggle)][| _CmndSvcs_: |]]  Command Services Section  [[elisp:(org-shifttab)][<)]] E|
@@ -196,6 +171,23 @@ class examples(cs.Cmnd):
 ####+END:
         self.cmndDocStr(f""" #+begin_org ***** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Conventional top level example.
         #+end_org """)
+
+####+BEGIN: b:py3:cs:module/cur_paramsAssign  :curParsList ("usage_bpoId" "keysBase" "keyName" "passwd")
+        """ #+begin_org
+***  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Currents   [[elisp:(outline-show-subtree+toggle)][||]] ~cur_examples~ (usage_bpoId keysBase keyName passwd)
+        #+end_org """
+        _parNamesList = [ 'usage_bpoId', 'keysBase', 'keyName', 'passwd',]
+        if not (curParsDictValue := currentsConfig.curParsGetAsDictValue_wOp(_parNamesList, outcome=cmndOutcome).results): return(cmndOutcome)
+        cur_usage_bpoId = curParsDictValue['usage_bpoId']
+        cur_keysBase = curParsDictValue['keysBase']
+        cur_keyName = curParsDictValue['keyName']
+        cur_passwd = curParsDictValue['passwd']
+        def cur_examples():
+            cs.examples.execInsert(execLine='bx-currents.cs')
+            cs.examples.execInsert(execLine='bx-currents.cs -i usgCursParsGet')
+            for each in _parNamesList:
+                cs.examples.execInsert(execLine=f'bx-currents.cs -v 20 -i usgCursParsSet {each}={curParsDictValue[each]}')
+####+END:
 
         def cpsInit(): return collections.OrderedDict()
         def menuItem(verbosity): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity=verbosity) # 'little' or 'none'
