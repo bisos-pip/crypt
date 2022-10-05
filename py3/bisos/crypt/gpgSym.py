@@ -68,12 +68,6 @@ Module description comes here.
 #+end_org """
 ####+END:
 
-####+BEGIN: bx:cs:python:icmItem :itemType "=PyImports= " :itemTitle "*Py Library IMPORTS*"
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  =PyImports=  [[elisp:(outline-show-subtree+toggle)][||]] *Py Library IMPORTS*  [[elisp:(org-cycle)][| ]]
-#+end_org """
-####+END:
-
 ####+BEGIN: b:py3:cs:orgItem/basic :type "=PyImports= " :title "*Py Library IMPORTS*" :comment "-- with classification based framework/imports"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  =PyImports=  [[elisp:(outline-show-subtree+toggle)][||]] *Py Library IMPORTS* -- with classification based framework/imports  [[elisp:(org-cycle)][| ]]
@@ -160,67 +154,6 @@ def examples_csu(
 
     cmndStdinDecrypt("gpg_symDecrypt", icmWrapper=f"{encryptCmndStr} | ")
 
-
-
-
-####+BEGIN: bx:dblock:python:func :funcName "examples_gpgSymCrypt_Ok2Del" :comment "Show/Verify/Update For relevant PBDs" :funcType "examples" :retType "none" :deco "" :argsList "passwd sectionTitle=None"
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-examples [[elisp:(outline-show-subtree+toggle)][||]] /examples_gpgSymCrypt_Ok2Del/ =Show/Verify/Update For relevant PBDs= retType=none argsList=(passwd sectionTitle=None)  [[elisp:(org-cycle)][| ]]
-#+end_org """
-def examples_gpgSymCrypt_Ok2Del(
-    passwd,
-    sectionTitle=None,
-):
-####+END:
-    """
-** Common examples.
-"""
-
-    if sectionTitle == "default":
-        cs.examples.menuChapter('*Manage Symmetric Gpg -- Encypt and Decrypt*')
-
-    def cpsInit(): return collections.OrderedDict()
-    def menuItem(verbosity): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity=verbosity) # 'little' or 'none'
-    #def menuItemVerbose(): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='little')
-    #def menuItemTerse(): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')
-    def execLineEx(cmndStr): cs.examples.execInsert(execLine=cmndStr)
-
-    def cmndCommonParsWithArgs(cmndName, cmndArgs=""): # type: ignore
-        cps = cpsInit() ; cps['passwd'] = passwd ;
-        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')
-
-    cs.examples.menuSection('*GPG Symmetric Encryption*')
-
-    clearFile = "/tmp/gpgSymEx1"
-    cipherFile = "/tmp/gpgSymEx1.gpg"
-
-    execLineEx(f"""cp /etc/motd {clearFile}""")
-
-    cmndCommonParsWithArgs(cmndName="gpg_symEncrypt", cmndArgs=f"{clearFile}")
-
-    def cmndStdinEncrypt(cmndName): # type: ignore
-        icmWrapper = "echo HereComes Some ClearText | "
-        cps = cpsInit() ; cps['passwd'] = passwd ; cmndArgs = ""
-        return cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
-    encryptCmndStr = cmndStdinEncrypt("gpg_symEncrypt")
-    #print(f"{encryptCmndStr}")
-
-
-####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Decrypt"
-
-####+END:
-
-    cs.examples.menuSection('*GPG Symmetric Decryption*')
-
-    cmndCommonParsWithArgs(cmndName="gpg_symDecrypt", cmndArgs=f"{cipherFile}")
-
-    def cmndStdinDecrypt(cmndName, icmWrapper): # type: ignore
-        cps = cpsInit() ; cps['passwd'] = passwd ; cmndArgs = ""
-        return cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
-
-    cmndStdinDecrypt("gpg_symDecrypt", icmWrapper=f"cat {cipherFile} | ")
-
-    cmndStdinDecrypt("gpg_symDecrypt", icmWrapper=f"{encryptCmndStr} | ")
 
 ####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "CmndSvcs" :anchor ""  :extraInfo "Command Services Section"
 """ #+begin_org

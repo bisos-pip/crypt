@@ -48,14 +48,14 @@ csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
 
 """ #+begin_org
-* /[[elisp:(org-cycle)][| Description |]]/ :: Active --- In Progress
+* [[elisp:(org-cycle)][| ~Description~ |]] :: Active --- In Progress
 Module description comes here.
 ** Pre-req installations:
 apt install gnupg
 pip3 install python-gnupg
 pip3 install fs
 Emacs -- (require epa)  --- EasyPg Assistant
-** Status: In use with blee3
+** Status: In use with BISOS
 ** /[[elisp:(org-cycle)][| Planned Improvements |]]/ :
 *** TODO complete fileName in particulars.
 #+end_org """
