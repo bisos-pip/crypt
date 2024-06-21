@@ -139,15 +139,6 @@ def g_extraParams():
 ####+END:
 
 
-from bisos.bpo import bpo
-from bisos.crypt import bpoGpg
-from bisos.crypt import bpoVault
-from bisos.crypt import gpgSym
-
-import gnupg
-# import fs
-
-
 ####+BEGIN: bx:cs:py3:section :title "CS-Examples"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *CS-Examples*  [[elisp:(org-cycle)][| ]]

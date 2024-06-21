@@ -357,7 +357,7 @@ class BpoVault(object):
 
         entry = kp.find_entries(title=title, first=True)
 
-        print(f"{title} -- {entry} {entry.username} {entry.password}")
+        # print(f"NOTYET, vaultEntryRead should not use print {title} -- {entry} {entry.username} {entry.password}")
 
         return entry
 
@@ -791,7 +791,8 @@ class vaultEntryRead(cs.Cmnd):
 
         # Any number of Name=Value can be passed as args
         for each in typing.cast(list, cmndArgs):
-            thisBpo.vaultEntryRead(vault, passwd, each)
+            entry = thisBpo.vaultEntryRead(vault, passwd, each)
+            print(f" {entry} {entry.username} {entry.password}")
 
         return cmndOutcome
 

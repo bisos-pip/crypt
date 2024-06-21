@@ -155,6 +155,134 @@ def examples_csu(
     cmndStdinDecrypt("gpg_symDecrypt", icmWrapper=f"{encryptCmndStr} | ")
 
 
+
+####+BEGIN: b:py3:class/decl :className "GpgSym" :superClass "object" :comment "" :classType "basic"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Cls-basic  [[elisp:(outline-show-subtree+toggle)][||]] /GpgSym/  superClass=object  [[elisp:(org-cycle)][| ]]
+#+end_org """
+class GpgSym(object):
+####+END:
+    """ #+begin_org
+** This is really a namespace not a class. All methods are static.
+    #+end_org """
+
+####+BEGIN: b:py3:cs:method/typing :methodName "__init__" :deco "default"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-     [[elisp:(outline-show-subtree+toggle)][||]] /__init__/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def __init__(
+####+END:
+            self,
+            alg=""
+    ):
+        self.alg = alg  # Unused, placeholder
+
+####+BEGIN: b:py3:cs:method/typing :methodName "encryptBytes" :deco "staticmethod"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-     [[elisp:(outline-show-subtree+toggle)][||]] /encryptBytes/ deco=staticmethod  deco=staticmethod  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @staticmethod
+    def encryptBytes(
+####+END:
+            clearText: str,
+            symKey: str,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]] Returns gpgOutcome. Usage: cipheredText = gpgOutcome.data
+        #+end_org """
+
+        gpg = gnupg.GPG()
+
+        gpgOutcome = gpg.encrypt(
+            clearText,
+            recipients=None,
+            symmetric='AES256',
+            passphrase=symKey,
+            #armor=False,
+        )
+        #cipheredText = gpgOutcome.data
+        return gpgOutcome
+
+####+BEGIN: b:py3:cs:method/typing :methodName "decryptBytes" :deco "staticmethod"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-     [[elisp:(outline-show-subtree+toggle)][||]] /decryptBytes/ deco=staticmethod  deco=staticmethod  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @staticmethod
+    def decryptBytes(
+####+END:
+            cipherText: str,
+            symKey: str,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]] Returns gpgOutcome. Usage: clearText = gpgOutcome.data
+        #+end_org """
+
+        gpg = gnupg.GPG()
+
+        gpgOutcome = gpg.decrypt(
+            cipherText,
+            passphrase=symKey,
+            #armor=False,
+        )
+        #clearText = gpgOutcome.data
+        return gpgOutcome
+
+####+BEGIN: b:py3:cs:method/typing :methodName "encryptFile" :deco "staticmethod"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-     [[elisp:(outline-show-subtree+toggle)][||]] /encryptFile/ deco=staticmethod  deco=staticmethod  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @staticmethod
+    def encryptFile(
+####+END:
+            clearFilePath: str,
+            symKey: str,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]] Returns gpgOutcome. Usage: cipheredText = gpgOutcome.data
+        #+end_org """
+
+        gpg = gnupg.GPG()
+
+        with open(clearFilePath, "rb") as fileObj:
+            gpgOutcome = gpg.encrypt_file(
+                fileObj,
+                recipients=None,
+                symmetric='AES256',
+                passphrase=symKey,
+                #armor=False,
+                output=f"{clearFilePath}.gpg"
+            )
+            b_io.tm.here(f"""Processed File={clearFilePath}""")
+
+            return gpgOutcome
+
+####+BEGIN: b:py3:cs:method/typing :methodName "decryptFile" :deco "staticmethod"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-     [[elisp:(outline-show-subtree+toggle)][||]] /decryptFile/ deco=staticmethod  deco=staticmethod  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @staticmethod
+    def decryptFile(
+####+END:
+            cipherFilePath: str,
+            symKey: str,
+    ):
+        """ #+begin_org
+*** [[elisp:(org-cycle)][| *MethodDesc:* | ]] Returns gpgOutcome. Usage: clearText = gpgOutcome.data
+        #+end_org """
+
+        gpg = gnupg.GPG()
+
+        with open(cipherFilePath, "rb") as fileObj:
+            gpgOutcome = gpg.decrypt_file(
+                fileObj,
+                passphrase=symKey,
+                #armor=False,
+            )
+        # NOTYET, write the clean text
+        return gpgOutcome
+
+    
 ####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "CmndSvcs" :anchor ""  :extraInfo "Command Services Section"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*     [[elisp:(outline-show-subtree+toggle)][| _CmndSvcs_: |]]  Command Services Section  [[elisp:(org-shifttab)][<)]] E|
@@ -384,31 +512,6 @@ class gpg_symDecrypt(cs.Cmnd):
         )
 
         return cmndArgsSpecDict
-
-
-####+BEGIN: b:py3:cs:func/typing :funcName "io_stdin_read_OBSOLETED" :funcType "extTyped" :retType "extTyped" :deco "default" :argsList ""
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-T-extTyped [[elisp:(outline-show-subtree+toggle)][||]] /io_stdin_read_OBSOLETED/  deco=default  [[elisp:(org-cycle)][| ]]
-#+end_org """
-@cs.track(fnLoc=True, fnEntry=True, fnExit=True)
-def io_stdin_read_OBSOLETED(
-####+END:
-) -> str:
-    """ #+begin_org
-** [[elisp:(org-cycle)][| *DocStr | ] Reads stdin. Returns a string. -- Uses mutable list.
-    #+end_org """
-
-    stdinAsStr = ""
-    #if select.select([sys.stdin, ], [], [], 0.0)[0]:
-    if not sys.stdin.isatty():
-
-        msgAsList = []
-        for line in sys.stdin:
-            msgAsList.append(str(line))
-
-        stdinAsStr = str("".join(msgAsList),)
-
-    return stdinAsStr
 
 ####+BEGIN: b:py3:cs:framework/endOfFile :basedOn "classification"
 """ #+begin_org
