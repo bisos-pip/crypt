@@ -1,6 +1,6 @@
-======================
-bisos.bx-bases Scripts
-======================
+===================
+bisos.crypt Scripts
+===================
 
 .. contents::
    :depth: 3
@@ -9,8 +9,8 @@ bisos.bx-bases Scripts
 Overview
 ========
 
-bpo: python library and scripts (Interactive Command Modules – ICM) are
-used to manage abstrations of ByStar Portable Objects.
+bisos.crypt: python libraries and Command Services that provide vault,
+symetric and PKCS encryption, decryption, and hashing capabilities.
 
 Support
 =======
@@ -33,11 +33,12 @@ Installation
 
 ::
 
-   sudo pip install bisos.bpo
+   sudo pip install bisos.crypt
 
 Usage
 =====
 
 ::
 
-   bin/bpoManage.py
+   bin/bx-vault.cs
+   bin/bx-crypt.cs
