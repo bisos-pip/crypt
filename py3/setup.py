@@ -43,7 +43,7 @@ def longDescription():
 # b:py3:pypi:setup/version Arguments  :forSys t :forPyPi t :constant "666"
 ####+BEGIN: b:py3:pypi:setup/version :comment "Auto Detected"
 
-# ./pypiUploadVer DID NOT exist -- forPypiVersion=0.1 -- forSysVersion=0.1 -- constant=NA
+# ./pypiUploadVer DID NOT exist -- forPypiVersion=0.12 -- forSysVersion=0.1 -- constant=NA
 def pkgVersion():
         return '0.1'
 
@@ -71,6 +71,8 @@ scripts = [
 'bin/bpo-gpg.cs',
 'bin/bpo-vault.cs',
 'bin/bx-gpg.cs',
+'bin/keyring-crypt.py',
+'bin/ucrypt.py',
 ]
 ####+END:
 
@@ -86,7 +88,7 @@ data_files = [
 ####+BEGIN: b:py3:pypi:setup/funcArgs :comment "defaults to --auto--"
 
 setuptools.setup(
-    name=pkgName(),  # bisos.crypt
+    name=pkgName(),  # 'bisos.crypt'
     version=pkgVersion(),
     packages=setuptools.find_packages(),
     scripts=scripts,
@@ -97,11 +99,9 @@ setuptools.setup(
     author_email='libre@mohsen.1.banan.byname.net',
     maintainer='Mohsen Banan',
     maintainer_email='libre@mohsen.1.banan.byname.net',
-    url='http://www.by-star.net/PLPC/180047',
     license='AGPL',
     description=description(),
     long_description=longDescription(),
-    download_url='http://www.by-star.net/PLPC/180047',
     install_requires=requires,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
