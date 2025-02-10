@@ -194,6 +194,11 @@ class GpgSym(object):
 
         gpg = gnupg.GPG()
 
+        #
+        # This is the interface to python-gnupg-0.5.4 package
+        # Which is very different from gnupg package.
+        # Make sure that you are using pip install python-gnupg
+        #
         gpgOutcome = gpg.encrypt(
             clearText,
             recipients=None,
