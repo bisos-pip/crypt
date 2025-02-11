@@ -67,7 +67,7 @@ import collections
 #from unisos import ucf
 from unisos import icm
 
-from blee.icmPlayer import bleep
+from bisos.csPlayer import bleep
 
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -390,7 +390,7 @@ class examples(icm.Cmnd):
         
         icm.G_commonBriefExamples()
 
-        bleep.examples_icmBasic()
+        bleep.examples_csBasic()
         
 
 
