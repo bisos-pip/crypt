@@ -43,7 +43,7 @@ def longDescription():
 # b:py3:pypi:setup/version Arguments  :forSys t :forPyPi t :constant "666"
 ####+BEGIN: b:py3:pypi:setup/version :comment "Auto Detected"
 
-# ./pypiUploadVer DID NOT exist -- forPypiVersion=0.13 -- forSysVersion=0.1 -- constant=NA
+# ./pypiUploadVer DID NOT exist -- forPypiVersion=0.14 -- forLocalVersion=0.1 -- constant=NA
 def pkgVersion():
         return '0.1'
 
@@ -53,11 +53,10 @@ def pkgVersion():
 ####+BEGIN: b:py3:pypi:setup/requires :extras ()
 
 requires = [
-"blee",
-"bisos.csPlayer",
 "bisos",
 "bisos.b",
 "bisos.bpo",
+"bisos.common",
 "bisos.csPlayer",
 "bisos.currents",
 "bisos.icm",
@@ -72,8 +71,8 @@ scripts = [
 'bin/bpo-gpg.cs',
 'bin/bpo-vault.cs',
 'bin/bx-gpg.cs',
-'bin/keyring-crypt.py',
-'bin/ucrypt.py',
+'bin/keyring-crypt.cs',
+'bin/ucrypt.cs',
 ]
 ####+END:
 

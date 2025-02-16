@@ -1,90 +1,91 @@
 # -*- coding: utf-8 -*-
-"""\
-* TODO *[Summary]* ::  A /library/ for policy based encryption and decryption.
-"""
 
-####+BEGIN: bx:icm:python:top-of-file :control "NOTYET" :partof "none" :copyleft "none"
-"""
-*  This file:/bisos/git/bxRepos/unisos/bin/py/symEncryptLib.py :: [[elisp:(org-cycle)][| ]]
+""" #+begin_org
+* ~[Summary]~ :: A =CmndSvc= for
+#+end_org """
 
- A Python Interactively Command Module (PyICM).
- Best Developed With COMEEGA-Emacs And Best Used With Blee-ICM-Players.
- *WARNING*: All edits wityhin Dynamic Blocks may be lost.
-"""
+####+BEGIN: b:py3:cs:file/dblockControls :classification "cs-u"
+""" #+begin_org
+* [[elisp:(org-cycle)][| /Control Parameters Of This File/ |]] :: dblk ctrls classifications=cs-u
+#+BEGIN_SRC emacs-lisp
+(setq-local b:dblockControls t) ; (setq-local b:dblockControls nil)
+(put 'b:dblockControls 'py3:cs:Classification "cs-u") ; one of cs-mu, cs-u, cs-lib, bpf-lib, pyLibPure
+#+END_SRC
+#+RESULTS:
+: cs-u
+#+end_org """
 ####+END:
 
-
-"""
-*  [[elisp:(org-cycle)][| *Lib-Module-INFO:* |]] :: Author, Copyleft and Version Information
-"""
-
-####+BEGIN: bx:global:lib:name-py :style "fileName"
-__libName__ = "symEncryptLib"
+####+BEGIN: b:prog:file/proclamations :outLevel 1
+""" #+begin_org
+* *[[elisp:(org-cycle)][| Proclamations |]]* :: Libre-Halaal Software --- Part Of BISOS ---  Poly-COMEEGA Format.
+** This is Libre-Halaal Software. © Neda Communications, Inc. Subject to AGPL.
+** It is part of BISOS (ByStar Internet Services OS)
+** Best read and edited  with Blee in Poly-COMEEGA (Polymode Colaborative Org-Mode Enhance Emacs Generalized Authorship)
+#+end_org """
 ####+END:
 
-####+BEGIN: bx:global:timestamp:version-py :style "date"
-__version__ = "201908270638"
+####+BEGIN: b:prog:file/particulars :authors ("./inserts/authors-mb.org")
+""" #+begin_org
+* *[[elisp:(org-cycle)][| Particulars |]]* :: Authors, version
+** This File: /bisos/git/bxRepos/bisos-pip/crypt/py3/bisos/crypt/symCrypt.py
+** Authors: Mohsen BANAN, http://mohsen.banan.1.byname.net/contact
+#+end_org """
 ####+END:
 
-####+BEGIN: bx:global:icm:status-py :status "Initial"
-__status__ = "Initial"
+####+BEGIN: b:py3:file/particulars-csInfo :status "inUse"
+""" #+begin_org
+* *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
+#+end_org """
+import typing
+csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['symCrypt'], }
+csInfo['version'] = '202502110208'
+csInfo['status']  = 'inUse'
+csInfo['panel'] = 'symCrypt-Panel.org'
+csInfo['groupingType'] = 'IcmGroupingType-pkged'
+csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
 
-__credits__ = [""]
+""" #+begin_org
+* [[elisp:(org-cycle)][| ~Description~ |]] :: [[file:/bisos/git/auth/bxRepos/blee-binders/bisos-core/COMEEGA/_nodeBase_/fullUsagePanel-en.org][BISOS COMEEGA Panel]]
+Module description comes here.
+** Relevant Panels:
+** Status: In use with BISOS
+** /[[elisp:(org-cycle)][| Planned Improvements |]]/ :
+*** TODO complete fileName in particulars.
+#+end_org """
 
-####+BEGINNOT: bx:dblock:global:file-insert-cond :cond "./blee.el" :file "/libre/ByStar/InitialTemplates/update/sw/icm/py/icmInfo-mbNedaGpl.py"
-icmInfo = {
-    'authors':         ["[[http://mohsen.1.banan.byname.net][Mohsen Banan]]"],
-    'licenses':        ["[[https://www.gnu.org/licenses/agpl-3.0.en.html][Affero GPL]]", "Libre-Halaal Services License", "Neda Commercial License"],
-    'maintainers':     ["[[http://mohsen.1.banan.byname.net][Mohsen Banan]]",],
-    'contacts':        ["[[http://mohsen.1.banan.byname.net/contact]]",],
-}
-####+END:
-
-####+BEGIN: bx:icm:python:topControls 
-"""
-*  [[elisp:(org-cycle)][|/Controls/| ]] :: [[elisp:(org-show-subtree)][|=]]  [[elisp:(show-all)][Show-All]]  [[elisp:(org-shifttab)][Overview]]  [[elisp:(progn (org-shifttab) (org-content))][Content]] | [[file:Panel.org][Panel]] | [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] | [[elisp:(bx:org:run-me)][Run]] | [[elisp:(bx:org:run-me-eml)][RunEml]] | [[elisp:(delete-other-windows)][(1)]] | [[elisp:(progn (save-buffer) (kill-buffer))][S&Q]]  [[elisp:(save-buffer)][Save]]  [[elisp:(kill-buffer)][Quit]] [[elisp:(org-cycle)][| ]]
+####+BEGIN: b:prog:file/orgTopControls :outLevel 1
+""" #+begin_org
+* [[elisp:(org-cycle)][| Controls |]] :: [[elisp:(delete-other-windows)][(1)]] | [[elisp:(show-all)][Show-All]]  [[elisp:(org-shifttab)][Overview]]  [[elisp:(progn (org-shifttab) (org-content))][Content]] | [[file:Panel.org][Panel]] | [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] | [[elisp:(bx:org:run-me)][Run]] | [[elisp:(bx:org:run-me-eml)][RunEml]] | [[elisp:(progn (save-buffer) (kill-buffer))][S&Q]]  [[elisp:(save-buffer)][Save]]  [[elisp:(kill-buffer)][Quit]] [[elisp:(org-cycle)][| ]]
 ** /Version Control/ ::  [[elisp:(call-interactively (quote cvs-update))][cvs-update]]  [[elisp:(vc-update)][vc-update]] | [[elisp:(bx:org:agenda:this-file-otherWin)][Agenda-List]]  [[elisp:(bx:org:todo:this-file-otherWin)][ToDo-List]]
-"""
+
+#+end_org """
 ####+END:
 
-"""
-* 
-####+BEGIN: bx:dblock:global:file-insert-cond :cond "./blee.el" :file "/libre/ByStar/InitialTemplates/software/plusOrg/dblock/inserts/pythonWb.org"
-*  /Python Workbench/ ::  [[elisp:(org-cycle)][| ]]  [[elisp:(python-check (format "pyclbr %s" (bx:buf-fname))))][pyclbr]] || [[elisp:(python-check (format "pyflakes %s" (bx:buf-fname)))][pyflakes]] | [[elisp:(python-check (format "pychecker %s" (bx:buf-fname))))][pychecker (executes)]] | [[elisp:(python-check (format "pep8 %s" (bx:buf-fname))))][pep8]] | [[elisp:(python-check (format "flake8 %s" (bx:buf-fname))))][flake8]] | [[elisp:(python-check (format "pylint %s" (bx:buf-fname))))][pylint]]  [[elisp:(org-cycle)][| ]]
-####+END:
-"""
-
-
-####+BEGIN: bx:icm:python:section :title "ContentsList"
-"""
-*  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *ContentsList*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
-"""
+####+BEGIN: b:py3:file/workbench :outLevel 1
+""" #+begin_org
+* [[elisp:(org-cycle)][| Workbench |]] :: [[elisp:(python-check (format "/bisos/venv/py3/bisos3/bin/python -m pyclbr %s" (bx:buf-fname))))][pyclbr]] || [[elisp:(python-check (format "/bisos/venv/py3/bisos3/bin/python -m pydoc ./%s" (bx:buf-fname))))][pydoc]] || [[elisp:(python-check (format "/bisos/pipx/bin/pyflakes %s" (bx:buf-fname)))][pyflakes]] | [[elisp:(python-check (format "/bisos/pipx/bin/pychecker %s" (bx:buf-fname))))][pychecker (executes)]] | [[elisp:(python-check (format "/bisos/pipx/bin/pycodestyle %s" (bx:buf-fname))))][pycodestyle]] | [[elisp:(python-check (format "/bisos/pipx/bin/flake8 %s" (bx:buf-fname))))][flake8]] | [[elisp:(python-check (format "/bisos/pipx/bin/pylint %s" (bx:buf-fname))))][pylint]]  [[elisp:(org-cycle)][| ]]
+#+end_org """
 ####+END:
 
+####+BEGIN: b:py3:cs:framework/imports :basedOn "classification"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] *Imports* =Based on Classification=cs-u=
+#+end_org """
+from bisos import b
+from bisos.b import cs
+from bisos.b import b_io
+from bisos.common import csParam
 
-####+BEGIN: bx:dblock:python:icmItem :itemType "=Imports=" :itemTitle "*IMPORTS*"
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  =Imports=      :: *IMPORTS*  [[elisp:(org-cycle)][| ]]
-"""
+import collections
 ####+END:
+
 
 import sys
 import os
 import collections
 import enum
-
-####+BEGIN: bx:dblock:global:file-insert :file "/libre/ByStar/InitialTemplates/update/sw/icm/py/importUcfIcmG.py"
-from unisos import ucf
-from unisos import icm
-
-icm.unusedSuppressForEval(ucf.__file__)  # in case icm and ucf are not used
-
-G = icm.IcmGlobalContext()
-G.icmLibsAppend = __file__
-G.icmCmndsLibsAppend = __file__
-
-####+END:
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import binascii
@@ -105,108 +106,10 @@ from cryptography.hazmat.backends import default_backend
 
 import pickle
 
-
-####+BEGIN: bx:dblock:python:section :title "Library Description (Overview)"
-"""
-*  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *Library Description (Overview)*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
-"""
-####+END:
-
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "icmBegin_libOverview" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "3" :asFunc "" :interactiveP ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  ICM-Cmnd       :: /icmBegin_libOverview/ parsMand= parsOpt= argsMin=0 argsMax=3 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
-"""
-class icmBegin_libOverview(icm.Cmnd):
-    cmndParamsMandatory = [ ]
-    cmndParamsOptional = [ ]
-    cmndArgsLen = {'Min': 0, 'Max': 3,}
-
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        argsList=[],         # or Args-Input
-    ):
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-            effectiveArgsList = G.icmRunArgsGet().cmndArgs
-        else:
-            effectiveArgsList = argsList
-
-        callParamsDict = {}
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-
-        cmndArgsSpecDict = self.cmndArgsSpec()
-        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
-            return cmndOutcome
-####+END:
-
-        moduleDescription="""
-*       [[elisp:(org-show-subtree)][|=]]  [[elisp:(org-cycle)][| *Description:* | ]]
-**  [[elisp:(org-cycle)][| ]]  [Xref]          :: *[Related/Xrefs:]*  <<Xref-Here->>  -- External Documents  [[elisp:(org-cycle)][| ]]
-
-**  [[elisp:(org-cycle)][| ]]   Model and Terminology                                      :Overview:
-This module is part of BISOS and its primary documentation is in  http://www.by-star.net/PLPC/180047
-**      [End-Of-Description]
-"""
-        
-        moduleUsage="""
-*       [[elisp:(org-show-subtree)][|=]]  [[elisp:(org-cycle)][| *Usage:* | ]]
-
-**      How-Tos:
-**      [End-Of-Usage]
-"""
-        
-        moduleStatus="""
-*       [[elisp:(org-show-subtree)][|=]]  [[elisp:(org-cycle)][| *Status:* | ]]
-**  [[elisp:(org-cycle)][| ]]  [Info]          :: *[Current-Info:]* Status/Maintenance -- General TODO List [[elisp:(org-cycle)][| ]]
-** TODO [[elisp:(org-cycle)][| ]]  Current         :: Just getting started [[elisp:(org-cycle)][| ]]
-**      [End-Of-Status]
-"""
-
-####+BEGIN: bx:dblock:global:file-insert-cond :cond "./blee.el" :file "/libre/ByStar/InitialTemplates/update/sw/icm/py/moduleOverview.py"
-        icm.unusedSuppressForEval(moduleUsage, moduleStatus)
-        actions = self.cmndArgsGet("0&2", cmndArgsSpecDict, effectiveArgsList)
-        if actions[0] == "all":
-            cmndArgsSpec = cmndArgsSpecDict.argPositionFind("0&2")
-            argChoices = cmndArgsSpec.argChoicesGet()
-            argChoices.pop(0)
-            actions = argChoices
-        for each in actions:
-            print(each)
-            if interactive:
-                #print( str( __doc__ ) )  # This is the Summary: from the top doc-string
-                #version(interactive=True)
-                exec("""print({})""".format(each))
-                
-        return(format(str(__doc__)+moduleDescription))
-
-    """
-**  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(org-tree-to-indirect-buffer)][|>]] [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(beginning-of-buffer)][Top]] [[elisp:(delete-other-windows)][(1)]] || Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndArgsSpec(self):
-        """
-***** Cmnd Args Specification
-"""
-        cmndArgsSpecDict = icm.CmndArgsSpecDict()
-        cmndArgsSpecDict.argsDictAdd(
-            argPosition="0&2",
-            argName="actions",
-            argDefault='all',
-            argChoices=['all', 'moduleDescription', 'moduleUsage', 'moduleStatus'],
-            argDescription="Output relevant information",
-        )
-
-        return cmndArgsSpecDict
-####+END:
- 
-####+BEGIN: bx:dblock:python:section :title "Start Your Sections Here"
-"""
-*  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *Start Your Sections Here*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
-"""
+####+BEGIN: bx:icm:py3:section :title "CS-Commands"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *CS-Commands*  [[elisp:(org-cycle)][| ]]
+#+end_org """
 ####+END:
 
 
@@ -217,99 +120,99 @@ This module is part of BISOS and its primary documentation is in  http://www.by-
 ####+END:
 
 
-####+BEGIN: bx:icm:python:func :funcName "commonParamsSpecify" :funcType "void" :retType "bool" :deco "" :argsList "icmParams"
+####+BEGIN: bx:cs:python:func :funcName "commonParamsSpecify" :funcType "void" :retType "bool" :deco "" :argsList "csParams"
 """
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Func-void      :: /commonParamsSpecify/ retType=bool argsList=(icmParams)  [[elisp:(org-cycle)][| ]]
+*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Func-void      :: /commonParamsSpecify/ retType=bool argsList=(csParams)  [[elisp:(org-cycle)][| ]]
 """
 def commonParamsSpecify(
-    icmParams,
+    csParams,
 ):
 ####+END:
 
-    icmParams.parDictAdd(
+    csParams.parDictAdd(
         parName='rsrc',
         parDescription="Resource",
         parDataType=None,
         parDefault=None,
         parChoices=["someResource", "UserInput"],
-        parScope=icm.ICM_ParamScope.TargetParam,
+        parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
         argparseLongOpt='--rsrc',
         )
     
-    icmParams.parDictAdd(
+    csParams.parDictAdd(
         parName='inFile',
         parDescription="Input File",
         parDataType=None,
         parDefault=None,
         parChoices=["someFile", "UserInput"],
-        parScope=icm.ICM_ParamScope.TargetParam,
+        parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
         argparseLongOpt='--inFile',
         )
 
-    icmParams.parDictAdd(
+    csParams.parDictAdd(
         parName='baseDir',
         parDescription="Base Directory Name",
         parDataType=None,
         parDefault=None,
         parChoices=[],
-        parScope=icm.ICM_ParamScope.TargetParam,
+        parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
         argparseLongOpt='--baseDir',
         )
 
-    icmParams.parDictAdd(
+    csParams.parDictAdd(
         parName='policy',
         parDescription="Encryption Policy",
         parDataType=None,
         parDefault=None,
         parChoices=[],
-        parScope=icm.ICM_ParamScope.TargetParam,
+        parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
         argparseLongOpt='--policy',
         )
 
-    icmParams.parDictAdd(
+    csParams.parDictAdd(
         parName='keyringPolicy',
         parDescription="Policy For Setting Passwd In Keyring",
         parDataType=None,
         parDefault=None,
         parChoices=['prompt', 'default',],
-        parScope=icm.ICM_ParamScope.TargetParam,
+        parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
         argparseLongOpt='--keyringPolicy',
         )
 
-    icmParams.parDictAdd(
+    csParams.parDictAdd(
         parName='alg',
         parDescription="Symetric Encryption Algorithem",
         parDataType=None,
         parDefault=None,
         parChoices=['default', 'someAlg',],
-        parScope=icm.ICM_ParamScope.TargetParam,
+        parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
         argparseLongOpt='--alg',
         )
 
-    icmParams.parDictAdd(
+    csParams.parDictAdd(
         parName='passwd',
         parDescription="Pass Word",
         parDataType=None,
         parDefault=None,
         parChoices=[],
-        parScope=icm.ICM_ParamScope.TargetParam,
+        parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
         argparseLongOpt='--passwd',
         )
 
-    icmParams.parDictAdd(
+    csParams.parDictAdd(
         parName='seed',
         parDescription="Seed or Salt",
         parDataType=None,
         parDefault=None,
         parChoices=[],
-        parScope=icm.ICM_ParamScope.TargetParam,
+        parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
         argparseLongOpt='--seed',
         )
@@ -323,71 +226,71 @@ def commonParamsSpecify(
 ####+END:
 
 
-####+BEGIN: bx:icm:python:func :funcName "examples_libModuleCmnds" :funcType "anyOrNone" :retType "bool" :deco "" :argsList ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Func-anyOrNone :: /examples_libModuleCmnds/ retType=bool argsList=nil  [[elisp:(org-cycle)][| ]]
-"""
+####+BEGIN: bx:cs:python:func :funcName "examples_libModuleCmnds" :funcType "anyOrNone" :retType "bool" :deco "" :argsList ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /examples_libModuleCmnds/ retType=bool argsList=nil  [[elisp:(org-cycle)][| ]]
+#+end_org """
 def examples_libModuleCmnds():
 ####+END:
     """
 ** Auxiliary examples to be commonly used.x2
 """
     def cpsInit(): return collections.OrderedDict()
-    def menuItemVerbose(): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='little')
-    def menuItemTerse(): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')            
-    def menuItem(verbosity): icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity=verbosity)            
-    def execLineEx(cmndStr): icm.ex_gExecMenuItem(execLine=cmndStr)
+    def menuItemVerbose(): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='little')
+    def menuItemTerse(): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')            
+    def menuItem(verbosity): cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity=verbosity)            
+    def execLineEx(cmndStr): cs.examples.execInsert(execLine=cmndStr)
 
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Generate Seed (genseed)"
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Generate Seed (genseed)"
     """
 **   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Generate Seed (genseed)*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-    icm.cmndExampleMenuChapter('*Generate Seed (genseed)*')
+    cs.examples.menuChapter('*Generate Seed (genseed)*')
         
     cmndName = "genseed"
 
-    def thisBlock():
+    def thisBlock1():
         cps = cpsInit() ; cmndArgs = "";
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')            
-    thisBlock()
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')            
+    thisBlock1()
 
     def thisBlock():
         cps = cpsInit() ; cmndArgs = "hex";
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')            
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')            
     thisBlock()
     
 
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Generate Key (genkey)"
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Generate Key (genkey)"
     """
 **   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Generate Key (genkey)*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-    icm.cmndExampleMenuChapter('*Generate Key (genkey)*')
+    cs.examples.menuChapter('*Generate Key (genkey)*')
 
     cmndName = "genkey"
 
-    def thisBlock(): # type: ignore [no-redef]
+    def thisBlock2(): # type: ignore [no-redef]
         cps = cpsInit() ; cmndArgs = "";
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='full')                        
-    thisBlock()
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='full')                        
+    thisBlock2()
 
-    def thisBlock(): # type: ignore [no-redef]
+    def thisBlock3(): # type: ignore [no-redef]
         cps = cpsInit() ; cmndArgs = "hex";
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')
-    thisBlock()
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')
+    thisBlock3()
 
 
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "List Encryption Policy"
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "List Encryption Policy"
     """
 **   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *List Encryption Policy*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-    icm.cmndExampleMenuSection('*listEncryptionPolicy*')
+    cs.examples.menuSection('*listEncryptionPolicy*')
 
     cmndName = "listEncryptionPolicy"
     def setRsrc(cps):
@@ -396,21 +299,21 @@ def examples_libModuleCmnds():
     cps = cpsInit() ; setRsrc(cps)
     cmndArgs = ""
     cps['baseDir'] = "~/.ucrypt" ; menuItem(verbosity='none')        
-    icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='full')        
+    cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='full')        
 
-    def thisBlock():
+    def thisBlock4():
         cps = cpsInit() ; setRsrc(cps) 
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')            
-    thisBlock()
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')            
+    thisBlock4()
 
 
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Create Encryption Policy"
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Create Encryption Policy"
     """
 **   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Create Encryption Policy*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-    icm.cmndExampleMenuSection('*createEncryptionPolicy*')
+    cs.examples.menuSection('*createEncryptionPolicy*')
 
     cmndName = "createEncryptionPolicy"
     def setRsrc(cps):
@@ -421,20 +324,20 @@ def examples_libModuleCmnds():
     cmndArgs = ""; menuItem(verbosity='none')
 
     cps['keyringPolicy'] = "default" ; cps['baseDir'] = "~/.ucrypt" ; menuItem(verbosity='none')        
-    icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='full')        
+    cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='full')        
 
     def thisBlock():
         cps = cpsInit() ; setRsrc(cps) ; cps['policy'] = "weak"; cps['alg'] = "clear" ;
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')            
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')            
     thisBlock()
 
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Show Encryption Policy"
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Show Encryption Policy"
     """
 **   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Create Encryption Policy*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-    icm.cmndExampleMenuSection('*createEncryptionPolicy*')
+    cs.examples.menuSection('*createEncryptionPolicy*')
 
     cmndName = "describeEncryptionPolicy"
     def setRsrc(cps):
@@ -443,19 +346,19 @@ def examples_libModuleCmnds():
 
     def thisBlock():
         cps = cpsInit() ; setRsrc(cps)
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')            
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')            
     thisBlock()
 
     execLineEx("""keyring get ucrypt example""")
     
 
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Encrypt"
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Encrypt"
     """
 **   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Encrypt*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-    icm.cmndExampleMenuSection('*Encrypt*')
+    cs.examples.menuSection('*Encrypt*')
 
     cmndName = "encrypt"
 
@@ -464,17 +367,17 @@ def examples_libModuleCmnds():
 
     cps = cpsInit(); setRsrc(cps)
     cmndArgs = "clearTextComesHere"; menuItem(verbosity='none')
-    icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='full')
+    cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='full')
 
     def thisBlock():
         cps = cpsInit() ; cps['inFile'] = "/etc/passwd"; setRsrc(cps); cmndArgs = ""
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')            
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')            
     thisBlock()
 
     def thisBlock():
         icmWrapper = "echo HereComes Some ClearText | "
         cps = cpsInit();  setRsrc(cps); cmndArgs = ""
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
     thisBlock()
 
     def setRsrc(cps):
@@ -483,17 +386,17 @@ def examples_libModuleCmnds():
     def thisBlock():
         icmWrapper = "echo HereComes Some ClearText | "
         cps = cpsInit();  setRsrc(cps); cmndArgs = ""
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
     thisBlock()
 
 
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Decrypt"
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Decrypt"
     """
 **   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Decrypt*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-    icm.cmndExampleMenuSection('*Decrypt*')
+    cs.examples.menuSection('*Decrypt*')
 
     cmndName = "decrypt"
 
@@ -501,7 +404,7 @@ def examples_libModuleCmnds():
 
     cmndArgs = "cipherText"; menuItem(verbosity='none')
 
-    icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='full')        
+    cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='full')        
 
     def thisBlock():
         clearText = "Some Secret"
@@ -511,7 +414,7 @@ def examples_libModuleCmnds():
             encryptCmnd=encryptCmnd,
         )
         cps = cpsInit();  cps['rsrc'] = "policy/weak"; cmndArgs = ""
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none', icmWrapper=icmWrapper)
     thisBlock()
 
     def thisBlock():
@@ -521,7 +424,7 @@ def examples_libModuleCmnds():
             clearText=clearText,
         )
         cps = cpsInit();  cps['rsrc'] = "policy/weak"; cmndArgs = argCmnd
-        icm.ex_gCmndMenuItem(cmndName, cps, cmndArgs, verbosity='none')
+        cs.examples.cmndInsert(cmndName, cps, cmndArgs, verbosity='none')
     thisBlock()
 
 
@@ -529,14 +432,14 @@ def examples_libModuleCmnds():
 
 
         
-####+BEGIN: bx:icm:python:cmnd:subSection :context "func-1" :title "Remain In Sycn With Template"
+####+BEGIN: bx:cs:python:cmnd:subSection :context "func-1" :title "Remain In Sycn With Template"
     """
 **   [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]          *Remain In Sycn With Template*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
     def thisBlock():
-        icm.cmndExampleMenuChapter('*Remain In Sycn With Template*')
+        cs.examples.menuChapter('*Remain In Sycn With Template*')
 
         templateFile = "/bisos/git/bxRepos/bisos-pip/examples/dev/bisos/examples/icmLibPkgBegin.py"
         thisFile = __file__
@@ -556,45 +459,37 @@ def examples_libModuleCmnds():
 ####+END:
 
 
-####+BEGIN: bx:icm:python:section :title "ICM-Commands: Common Encryption Facilities"
+####+BEGIN: bx:cs:python:section :title "ICM-Commands: Common Encryption Facilities"
 """
 *  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *ICM-Commands: Common Encryption Facilities*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "genseed" :comment "Generates seed often used as salt" :parsMand "" :parsOpt "" :argsMin "0" :argsMax "1" :asFunc "" :interactiveP ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  ICM-Cmnd       :: /genseed/ =Generates seed often used as salt= parsMand= parsOpt= argsMin=0 argsMax=1 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
-"""
-class genseed(icm.Cmnd):
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "genseed" :comment "Generates seed often used as salt" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 1 :pyInv ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<genseed>>  *Generates seed often used as salt*  =verify= argsMax=1 ro=cli   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class genseed(cs.Cmnd):
     cmndParamsMandatory = [ ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 1,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        argsList=[],         # or Args-Input
-    ):
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-            effectiveArgsList = G.icmRunArgsGet().cmndArgs
-        else:
-            effectiveArgsList = argsList
-
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             argsList: typing.Optional[list[str]]=None,  # CsArgs
+    ) -> b.op.Outcome:
+        """Generates seed often used as salt"""
+        failed = b_io.eh.badOutcome
         callParamsDict = {}
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
+            return failed(cmndOutcome)
         cmndArgsSpecDict = self.cmndArgsSpec()
-        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
-            return cmndOutcome
 ####+END:
 
 
-        choices = self.cmndArgsGet("0&1", cmndArgsSpecDict, effectiveArgsList)
+        choices = self.cmndArgsGet("0&1", cmndArgsSpecDict, argsList)
 
         allChoices=False
         if choices[0] == "all":
@@ -606,11 +501,11 @@ class genseed(icm.Cmnd):
 
 
         opResult = list()
-        opError = icm.OpError.Success
+        opError = b.OpError.Success
         
         def processEachResult(eachChoice, eachResult):
             opResult.append(eachResult)
-            if interactive:
+            if rtInv.outs:
                 separator = ""
                 choiceString = ""
                 if allChoices:
@@ -627,7 +522,7 @@ class genseed(icm.Cmnd):
                 processEachResult(eachChoice, eachResult)
                 
             else:
-                icm.EH_problem_usageError(
+                b_io.eh.problem_usageError(
                 """Bad Choice: {eachChoice}"""
                     .format(eachChoice=eachChoice,))
                 opError = icm.OpError.Fail
@@ -642,17 +537,17 @@ class genseed(icm.Cmnd):
             opResults=salt,
         )
 
-####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndArgsSpec(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /cmndArgsSpec/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self, ):
+####+END:
         """
 ***** Cmnd Args Specification
 """
-        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict = cs.CmndArgsSpecDict()
         cmndArgsSpecDict.argsDictAdd(
             argPosition="0&1",
             argName="choices",
@@ -664,55 +559,34 @@ class genseed(icm.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: bx:icm:python:method :methodName "cmndDocStr" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndDocStr/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndDocStr(self):
-####+END:        
-        return """
-***** Generates a key in the specified output format.
-****** Use This as one-or-all choice -- policy relevance
-"""
 
-
-
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "genkey" :comment "" :parsMand "" :parsOpt "passwd seed" :argsMin "0" :argsMax "4" :asFunc "" :interactiveP ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  ICM-Cmnd       :: /genkey/ parsMand= parsOpt=passwd seed argsMin=0 argsMax=4 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
-"""
-class genkey(icm.Cmnd):
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "genkey" :comment "" :parsMand "" :parsOpt "passwd seed" :argsMin 0 :argsMax 4 :pyInv ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<genkey>>  =verify= parsOpt=passwd seed argsMax=4 ro=cli   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class genkey(cs.Cmnd):
     cmndParamsMandatory = [ ]
     cmndParamsOptional = [ 'passwd', 'seed', ]
     cmndArgsLen = {'Min': 0, 'Max': 4,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        passwd=None,         # or Cmnd-Input
-        seed=None,         # or Cmnd-Input
-        argsList=[],         # or Args-Input
-    ):
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-            effectiveArgsList = G.icmRunArgsGet().cmndArgs
-        else:
-            effectiveArgsList = argsList
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             passwd: typing.Optional[str]=None,  # Cs Optional Param
+             seed: typing.Optional[str]=None,  # Cs Optional Param
+             argsList: typing.Optional[list[str]]=None,  # CsArgs
+    ) -> b.op.Outcome:
 
+        failed = b_io.eh.badOutcome
         callParamsDict = {'passwd': passwd, 'seed': seed, }
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-        passwd = callParamsDict['passwd']
-        seed = callParamsDict['seed']
-
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
+            return failed(cmndOutcome)
         cmndArgsSpecDict = self.cmndArgsSpec()
-        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
-            return cmndOutcome
+        passwd = csParam.mappedValue('passwd', passwd)
+        seed = csParam.mappedValue('seed', seed)
 ####+END:
-        choices = self.cmndArgsGet("0&4", cmndArgsSpecDict, effectiveArgsList)
+        choices = self.cmndArgsGet("0&4", cmndArgsSpecDict, argsList)
 
         allChoices=False
         if choices[0] == "all":
@@ -724,11 +598,11 @@ class genkey(icm.Cmnd):
 
 
         opResult = list()
-        opError = icm.OpError.Success
+        opError = b.OpError.Success
         
         def processEachResult(eachChoice, eachResult):
             opResult.append(eachResult)
-            if interactive:
+            if rtInv.outs:
                 separator = ""
                 choiceString = ""
                 if allChoices:
@@ -763,7 +637,7 @@ class genkey(icm.Cmnd):
                 processEachResult(eachChoice, eachResult)
                 
             else:
-                icm.EH_problem_usageError(
+                b_io.eh.problem_usageError(
                 """Bad Choice: {eachChoice}"""
                     .format(eachChoice=eachChoice,))
                 opError = icm.OpError.Fail
@@ -774,17 +648,17 @@ class genkey(icm.Cmnd):
             opResults=opResult,
         )
 
-####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndArgsSpec(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /cmndArgsSpec/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self, ):
+####+END:
         """
 ***** Cmnd Args Specification
 """
-        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict = cs.CmndArgsSpecDict()
         cmndArgsSpecDict.argsDictAdd(
             argPosition="0&4",
             argName="choices",
@@ -796,55 +670,40 @@ class genkey(icm.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: bx:icm:python:method :methodName "cmndDocStr" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndDocStr/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndDocStr(self):
-####+END:        
-        return """
-***** Generates a key in the specified output format.
-****** Use This as one-or-all choice -- policy relevance
-"""
 
-
-####+BEGIN: bx:icm:python:section :title "ICM-Commands: Encryption Policy"
+####+BEGIN: bx:cs:python:section :title "ICM-Commands: Encryption Policy"
 """
 *  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *ICM-Commands: Encryption Policy*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
 
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "listEncryptionPolicy" :comment "" :parsMand "rsrc" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  ICM-Cmnd       :: /listEncryptionPolicy/ parsMand=rsrc parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
-"""
-class listEncryptionPolicy(icm.Cmnd):
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "listEncryptionPolicy" :comment "" :parsMand "rsrc" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<listEncryptionPolicy>>  =verify= parsMand=rsrc ro=cli   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class listEncryptionPolicy(cs.Cmnd):
     cmndParamsMandatory = [ 'rsrc', ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        rsrc=None,         # or Cmnd-Input
-    ):
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             rsrc: typing.Optional[str]=None,  # Cs Mandatory Param
+    ) -> b.op.Outcome:
 
+        failed = b_io.eh.badOutcome
         callParamsDict = {'rsrc': rsrc, }
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-        rsrc = callParamsDict['rsrc']
-
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
+            return failed(cmndOutcome)
+        rsrc = csParam.mappedValue('rsrc', rsrc)
 ####+END:
-        opError=icm.OpError.Success
+        opError=b.OpError.Success
 
         if rsrc != "policy":
-            return  icm.EH_problem_usageError(
+            return  b_io.eh.problem_usageError(
                 "Bad Resource={rsrc}".format(rsrc=rsrc)
                 )
 
@@ -855,7 +714,7 @@ class listEncryptionPolicy(icm.Cmnd):
         outcome = icm.subProc_bash("""\
         ls ~/.ucrypt/policy"""
         ).log()
-        if outcome.isProblematic(): return(icm.EH_badOutcome(outcome))
+        if outcome.isProblematic(): return(io.eh.badOutcome(outcome))
         stdOut = outcome.stdout; stdErr = outcome.stderr; stdExit = outcome.error
 
         print(stdOut)
@@ -863,56 +722,40 @@ class listEncryptionPolicy(icm.Cmnd):
         return outcome
 
 
-####+BEGIN: bx:icm:python:method :methodName "cmndDocStr" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndDocStr/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndDocStr(self):
-####+END:        
-        return """
-***** TODO [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Place holder for this commands doc string.
-"""
-
-
-
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "createEncryptionPolicy" :comment "" :parsMand "rsrc policy" :parsOpt "baseDir alg keyringPolicy" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  ICM-Cmnd       :: /createEncryptionPolicy/ parsMand=rsrc policy parsOpt=baseDir alg keyringPolicy argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
-"""
-class createEncryptionPolicy(icm.Cmnd):
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "createEncryptionPolicy" :comment "" :parsMand "rsrc policy" :parsOpt "baseDir alg keyringPolicy" :argsMin 0 :argsMax 0 :pyInv ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<createEncryptionPolicy>>  =verify= parsMand=rsrc policy parsOpt=baseDir alg keyringPolicy ro=cli   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class createEncryptionPolicy(cs.Cmnd):
     cmndParamsMandatory = [ 'rsrc', 'policy', ]
     cmndParamsOptional = [ 'baseDir', 'alg', 'keyringPolicy', ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        rsrc=None,         # or Cmnd-Input
-        policy=None,         # or Cmnd-Input
-        baseDir=None,         # or Cmnd-Input
-        alg=None,         # or Cmnd-Input
-        keyringPolicy=None,         # or Cmnd-Input
-    ):
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             rsrc: typing.Optional[str]=None,  # Cs Mandatory Param
+             policy: typing.Optional[str]=None,  # Cs Mandatory Param
+             baseDir: typing.Optional[str]=None,  # Cs Optional Param
+             alg: typing.Optional[str]=None,  # Cs Optional Param
+             keyringPolicy: typing.Optional[str]=None,  # Cs Optional Param
+    ) -> b.op.Outcome:
 
+        failed = b_io.eh.badOutcome
         callParamsDict = {'rsrc': rsrc, 'policy': policy, 'baseDir': baseDir, 'alg': alg, 'keyringPolicy': keyringPolicy, }
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-        rsrc = callParamsDict['rsrc']
-        policy = callParamsDict['policy']
-        baseDir = callParamsDict['baseDir']
-        alg = callParamsDict['alg']
-        keyringPolicy = callParamsDict['keyringPolicy']
-
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
+            return failed(cmndOutcome)
+        rsrc = csParam.mappedValue('rsrc', rsrc)
+        policy = csParam.mappedValue('policy', policy)
+        baseDir = csParam.mappedValue('baseDir', baseDir)
+        alg = csParam.mappedValue('alg', alg)
+        keyringPolicy = csParam.mappedValue('keyringPolicy', keyringPolicy)
 ####+END:
-        opError=icm.OpError.Success
+        opError=b.OpError.Success
 
         if rsrc != "policy":
-            return  icm.EH_problem_usageError(
+            return  b_io.eh.problem_usageError(
                 "Bad Resource={rsrc}".format(rsrc=rsrc)
                 )
 
@@ -936,44 +779,30 @@ class createEncryptionPolicy(icm.Cmnd):
             opResults=None,
         )
 
-####+BEGIN: bx:icm:python:method :methodName "cmndDocStr" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndDocStr/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndDocStr(self):
-####+END:        
-        return """
-***** TODO [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Place holder for this commands doc string.
-"""
 
-
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "describeEncryptionPolicy" :comment "" :parsMand "rsrc" :parsOpt "" :argsMin "0" :argsMax "0" :asFunc "" :interactiveP ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  ICM-Cmnd       :: /describeEncryptionPolicy/ parsMand=rsrc parsOpt= argsMin=0 argsMax=0 asFunc= interactive=  [[elisp:(org-cycle)][| ]]
-"""
-class describeEncryptionPolicy(icm.Cmnd):
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "describeEncryptionPolicy" :comment "" :parsMand "rsrc" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<describeEncryptionPolicy>>  =verify= parsMand=rsrc ro=cli   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class describeEncryptionPolicy(cs.Cmnd):
     cmndParamsMandatory = [ 'rsrc', ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        rsrc=None,         # or Cmnd-Input
-    ):
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             rsrc: typing.Optional[str]=None,  # Cs Mandatory Param
+    ) -> b.op.Outcome:
 
+        failed = b_io.eh.badOutcome
         callParamsDict = {'rsrc': rsrc, }
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-        rsrc = callParamsDict['rsrc']
-
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
+            return failed(cmndOutcome)
+        rsrc = csParam.mappedValue('rsrc', rsrc)
 ####+END:
-        opError=icm.OpError.Success
+        opError=b.OpError.Success
 
         policy=os.path.basename(rsrc)
             
@@ -1027,53 +856,33 @@ clearHexKey={clearHexKey}\
             opResults=None,
         )
 
-####+BEGIN: bx:icm:python:method :methodName "cmndDocStr" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndDocStr/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndDocStr(self):
-####+END:        
-        return """
-***** TODO [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Place holder for this commands doc string.
-"""
 
-    
-
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "encrypt" :comment "Input is arg1 or inFile or stdin" :parsMand "rsrc" :parsOpt "inFile" :argsMin "0" :argsMax "1" :asFunc "clearText" :interactiveP ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  ICM-Cmnd       :: /encrypt/ =Input is arg1 or inFile or stdin= parsMand=rsrc parsOpt=inFile argsMin=0 argsMax=1 asFunc=clearText interactive=  [[elisp:(org-cycle)][| ]]
-"""
-class encrypt(icm.Cmnd):
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "encrypt" :comment "Input is arg1 or inFile or stdin" :parsMand "rsrc" :parsOpt "inFile" :argsMin 0 :argsMax 1 :pyInv "clearText"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<encrypt>>  *Input is arg1 or inFile or stdin*  =verify= parsMand=rsrc parsOpt=inFile argsMax=1 ro=cli pyInv=clearText   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class encrypt(cs.Cmnd):
     cmndParamsMandatory = [ 'rsrc', ]
     cmndParamsOptional = [ 'inFile', ]
     cmndArgsLen = {'Min': 0, 'Max': 1,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        rsrc=None,         # or Cmnd-Input
-        inFile=None,         # or Cmnd-Input
-        argsList=[],         # or Args-Input
-        clearText=None,         # asFunc when interactive==False
-    ):
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-            effectiveArgsList = G.icmRunArgsGet().cmndArgs
-        else:
-            effectiveArgsList = argsList
-
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             rsrc: typing.Optional[str]=None,  # Cs Mandatory Param
+             inFile: typing.Optional[str]=None,  # Cs Optional Param
+             argsList: typing.Optional[list[str]]=None,  # CsArgs
+             clearText: typing.Any=None,   # pyInv Argument
+    ) -> b.op.Outcome:
+        """Input is arg1 or inFile or stdin"""
+        failed = b_io.eh.badOutcome
         callParamsDict = {'rsrc': rsrc, 'inFile': inFile, }
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-        rsrc = callParamsDict['rsrc']
-        inFile = callParamsDict['inFile']
-
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
+            return failed(cmndOutcome)
         cmndArgsSpecDict = self.cmndArgsSpec()
-        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
-            return cmndOutcome
+        rsrc = csParam.mappedValue('rsrc', rsrc)
+        inFile = csParam.mappedValue('inFile', inFile)
 ####+END:
 
         def readFromStdin():
@@ -1106,8 +915,8 @@ class encrypt(icm.Cmnd):
                 # Stdin then
                 clearText = readFromStdin()
 
-        icm.LOG_here("""clearText={clearText}""".format(clearText=clearText))
-        icm.LOG_here("""rsrc={rsrc}""".format(rsrc=rsrc))
+        b_io.tm.here("""clearText={clearText}""".format(clearText=clearText))
+        b_io.tm.here("""rsrc={rsrc}""".format(rsrc=rsrc))
 
         policy=os.path.basename(rsrc)
             
@@ -1119,25 +928,25 @@ class encrypt(icm.Cmnd):
 
         cypherText = ucrypt.encrypt(clearText)
 
-        if interactive:
+        if rtInv.outs:
             print(cypherText)
                 
         return cmndOutcome.set(
-            opError=icm.OpError.Success,
+            opError=b.OpError.Success,
             opResults=cypherText,
         )
 
-####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndArgsSpec(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /cmndArgsSpec/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self, ):
+####+END:
         """
 ***** Cmnd Args Specification
 """
-        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict = cs.CmndArgsSpecDict()
         cmndArgsSpecDict.argsDictAdd(
             argPosition="0",
             argName="clearText",
@@ -1149,52 +958,33 @@ class encrypt(icm.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: bx:icm:python:method :methodName "cmndDocStr" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndDocStr/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndDocStr(self):
-####+END:        
-        return """
-***** TODO [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Place holder for this commands doc string.
-"""
 
-
-####+BEGIN: bx:icm:python:cmnd:classHead :cmndName "decrypt" :comment "Input is arg1 or inFile or stdin" :parsMand "rsrc" :parsOpt "inFile" :argsMin "0" :argsMax "1" :asFunc "cipherText" :interactiveP ""
-"""
-*  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  ICM-Cmnd       :: /decrypt/ =Input is arg1 or inFile or stdin= parsMand=rsrc parsOpt=inFile argsMin=0 argsMax=1 asFunc=cipherText interactive=  [[elisp:(org-cycle)][| ]]
-"""
-class decrypt(icm.Cmnd):
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "decrypt" :comment "Input is arg1 or inFile or stdin" :parsMand "rsrc" :parsOpt "inFile" :argsMin 0 :argsMax 1 :pyInv "cipherText"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<decrypt>>  *Input is arg1 or inFile or stdin*  =verify= parsMand=rsrc parsOpt=inFile argsMax=1 ro=cli pyInv=cipherText   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class decrypt(cs.Cmnd):
     cmndParamsMandatory = [ 'rsrc', ]
     cmndParamsOptional = [ 'inFile', ]
     cmndArgsLen = {'Min': 0, 'Max': 1,}
 
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
-        interactive=False,        # Can also be called non-interactively
-        rsrc=None,         # or Cmnd-Input
-        inFile=None,         # or Cmnd-Input
-        argsList=[],         # or Args-Input
-        cipherText=None,         # asFunc when interactive==False
-    ):
-        cmndOutcome = self.getOpOutcome()
-        if interactive:
-            if not self.cmndLineValidate(outcome=cmndOutcome):
-                return cmndOutcome
-            effectiveArgsList = G.icmRunArgsGet().cmndArgs
-        else:
-            effectiveArgsList = argsList
-
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             rsrc: typing.Optional[str]=None,  # Cs Mandatory Param
+             inFile: typing.Optional[str]=None,  # Cs Optional Param
+             argsList: typing.Optional[list[str]]=None,  # CsArgs
+             cipherText: typing.Any=None,   # pyInv Argument
+    ) -> b.op.Outcome:
+        """Input is arg1 or inFile or stdin"""
+        failed = b_io.eh.badOutcome
         callParamsDict = {'rsrc': rsrc, 'inFile': inFile, }
-        if not icm.cmndCallParamsValidate(callParamsDict, interactive, outcome=cmndOutcome):
-            return cmndOutcome
-        rsrc = callParamsDict['rsrc']
-        inFile = callParamsDict['inFile']
-
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
+            return failed(cmndOutcome)
         cmndArgsSpecDict = self.cmndArgsSpec()
-        if not self.cmndArgsValidate(effectiveArgsList, cmndArgsSpecDict, outcome=cmndOutcome):
-            return cmndOutcome
+        rsrc = csParam.mappedValue('rsrc', rsrc)
+        inFile = csParam.mappedValue('inFile', inFile)
 ####+END:
 
         def readFromStdin():
@@ -1237,25 +1027,25 @@ class decrypt(icm.Cmnd):
 
         clearText = ucrypt.decrypt(cipherText)
 
-        if interactive:
+        if rtInv.outs:
             print(("""{clearText}""".format(clearText=clearText)))
                 
         return cmndOutcome.set(
-            opError=icm.OpError.Success,
+            opError=b.OpError.Success,
             opResults=clearText,
         )
 
-####+BEGIN: bx:icm:python:method :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndArgsSpec/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndArgsSpec(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /cmndArgsSpec/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmndArgsSpec(self, ):
+####+END:
         """
 ***** Cmnd Args Specification
 """
-        cmndArgsSpecDict = icm.CmndArgsSpecDict()
+        cmndArgsSpecDict = cs.CmndArgsSpecDict()
         cmndArgsSpecDict.argsDictAdd(
             argPosition="0",
             argName="cipherText",
@@ -1267,26 +1057,13 @@ class decrypt(icm.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: bx:icm:python:method :methodName "cmndDocStr" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /cmndDocStr/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmndDocStr(self):
-####+END:        
-        return """
-***** TODO [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Place holder for this commands doc string.
-"""
-
-
-
-####+BEGIN: bx:icm:python:section :title "Supporting Classes And Functions"
+####+BEGIN: bx:cs:python:section :title "Supporting Classes And Functions"
 """
 *  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *Supporting Classes And Functions*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
 ####+END:
 
-####+BEGIN: bx:icm:python:func :funcName "generate_seed" :funcType "anyOrNone" :retType "binary" :deco "" :argsList "type=None size=None" :comment "Generates seed used as salt"
+####+BEGIN: bx:cs:python:func :funcName "generate_seed" :funcType "anyOrNone" :retType "binary" :deco "" :argsList "type=None size=None" :comment "Generates seed used as salt"
 """
 *  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Func-anyOrNone :: /generate_seed/ =Generates seed used as salt= retType=binary argsList=(type=None size=None)  [[elisp:(org-cycle)][| ]]
 """
@@ -1301,7 +1078,7 @@ def generate_seed(
         )
 
 
-####+BEGIN: bx:icm:python:func :funcName "generate_key" :funcType "anyOrNone" :retType "binary" :deco "" :argsList "passwd=None salt=None" :comment "Create a new key or based on passwd"
+####+BEGIN: bx:cs:python:func :funcName "generate_key" :funcType "anyOrNone" :retType "binary" :deco "" :argsList "passwd=None salt=None" :comment "Create a new key or based on passwd"
 """
 *  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Func-anyOrNone :: /generate_key/ =Create a new key or based on passwd= retType=binary argsList=(passwd=None salt=None)  [[elisp:(org-cycle)][| ]]
 """
@@ -1331,7 +1108,7 @@ def generate_key(
     return key
 
 
-####+BEGIN: bx:icm:python:func :funcName "symEncrypt" :funcType "anyOrNone" :retType "cipherText" :deco "" :argsList "algorithm hexkey clearText" :comment "Symetric Encryption"
+####+BEGIN: bx:cs:python:func :funcName "symEncrypt" :funcType "anyOrNone" :retType "cipherText" :deco "" :argsList "algorithm hexkey clearText" :comment "Symetric Encryption"
 """
 *  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Func-anyOrNone :: /symEncrypt/ =Symetric Encryption= retType=cipherText argsList=(algorithm hexkey clearText)  [[elisp:(org-cycle)][| ]]
 """
@@ -1341,15 +1118,15 @@ def symEncrypt(
     clearText,
 ):
 ####+END:
-    icm.LOG_here("Encryping ClearText -- Algorithm={}".format(algorithm))
+    b_io.tm.here("Encryping ClearText -- Algorithm={}".format(algorithm))
 
     key_forsecrets = hexkey
 
-    icm.LOG_here(key_forsecrets)
+    b_io.tm.here(key_forsecrets)
 
     secret = clearText
 
-    icm.LOG_here(secret)
+    b_io.tm.here(secret)
         
     encrypted_secret = None
     # Generate a random Nonce 12 bytes long
@@ -1363,15 +1140,15 @@ def symEncrypt(
     # We will prepend the nonce and turn to hex and decode from bytes to string
     encrypted_secret_withnonce_hex = binascii.hexlify(nonce + encrypted_secret).decode('utf-8')
 
-    icm.LOG_here("nonce= [" + str(binascii.hexlify(nonce)) + "]")
-    icm.LOG_here("encrypted_secret= [" + str(binascii.hexlify(encrypted_secret)) + "]")
-    icm.LOG_here("encrypted_secret_withnonce_hex= [" + encrypted_secret_withnonce_hex + "]")
+    b_io.tm.here("nonce= [" + str(binascii.hexlify(nonce)) + "]")
+    b_io.tm.here("encrypted_secret= [" + str(binascii.hexlify(encrypted_secret)) + "]")
+    b_io.tm.here("encrypted_secret_withnonce_hex= [" + encrypted_secret_withnonce_hex + "]")
         
     return encrypted_secret_withnonce_hex
 
 
 
-####+BEGIN: bx:icm:python:func :funcName "symDecrypt" :funcType "anyOrNone" :retType "clearText" :deco "" :argsList "algorithm key cipherText" :comment "Symetric Encryption"
+####+BEGIN: bx:cs:python:func :funcName "symDecrypt" :funcType "anyOrNone" :retType "clearText" :deco "" :argsList "algorithm key cipherText" :comment "Symetric Encryption"
 """
 *  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Func-anyOrNone :: /symDecrypt/ =Symetric Encryption= retType=clearText argsList=(algorithm key cipherText)  [[elisp:(org-cycle)][| ]]
 """
@@ -1381,11 +1158,11 @@ def symDecrypt(
     cipherText,
 ):
 ####+END:
-    icm.LOG_here("Decrypting -- Algorithm={}".format(algorithm))
+    b_io.tm.here("Decrypting -- Algorithm={}".format(algorithm))
 
     key_forsecrets = key
 
-    icm.LOG_here(cipherText)
+    b_io.tm.here(cipherText)
         
     encrypted_secret = cipherText.strip()
     #encrypted_secret = cipherText
@@ -1409,13 +1186,13 @@ def symDecrypt(
     aesgcm = AESGCM(binascii.unhexlify(key_forsecrets))
     secret_bytes = aesgcm.decrypt(nonce, encrypted_secret_bytes_plustag, extra_associated_data)
 
-    icm.LOG_here(secret_bytes)
+    b_io.tm.here(secret_bytes)
         
     return secret_bytes
 
 
 
-####+BEGIN: bx:dblock:python:class :className "EncryptionPolicy" :superClass "" :comment "" :classType "basic"
+####+BEGIN: b:py3:class/decl :className "EncryptionPolicy" :superClass "" :comment "" :classType "basic"
 """
 *  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Class-basic    :: /EncryptionPolicy/ object  [[elisp:(org-cycle)][| ]]
 """
@@ -1430,19 +1207,12 @@ class EncryptionPolicy(object):
     keyringSystemName = "ucrypt"
     keyringBackend = "default"
 
-####+BEGIN: bx:icm:python:method :methodName "__init__" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "policy=None baseDir=None keyringPolicy=None keyringAlg=None alg=None"
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /__init__/ retType=bool argsList=(policy=None baseDir=None keyringPolicy=None keyringAlg=None alg=None) deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def __init__(
-        self,
-        policy=None,
-        baseDir=None,
-        keyringPolicy=None,
-        keyringAlg=None,
-        alg=None,
-    ):
+####+BEGIN: b:py3:cs:method/args :methodName "__init__" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "policy=None baseDir=None keyringPolicy=None keyringAlg=None alg=None"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /__init__/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def __init__(policy=None, baseDir=None, keyringPolicy=None, keyringAlg=None, alg=None, ):
 ####+END:
         """ 
         policy = (string) name of persistent directory.
@@ -1466,12 +1236,12 @@ class EncryptionPolicy(object):
                 raise
 
         if not policy:
-            icm.EH_problem_usageError("")
+            b_io.eh.problem_usageError("")
             return
 
         policyPath =  os.path.join(policyBaseDir, policy)
 
-        icm.LOG_here(policyPath)
+        b_io.tm.here(policyPath)
             
         if not os.path.exists(policyPath):
             os.makedirs(policyPath)
@@ -1497,41 +1267,38 @@ class EncryptionPolicy(object):
         
         
 
-####+BEGIN: bx:icm:python:method :methodName "load" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /load/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def load(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "load" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /load/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def load(self, ):
+####+END:
         f = open(self.pickleFile, 'rb')
         tmp_dict = pickle.load(f)
         f.close()          
 
         self.__dict__.update(tmp_dict) 
 
-####+BEGIN: bx:icm:python:method :methodName "save" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /save/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def save(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "save" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /save/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def save(self, ):
+####+END:
         f = open(self.pickleFile, 'wb')
         pickle.dump(self.__dict__, f, 2)
         f.close()        
 
 
-####+BEGIN: bx:icm:python:method :methodName "_policyPasswdCreate" :methodType "anyOrNone" :retType "passwd string" :deco "default" :argsList "passwd=None"
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /_policyPasswdCreate/ retType=passwd string argsList=(passwd=None) deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def _policyPasswdCreate(
-        self,
-        passwd=None,
-    ):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "_policyPasswdCreate" :methodType "anyOrNone" :retType "passwd string" :deco "default" :argsList "self passwd=None"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /_policyPasswdCreate/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def _policyPasswdCreate(self, passwd=None, ):
+####+END:
         """ Sets policy as user in keyring. If passwd is provided, it is used otherwise created based on keyringPolicy.
 """
 
@@ -1556,25 +1323,25 @@ class EncryptionPolicy(object):
                 passwd = getpass.getpass()
             else:
                 return (
-                    icm.EH_problem_usageError("Bad keyringPolicy={}".format(self.keyringPolicy))
+                    b_io.eh.problem_usageError("Bad keyringPolicy={}".format(self.keyringPolicy))
                 )
             
         keyring.set_password(serviceName, userName, passwd)
         keyringPasswd = keyring.get_password(serviceName, userName)
 
-        icm.LOG_here(keyringPasswd)
+        b_io.tm.here(keyringPasswd)
         
         return keyringPasswd
 
     
 
-####+BEGIN: bx:icm:python:method :methodName "_policyPasswdGet" :methodType "anyOrNone" :retType "passwd string" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /_policyPasswdGet/ retType=passwd string argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def _policyPasswdGet(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "_policyPasswdGet" :methodType "anyOrNone" :retType "passwd string" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /_policyPasswdGet/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def _policyPasswdGet(self, ):
+####+END:
         """ Return passwd string from keyring.
 """
 
@@ -1586,25 +1353,25 @@ class EncryptionPolicy(object):
         return keyringPasswd
 
     
-####+BEGIN: bx:icm:python:method :methodName "_ucryptSaltGet" :methodType "anyOrNone" :retType "binary" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /_ucryptSaltGet/ retType=binary argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def _ucryptSaltGet(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "_ucryptSaltGet" :methodType "anyOrNone" :retType "binary" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /_ucryptSaltGet/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def _ucryptSaltGet(self, ):
+####+END:
         """ Return a 16 byte number."""
         #return self.__class__.salt
         return self.salt        
 
 
-####+BEGIN: bx:icm:python:method :methodName "_hexkeyForPolicyKeyEncryption" :methodType "anyOrNone" :retType "hex string" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /_hexkeyForPolicyKeyEncryption/ retType=hex string argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def _hexkeyForPolicyKeyEncryption(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "_hexkeyForPolicyKeyEncryption" :methodType "anyOrNone" :retType "hex string" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /_hexkeyForPolicyKeyEncryption/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def _hexkeyForPolicyKeyEncryption(self, ):
+####+END:
         """ Get salt, get passwd, create keyForPolicyKeyEncryption.
 
  # https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/
@@ -1623,17 +1390,13 @@ class EncryptionPolicy(object):
         return binascii.hexlify(key)
 
     
-####+BEGIN: bx:icm:python:method :methodName "_policyKeyEncrypt" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "hexkeyForPolicyKeyEncryption clearKey"
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /_policyKeyEncrypt/ retType=bool argsList=(hexkeyForPolicyKeyEncryption clearKey) deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def _policyKeyEncrypt(
-        self,
-        hexkeyForPolicyKeyEncryption,
-        clearKey,
-    ):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "_policyKeyEncrypt" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self hexkeyForPolicyKeyEncryption clearKey"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /_policyKeyEncrypt/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def _policyKeyEncrypt(self, hexkeyForPolicyKeyEncryption, clearKey, ):
+####+END:
         """ Encrypt the key.
 """
 
@@ -1645,17 +1408,13 @@ class EncryptionPolicy(object):
 
         return cipherText
 
-####+BEGIN: bx:icm:python:method :methodName "_policyKeyDecrypt" :methodType "anyOrNone" :retType "clearText" :deco "default" :argsList "hexkeyForPolicyKeyEncryption encryptedKey"
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /_policyKeyDecrypt/ retType=clearText argsList=(hexkeyForPolicyKeyEncryption encryptedKey) deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def _policyKeyDecrypt(
-        self,
-        hexkeyForPolicyKeyEncryption,
-        encryptedKey,
-    ):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "_policyKeyDecrypt" :methodType "anyOrNone" :retType "clearText" :deco "default" :argsList "self hexkeyForPolicyKeyEncryption encryptedKey"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /_policyKeyDecrypt/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def _policyKeyDecrypt(self, hexkeyForPolicyKeyEncryption, encryptedKey, ):
+####+END:
         """ Decrypt the key.
 """
 
@@ -1669,13 +1428,13 @@ class EncryptionPolicy(object):
 
         
     
-####+BEGIN: bx:icm:python:method :methodName "policyKeyCreate" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /policyKeyCreate/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def policyKeyCreate(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "policyKeyCreate" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /policyKeyCreate/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def policyKeyCreate(self, ):
+####+END:
         """ If policy directory and file exist do nothing. 
  - Use baseDir to create policy
  - based on 
@@ -1684,24 +1443,24 @@ class EncryptionPolicy(object):
  - store encrypted key
 """
 
-        icm.LOG_here("{policyPath} -- {policy} {keyPath}".format(policyPath=self.policyPath, policy=self.policy,  keyPath=self.keyPath))
+        b_io.tm.here("{policyPath} -- {policy} {keyPath}".format(policyPath=self.policyPath, policy=self.policy,  keyPath=self.keyPath))
 
         if not os.path.exists(self.policyPath):
-            icm.EH_critical_oops("Missing {policyPath}".format(policyPath=self.policyPath))
+            b_io.eh.critical_oops("Missing {policyPath}".format(policyPath=self.policyPath))
             return
 
         if not self.policy:
-            icm.EH_critical_oops("Missing {policy}".format(policy=self.policy))
+            b_io.eh.critical_oops("Missing {policy}".format(policy=self.policy))
             return
 
         
         keyPath = self.keyPath
 
         if os.path.exists(keyPath):
-            icm.LOG_here("EXISTS: {keyPath}".format(keyPath=self.keyPath))        
+            b_io.tm.here("EXISTS: {keyPath}".format(keyPath=self.keyPath))        
             return
 
-        icm.LOG_here("CREATING: {policyPath} -- {policy} {keyPath}".format(policyPath=self.policyPath, policy=self.policy,  keyPath=self.keyPath))        
+        b_io.tm.here("CREATING: {policyPath} -- {policy} {keyPath}".format(policyPath=self.policyPath, policy=self.policy,  keyPath=self.keyPath))        
 
 
         outcome = genkey().cmnd(
@@ -1713,7 +1472,7 @@ class EncryptionPolicy(object):
         clearKey = results[0]
 
 
-        icm.LOG_here(clearKey)
+        b_io.tm.here(clearKey)
 
         self.salt = generate_seed()
 
@@ -1741,17 +1500,17 @@ class EncryptionPolicy(object):
         
         else:
             return (
-                icm.EH_problem_usageError("bad keyringAlg={}".format(self.keyringAlg))
+                b_io.eh.problem_usageError("bad keyringAlg={}".format(self.keyringAlg))
             )
 
 
-####+BEGIN: bx:icm:python:method :methodName "policyKeyGet" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList ""
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /policyKeyGet/ retType=bool argsList=nil deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def policyKeyGet(self):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "policyKeyGet" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /policyKeyGet/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def policyKeyGet(self, ):
+####+END:
         """ If directory and file exist do nothing. 
  - Read encryptedKey
  - Read keyring passwd
@@ -1760,27 +1519,27 @@ class EncryptionPolicy(object):
  - decode encryotedKey with keyring passwd
 """
         if not os.path.exists(self.policyPath):
-            icm.EH_critical_oops("Missing {policyPath}".format(policyPath=self.policyPath))
+            b_io.eh.critical_oops("Missing {policyPath}".format(policyPath=self.policyPath))
             return
 
         if not self.policy:
-            icm.EH_critical_oops("Missing {policy}".format(policy=self.policy))
+            b_io.eh.critical_oops("Missing {policy}".format(policy=self.policy))
             return
 
         keyPath = self.keyPath
-        icm.LOG_here(keyPath)
+        b_io.tm.here(keyPath)
         
 
         if self.keyringAlg == 'clear':
             with open(keyPath, 'r') as thisFile:
                 clearKey = thisFile.read()
-            icm.LOG_here(clearKey)                
+            b_io.tm.here(clearKey)                
             return clearKey
 
         elif self.keyringAlg == 'default':
             with open(keyPath, 'r') as thisFile:
                 encryptedKey = thisFile.read()
-            icm.LOG_here(encryptedKey)
+            b_io.tm.here(encryptedKey)
 
             hexkeyForPolicyKeyEncryption = self._hexkeyForPolicyKeyEncryption()
 
@@ -1793,21 +1552,18 @@ class EncryptionPolicy(object):
 
         else:
             return (
-                icm.EH_problem_usageError("bad keyringAlg={}".format(self.keyringAlg))
+                b_io.eh.problem_usageError("bad keyringAlg={}".format(self.keyringAlg))
             )
 
         
 
-####+BEGIN: bx:icm:python:method :methodName "encrypt" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "clearText"
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /encrypt/ retType=bool argsList=(clearText) deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def encrypt(
-        self,
-        clearText,
-    ):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "encrypt" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self clearText"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /encrypt/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def encrypt(self, clearText, ):
+####+END:
         """ 
  - Make sure policy exists as directory. 
  - Get encrypted key.
@@ -1823,16 +1579,13 @@ class EncryptionPolicy(object):
         )
 
     
-####+BEGIN: bx:icm:python:method :methodName "decrypt" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "cipherText"
-    """
-**  [[elisp:(org-cycle)][| ]] [[elisp:(org-show-subtree)][|=]] [[elisp:(show-children 10)][|V]] [[elisp:(bx:orgm:indirectBufOther)][|>]] [[elisp:(bx:orgm:indirectBufMain)][|I]] [[elisp:(blee:ppmm:org-mode-toggle)][|N]] [[elisp:(org-top-overview)][|O]] [[elisp:(progn (org-shifttab) (org-content))][|C]] [[elisp:(delete-other-windows)][|1]]  Method-anyOrNone :: /decrypt/ retType=bool argsList=(cipherText) deco=default  [[elisp:(org-cycle)][| ]]
-"""
-    @icm.subjectToTracking(fnLoc=True, fnEntry=True, fnExit=True)
-    def decrypt(
-        self,
-        cipherText,
-    ):
-####+END:        
+####+BEGIN: b:py3:cs:method/args :methodName "decrypt" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self cipherText"
+    """ #+begin_org
+**  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Mtd-T-anyOrNone [[elisp:(outline-show-subtree+toggle)][||]] /decrypt/ deco=default  deco=default  [[elisp:(org-cycle)][| ]]
+    #+end_org """
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def decrypt(self, cipherText, ):
+####+END:
         """ If directory and file exist do nothing. 
  - Get key.
  - decrypt with that key
@@ -1849,7 +1602,7 @@ class EncryptionPolicy(object):
 
 
 
-####+BEGIN: bx:icm:python:section :title "End Of Editable Text"
+####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :title " ~End Of Editable Text~ "
 """
 *  [[elisp:(beginning-of-buffer)][Top]] ############## [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] [[elisp:(delete-other-windows)][(1)]]    *End Of Editable Text*  [[elisp:(org-cycle)][| ]]  [[elisp:(org-show-subtree)][|=]] 
 """
@@ -1857,4 +1610,17 @@ class EncryptionPolicy(object):
 
 ####+BEGIN: bx:dblock:global:file-insert-cond :cond "./blee.el" :file "/libre/ByStar/InitialTemplates/software/plusOrg/dblock/inserts/endOfFileControls.org"
 #+STARTUP: showall
+####+END:
+
+
+####+BEGIN: b:py3:cs:framework/endOfFile :basedOn "classification"
+""" #+begin_org
+* [[elisp:(org-cycle)][| *End-Of-Editable-Text* |]] :: emacs and org variables and control parameters
+#+end_org """
+
+#+STARTUP: showall
+
+### local variables:
+### no-byte-compile: t
+### end:
 ####+END:
