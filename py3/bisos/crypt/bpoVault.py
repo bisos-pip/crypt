@@ -105,7 +105,7 @@ import pathlib
 
 from bisos.bpo import bpo
 #from bisos.pals import palsSis
-#from bisos.icm import fpath
+#from bis os.icm import fpath
 
 
 #import logging
