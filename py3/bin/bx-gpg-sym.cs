@@ -1,14 +1,16 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-
-print(f"{sys.argv[0]}: Obsolted by bx-gpg-sym.cs")
-sys.exit(1)
-
+""" #+begin_org
+* ~[Summary]~ :: A =CmndSvc= (Pkged, Direct, Seeded) for symetric gpg encryption of streams, files and directories.
+#+end_org """
 
 """ #+begin_org
-* ~[Summary]~ :: A =CmndSvc= for interfacing and using gnupg and python-gnupg
+* [[elisp:(org-cycle)][| ~Description~ |]] :: [[file:/bisos/panels/bisos-core/bisos-pip/bisos.crypt/_nodeBase_/fullUsagePanel-en.org][BISOS Panel]]   [[elisp:(org-cycle)][| ]]
+
+** Status: In use with BISOS
+** /[[elisp:(org-cycle)][| Planned Improvements |]]/ :
+*** TODO Review Panel's Design and Evolution section.
 #+end_org """
 
 ####+BEGIN: b:py3:cs:file/dblockControls :classification "cs-mu"
@@ -35,7 +37,8 @@ sys.exit(1)
 ####+BEGIN: b:prog:file/particulars :authors ("./inserts/authors-mb.org")
 """ #+begin_org
 * *[[elisp:(org-cycle)][| Particulars |]]* :: Authors, version
-** This File: /bisos/git/auth/bxRepos/bisos-pip/crypt/py3/bin/bx-gpg.cs
+** This File: /bisos/git/bxRepos/bisos-pip/crypt/py3/bin/bx-gpg-sym.cs
+** File True Name: /bisos/git/auth/bxRepos/bisos-pip/crypt/py3/bin/bx-gpg-sym.cs
 ** Authors: Mohsen BANAN, http://mohsen.banan.1.byname.net/contact
 #+end_org """
 ####+END:
@@ -45,31 +48,20 @@ sys.exit(1)
 * *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
 #+end_org """
 import typing
-csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['bx-gpg'], }
-csInfo['version'] = '202209262526'
+csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['bx-gpg-sym'], }
+csInfo['version'] = '202511020618'
 csInfo['status']  = 'inUse'
-csInfo['panel'] = 'bx-gpg-Panel.org'
+csInfo['panel'] = 'bx-gpg-sym-Panel.org'
 csInfo['groupingType'] = 'IcmGroupingType-pkged'
 csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
 
-""" #+begin_org
-* [[elisp:(org-cycle)][| ~Description~ |]] :: Active --- In Progress
-Module description comes here.
-** Pre-req installations:
-apt install gnupg
-pip3 install python-gnupg
-pip3 install fs
-Emacs -- (require epa)  --- EasyPg Assistant
-** Status: In use with BISOS
-** /[[elisp:(org-cycle)][| Planned Improvements |]]/ :
-*** TODO complete fileName in particulars.
-#+end_org """
 
 ####+BEGIN: b:prog:file/orgTopControls :outLevel 1
 """ #+begin_org
-* [[elisp:(org-cycle)][| Controls |]] :: [[elisp:(delete-other-windows)][(1)]] | [[elisp:(show-all)][Show-All]]  [[elisp:(org-shifttab)][Overview]]  [[elisp:(progn (org-shifttab) (org-content))][Content]] | [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] | [[elisp:(bx:org:run-me)][Run]] | [[elisp:(bx:org:run-me-eml)][RunEml]] | [[elisp:(progn (save-buffer) (kill-buffer))][S&Q]]  [[elisp:(save-buffer)][Save]]  [[elisp:(kill-buffer)][Quit]] [[elisp:(org-cycle)][| ]]
+* [[elisp:(org-cycle)][| Controls |]] :: [[elisp:(delete-other-windows)][(1)]] | [[elisp:(show-all)][Show-All]]  [[elisp:(org-shifttab)][Overview]]  [[elisp:(progn (org-shifttab) (org-content))][Content]] | [[file:Panel.org][Panel]] | [[elisp:(blee:ppmm:org-mode-toggle)][Nat]] | [[elisp:(bx:org:run-me)][Run]] | [[elisp:(bx:org:run-me-eml)][RunEml]] | [[elisp:(progn (save-buffer) (kill-buffer))][S&Q]]  [[elisp:(save-buffer)][Save]]  [[elisp:(kill-buffer)][Quit]] [[elisp:(org-cycle)][| ]]
 ** /Version Control/ ::  [[elisp:(call-interactively (quote cvs-update))][cvs-update]]  [[elisp:(vc-update)][vc-update]] | [[elisp:(bx:org:agenda:this-file-otherWin)][Agenda-List]]  [[elisp:(bx:org:todo:this-file-otherWin)][ToDo-List]]
+
 #+end_org """
 ####+END:
 
@@ -87,11 +79,12 @@ Emacs -- (require epa)  --- EasyPg Assistant
 
 ####+BEGIN: b:py3:cs:framework/imports :basedOn "classification"
 """ #+begin_org
-** Imports Based On Classification=cs-mu
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] *Imports* =Based on Classification=cs-mu=
 #+end_org """
 from bisos import b
 from bisos.b import cs
 from bisos.b import b_io
+from bisos.common import csParam
 
 import collections
 ####+END:
@@ -104,6 +97,15 @@ from bisos.currents import currentsConfig
 #import gnupg
 #import fs
 
+####+BEGIN: b:py3:cs:framework/csmuSeeded :disabled? nil :comment "Import plantedCsu"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~Seeded CSMU~ Import plantedCsu
+#+end_org """
+from bisos.b import cmndsSeed
+if b.cs.G.plantOfThisSeed is not None:
+    b.importFileAs('plantedCsu', b.cs.G.plantOfThisSeed, __file__, __name__)
+####+END:
+
 
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~csuList emacs-list Specifications~  [[elisp:(blee:org:code-block/above-run)][ /Eval Below/ ]] [[elisp:(org-cycle)][| ]]
@@ -114,15 +116,16 @@ from bisos.currents import currentsConfig
    "bisos.csPlayer.bleep"
    "bisos.crypt.gpgSym"
    "bisos.crypt.bpoVault"
+   "plantedCsu"
  ))
 #+END_SRC
 #+RESULTS:
-| bisos.b.cs.ro | bisos.csPlayer.bleep | bisos.crypt.gpgSym | bisos.crypt.bpoVault |
+| bisos.b.cs.ro | bisos.csPlayer.bleep | bisos.crypt.gpgSym | bisos.crypt.bpoVault | plantedCsu |
 #+end_org """
 
 ####+BEGIN: b:py3:cs:framework/csuListProc :pyImports t :csuImports t :csuParams t
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] =Process CSU List= with /4/ in csuList pyImports=t csuImports=t csuParams=t
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~Process CSU List~ with /5/ in csuList pyImports=t csuImports=t csuParams=t
 #+end_org """
 
 from bisos.b.cs import ro
@@ -130,8 +133,10 @@ from bisos.csPlayer import bleep
 from bisos.crypt import gpgSym
 from bisos.crypt import bpoVault
 
+csuList = [ 'bisos.b.cs.ro', 'bisos.csPlayer.bleep', 'bisos.crypt.gpgSym', 'bisos.crypt.bpoVault', 'plantedCsu', ]
 
-csuList = [ 'bisos.b.cs.ro', 'bisos.csPlayer.bleep', 'bisos.crypt.gpgSym', 'bisos.crypt.bpoVault', ]
+if b.cs.G.plantOfThisSeed is None:
+    csuList.remove('plantedCsu')
 
 g_importedCmndsModules = cs.csuList_importedModules(csuList)
 
@@ -142,11 +147,27 @@ def g_extraParams():
 
 ####+END:
 
-####+BEGIN: b:py3:cs:main/exposedSymbols :classes ()
+####+BEGIN: b:py3:cs:main/exposedSymbols :disabled? t :classes ()
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~Exposed Symbols List Specification~ with /0/ in Classes List
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /DISABLED/   [[elisp:(outline-show-subtree+toggle)][||]] *b:py3:cs:main/exposedSymbols*  [[elisp:(org-cycle)][| ]]
 #+end_org """
 ####+END:
+
+
+####+BEGIN: b:py3:cs:main/outcomeReportControl :disabled? nil :cmnd t :ro t
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] ~Invokation's Outcome Reporting Control~ with /cmnd=t/ /ro=t/
+#+end_org """
+# cs.invOutcomeReportControl(cmnd=True, ro=True)
+####+END:
+
+
+####+BEGIN: b:py3:cs:framework/uploadLoader :disabled? t :comment "NA"
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /DISABLED/   [[elisp:(outline-show-subtree+toggle)][||]] *b:py3:cs:framework/uploadLoader*  [[elisp:(org-cycle)][| ]]
+#+end_org """
+####+END:
+
 
 ####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "CmndSvcs" :anchor ""  :extraInfo "Command Services Section"
 """ #+begin_org
@@ -171,9 +192,11 @@ class examples(cs.Cmnd):
              argsList: typing.Optional[list[str]]=None,  # CsArgs
     ) -> b.op.Outcome:
         """FrameWrk: CS-Main-Examples"""
+        failed = b_io.eh.badOutcome
         callParamsDict = {}
         if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
-            return b_io.eh.badOutcome(cmndOutcome)
+            return failed(cmndOutcome)
+        cmndArgsSpecDict = self.cmndArgsSpec()
 ####+END:
         self.cmndDocStr(f""" #+begin_org ***** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Conventional top level example.
         #+end_org """)
@@ -209,58 +232,26 @@ class examples(cs.Cmnd):
         bleep.examples_csBasic()
 
         #gpgSym.examples_gpgSymCrypt(
-        gpgSym.examples_csu(
-            cur_passwd,
-            sectionTitle="default"
-        )
+        #
 
-        cs.examples.menuChapter('*GPG Commands*')
+        if b.cs.G.plantOfThisSeed is None:
 
-        execLineEx(f"""sudo apt -y install gnupg""")
-        execLineEx(f"""gpg --list-key  # Includes keyId""")
-        execLineEx(f"""env | grep -i gpg""")
-        execLineEx(f"""gpg --send-key [keyId]""")
-        execLineEx(f"""gpg -e -r mohsen.byname@gmail.com -o /bxo/usg/bystar/.password-store/anotherVar.gpg --quiet --yes --compress-algo=none --no-encrypt-to""")
-        execLineEx(f"""gpg -d --quiet --yes --compress-algo=none --no-encrypt-to /bxo/usg/bystar/.password-store/myPass.gpg""")
+            gpgSym.examples_csu().pyCmnd(
+                  pyKwArgs={'passwd': cur_passwd},
+            )
+
+        else:
+            # facterModule_csu.examples_seed().pyCmnd(
+            #      pyKwArgs={'uploadPath': uploadPathAbs}
+            # )
+
+            cmndsSeed.plantedCsuExamplesRun()
+
 
         b.ignore(ro.__doc__,)  # We are not using these modules, but they are auto imported.
 
         return(cmndOutcome)
 
-####+BEGIN: bx:icm:py3:section :title "CS-Commands"
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *CS-Commands*  [[elisp:(org-cycle)][| ]]
-#+end_org """
-####+END:
-
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "someCmnd" :comment "" :extent "verify" :ro "cli" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
-""" #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<someCmnd>>  =verify= ro=cli   [[elisp:(org-cycle)][| ]]
-#+end_org """
-class someCmnd(cs.Cmnd):
-    cmndParamsMandatory = [ ]
-    cmndParamsOptional = [ ]
-    cmndArgsLen = {'Min': 0, 'Max': 0,}
-
-    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
-    def cmnd(self,
-             rtInv: cs.RtInvoker,
-             cmndOutcome: b.op.Outcome,
-    ) -> b.op.Outcome:
-
-        callParamsDict = {}
-        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
-            return b_io.eh.badOutcome(cmndOutcome)
-####+END:
-        self.cmndDocStr(f""" #+begin_org
-** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  A starting point command.
-        #+end_org """)
-
-        if b.subProc.WOpW(invedBy=self, log=1).bash(
-                f"""echo hello World""",
-        ).isProblematic():  return(b_io.eh.badOutcome(cmndOutcome))
-
-        return(cmndOutcome)
 
 ####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "Main" :anchor ""  :extraInfo "Framework Dblock"
 """ #+begin_org
@@ -278,6 +269,7 @@ if __name__ == '__main__':
         csInfo=csInfo,
         noCmndEntry=examples,  # specify a Cmnd name
         extraParamsHook=g_extraParams,
+        ignoreUnknownParams=False,
         importedCmndsModules=g_importedCmndsModules,
     )
 
