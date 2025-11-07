@@ -38,6 +38,7 @@
 """ #+begin_org
 * *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
 #+end_org """
+import pathlib
 import typing
 csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['gpgSym'], }
 csInfo['version'] = '202511025105'
@@ -116,7 +117,7 @@ def commonParamsSpecify(
         parName='gpgTextOut',
         parDescription="In GPG Maps to armor -- Deciding on text or bin output",
         parDataType=None,
-        parDefault='True',
+        parDefault='False',
         parChoices=["True", "False"],
         # parScope=cs.CmndParamScope.TargetParam,
         argparseShortOpt=None,
@@ -132,7 +133,15 @@ def commonParamsSpecify(
         argparseShortOpt=None,
         argparseLongOpt='--outFile',
     )
-
+    csParams.parDictAdd(
+        parName='elfDeleteInDataFile',
+        parDescription="This duplicates a param in elfbin which is standalone",
+        parDataType=None,
+        parDefault=False,
+        parChoices=[False, True],
+        argparseShortOpt=None,
+        argparseLongOpt='--elfDeleteInDataFile',
+    )
 
 
 ####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples_csu" :comment "" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv "pyKwArgs"
@@ -190,6 +199,7 @@ facterModule.cs -i examples
 
         pars_passwd = od([('passwd', passwd),])
         pars_gpgTextOutFalse = od([('gpgTextOut', 'False'),])
+        pars_gpgTextOutTrue = od([('gpgTextOut', 'True'),])
 
         clearFile = "/tmp/gpgSymEx1"
         cipherFile = "/tmp/gpgSymEx1.gpg"
@@ -200,6 +210,8 @@ facterModule.cs -i examples
         outFileCipher = "/tmp/gpgSymEx1.tar.gz.gpg"
         pars_outFileCipher = od([('outFile', outFileCipher),])
 
+        pars_elfDeleteInDataFile = od([('elfDeleteInDataFile', "True"),])
+
         outFileElf = "/tmp/gpgSymEx1.tar.gz.gpg.elf"
         pars_outFileElf= od([('outFile', outFileElf),])
 
@@ -208,7 +220,8 @@ facterModule.cs -i examples
         literal(f"""cp /etc/motd {clearFile}""")
 
         cmnd('gpg_symEncrypt', pars=(pars_passwd), args=f"{clearFile}")
-        cmnd('gpg_symEncrypt', pars=(pars_passwd | pars_gpgTextOutFalse), args=f"{clearFile}")        
+        cmnd('gpg_symEncrypt', pars=(pars_passwd | pars_gpgTextOutFalse), args=f"{clearFile}")
+        cmnd('gpg_symEncrypt', pars=(pars_passwd | pars_gpgTextOutTrue), args=f"{clearFile}")
 
         cmnd('gpg_symEncrypt', pars=(pars_passwd), args="",
              wrapper="echo HereComes Some ClearText | ",)
@@ -238,8 +251,8 @@ facterModule.cs -i examples
 
         cs.examples.menuSection('*GPG Symmetric Encryption Of BaseDirs*')
         
-        cmnd('gpg_symEncrypt_baseDirs', pars=(pars_passwd | pars_outFileCipher | pars_gpgTextOutFalse), args=".")
-        cmnd('gpg_symEncrypt_baseDirs_elfbin', pars=(pars_passwd | pars_outFileElf | pars_gpgTextOutFalse), args=".")
+        cmnd('gpg_symEncrypt_baseDirs', pars=(pars_passwd | pars_outFileCipher), args=".")
+        cmnd('gpg_symEncrypt_baseDirs_elfbin', pars=(pars_passwd | pars_outFileElf | pars_elfDeleteInDataFile), args=".")
 
         cs.examples.menuSection('*GPG Symmetric Decryption of .tar.gz*')
 
@@ -687,13 +700,13 @@ class gpg_symDecrypt(cs.Cmnd):
         return cmndArgsSpecDict
 
 
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpg_symEncrypt_baseDirs" :comment "outFile is encrypted compressed tar file" :parsMand "passwd" :parsOpt "gpgTextOut outFile" :argsMin 0 :argsMax 9999 :pyInv "clearText"
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpg_symEncrypt_baseDirs" :comment "outFile is encrypted compressed tar file" :parsMand "passwd" :parsOpt "gpgTextOut outFile" :argsMin 0 :argsMax 9999 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symEncrypt_baseDirs>>  *stdin as clearText*  =verify= parsMand=passwd outFile parsOpt=gpgTextOut argsMax=9999 ro=cli pyInv=clearText   [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symEncrypt_baseDirs>>  *outFile is encrypted compressed tar file*  =verify= parsMand=passwd parsOpt=gpgTextOut outFile argsMax=9999 ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
 class gpg_symEncrypt_baseDirs(cs.Cmnd):
-    cmndParamsMandatory = [ 'passwd', 'outFile', ]
-    cmndParamsOptional = [ 'gpgTextOut', ]
+    cmndParamsMandatory = [ 'passwd', ]
+    cmndParamsOptional = [ 'gpgTextOut', 'outFile', ]
     cmndArgsLen = {'Min': 0, 'Max': 9999,}
 
     @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
@@ -701,20 +714,19 @@ class gpg_symEncrypt_baseDirs(cs.Cmnd):
              rtInv: cs.RtInvoker,
              cmndOutcome: b.op.Outcome,
              passwd: typing.Optional[str]=None,  # Cs Mandatory Param
-             outFile: typing.Optional[str]=None,  # Cs Mandatory Param
              gpgTextOut: typing.Optional[str]=None,  # Cs Optional Param
+             outFile: typing.Optional[str]=None,  # Cs Optional Param
              argsList: typing.Optional[list[str]]=None,  # CsArgs
-             clearText: typing.Any=None,   # pyInv Argument
     ) -> b.op.Outcome:
-        """stdin as clearText"""
+        """outFile is encrypted compressed tar file"""
         failed = b_io.eh.badOutcome
-        callParamsDict = {'passwd': passwd, 'outFile': outFile, 'gpgTextOut': gpgTextOut, }
+        callParamsDict = {'passwd': passwd, 'gpgTextOut': gpgTextOut, 'outFile': outFile, }
         if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
             return failed(cmndOutcome)
         cmndArgsSpecDict = self.cmndArgsSpec()
         passwd = csParam.mappedValue('passwd', passwd)
-        outFile = csParam.mappedValue('outFile', outFile)
         gpgTextOut = csParam.mappedValue('gpgTextOut', gpgTextOut)
+        outFile = csParam.mappedValue('outFile', outFile)
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]
@@ -757,6 +769,9 @@ tar --exclude-vcs -czf {path} {cmndArgsStr}\
                 b_io.eh.problem_runtimeError(f"Failed to move {src} to {outFile}: {e}")
                 return b_io.eh.badOutcome(cmndOutcome)
 
+        # Delete the tar file
+        pathlib.Path(path).unlink()
+
         return cmndOutcome.set(
             opError=b.OpError.Success,
             opResults=result,
@@ -783,13 +798,13 @@ tar --exclude-vcs -czf {path} {cmndArgsStr}\
         return cmndArgsSpecDict
 
 
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpg_symEncrypt_baseDirs_elfbin" :comment "outFile is in elf-bin format" :parsMand "passwd outFile" :parsOpt "gpgTextOut" :argsMin 0 :argsMax 9999 :pyInv "clearText"
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpg_symEncrypt_baseDirs_elfbin" :comment "outFile is in elf-bin format" :parsMand "passwd outFile" :parsOpt "gpgTextOut elfDeleteInDataFile" :argsMin 0 :argsMax 9999 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symEncrypt_baseDirs_elfbin>>  *outFile is in elf-bin format*  =verify= parsMand=passwd outFile parsOpt=gpgTextOut argsMax=9999 ro=cli pyInv=clearText   [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symEncrypt_baseDirs_elfbin>>  *outFile is in elf-bin format*  =verify= parsMand=passwd outFile parsOpt=gpgTextOut elfDeleteInDataFile argsMax=9999 ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
 class gpg_symEncrypt_baseDirs_elfbin(cs.Cmnd):
     cmndParamsMandatory = [ 'passwd', 'outFile', ]
-    cmndParamsOptional = [ 'gpgTextOut', ]
+    cmndParamsOptional = [ 'gpgTextOut', 'elfDeleteInDataFile', ]
     cmndArgsLen = {'Min': 0, 'Max': 9999,}
 
     @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
@@ -799,18 +814,19 @@ class gpg_symEncrypt_baseDirs_elfbin(cs.Cmnd):
              passwd: typing.Optional[str]=None,  # Cs Mandatory Param
              outFile: typing.Optional[str]=None,  # Cs Mandatory Param
              gpgTextOut: typing.Optional[str]=None,  # Cs Optional Param
+             elfDeleteInDataFile: typing.Optional[str]=None,  # Cs Optional Param
              argsList: typing.Optional[list[str]]=None,  # CsArgs
-             clearText: typing.Any=None,   # pyInv Argument
     ) -> b.op.Outcome:
         """outFile is in elf-bin format"""
         failed = b_io.eh.badOutcome
-        callParamsDict = {'passwd': passwd, 'outFile': outFile, 'gpgTextOut': gpgTextOut, }
+        callParamsDict = {'passwd': passwd, 'outFile': outFile, 'gpgTextOut': gpgTextOut, 'elfDeleteInDataFile': elfDeleteInDataFile, }
         if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
             return failed(cmndOutcome)
         cmndArgsSpecDict = self.cmndArgsSpec()
         passwd = csParam.mappedValue('passwd', passwd)
         outFile = csParam.mappedValue('outFile', outFile)
         gpgTextOut = csParam.mappedValue('gpgTextOut', gpgTextOut)
+        elfDeleteInDataFile = csParam.mappedValue('elfDeleteInDataFile', elfDeleteInDataFile)
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]
@@ -828,7 +844,7 @@ class gpg_symEncrypt_baseDirs_elfbin(cs.Cmnd):
 
         if b.subProc.Op(outcome=cmndOutcome, log=1).bash(
                 f"""\
-elfbin.cs --elfFile="{outFile}" --inDataFile={result[0]}  -i dataInElf\
+elfbin.cs --elfFile="{outFile}" --inDataFile={result[0]}  --deleteInDataFile={elfDeleteInDataFile} -i dataInElf\
 """
         ).isProblematic():  return(b_io.eh.badOutcome(cmndOutcome))
 
@@ -858,9 +874,9 @@ elfbin.cs --elfFile="{outFile}" --inDataFile={result[0]}  -i dataInElf\
         return cmndArgsSpecDict
 
 
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpg_symEncrypt_baseDirs_elfbin" :comment "outFile is in elf-bin format" :parsMand "passwd outFile" :parsOpt "gpgTextOut" :argsMin 0 :argsMax 9999 :pyInv "clearText"
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "gpg_symDecrypt_elfbin" :comment "outFile is in elf-bin format" :parsMand "passwd outFile" :parsOpt "gpgTextOut" :argsMin 0 :argsMax 9999 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symEncrypt_baseDirs_elfbin>>  *outFile is in elf-bin format*  =verify= parsMand=passwd outFile parsOpt=gpgTextOut argsMax=9999 ro=cli pyInv=clearText   [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<gpg_symDecrypt_elfbin>>  *outFile is in elf-bin format*  =verify= parsMand=passwd outFile parsOpt=gpgTextOut argsMax=9999 ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
 class gpg_symDecrypt_elfbin(cs.Cmnd):
     cmndParamsMandatory = [ 'passwd', 'outFile', ]
@@ -875,7 +891,6 @@ class gpg_symDecrypt_elfbin(cs.Cmnd):
              outFile: typing.Optional[str]=None,  # Cs Mandatory Param
              gpgTextOut: typing.Optional[str]=None,  # Cs Optional Param
              argsList: typing.Optional[list[str]]=None,  # CsArgs
-             clearText: typing.Any=None,   # pyInv Argument
     ) -> b.op.Outcome:
         """outFile is in elf-bin format"""
         failed = b_io.eh.badOutcome
@@ -907,6 +922,9 @@ elfbin.cs --elfFile="{cmndArg}" --outDataFile="{path}"  -i dataOutElf\
                 outFile=outFile,
                 argsList=[path],
         )
+
+        # Delete the temporary encrypted file
+        pathlib.Path(path).unlink()
 
         return cmndOutcome.set(
             opError=b.OpError.Success,

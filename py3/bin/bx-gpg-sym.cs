@@ -206,11 +206,17 @@ class examples(cs.Cmnd):
 ***  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  Currents   [[elisp:(outline-show-subtree+toggle)][||]] ~cur_examples~ (usage_bpoId keysBase keyName passwd)
         #+end_org """
         _parNamesList = [ 'usage_bpoId', 'keysBase', 'keyName', 'passwd',]
-        if not (curParsDictValue := currentsConfig.curParsGetAsDictValue_wOp(_parNamesList, outcome=cmndOutcome).results): return(cmndOutcome)
-        cur_usage_bpoId = curParsDictValue['usage_bpoId']
-        cur_keysBase = curParsDictValue['keysBase']
-        cur_keyName = curParsDictValue['keyName']
-        cur_passwd = curParsDictValue['passwd']
+        if (curParsDictValue := currentsConfig.curParsGetAsDictValue_wOp(_parNamesList, outcome=cmndOutcome).results):
+            cur_usage_bpoId = curParsDictValue['usage_bpoId']
+            cur_keysBase = curParsDictValue['keysBase']
+            cur_keyName = curParsDictValue['keyName']
+            cur_passwd = curParsDictValue['passwd']
+        else:
+            cur_usage_bpoId = "MISSING CURs"
+            cur_keysBase = "MISSING CURs"
+            cur_keyName = "MISSING CURs"
+            cur_passwd = "MISSING CURs"
+
         def cur_examples():
             cs.examples.execInsert(execLine='bx-currents.cs')
             cs.examples.execInsert(execLine='bx-currents.cs -i usgCursParsGet')

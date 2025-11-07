@@ -43,7 +43,7 @@ def longDescription():
 # b:py3:pypi:setup/version Arguments  :forSys t :forPyPi t :constant "666"
 ####+BEGIN: b:py3:pypi:setup/version :comment "Auto Detected"
 
-# ./pypiUploadVer DID NOT exist -- forPypiVersion=0.17 -- forLocalVersion=0.1 -- constant=NA
+# ./pypiUploadVer DID NOT exist -- forPypiVersion=0.19 -- forLocalVersion=0.1 -- constant=NA
 def pkgVersion():
         return '0.1'
 
@@ -69,7 +69,6 @@ requires = [
 scripts = [
 'bin/bpo-gpg.cs',
 'bin/bpo-vault.cs',
-'bin/bx-gpg.cs',
 'bin/bx-gpg-sym.cs',
 'bin/keyring-crypt.cs',
 'bin/planted-bx-gpg-sym.cs',
