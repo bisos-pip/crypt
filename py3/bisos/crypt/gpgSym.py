@@ -375,7 +375,7 @@ class GpgSym(object):
         gpgOutcome = gpg.decrypt(
             cipherText,
             passphrase=symKey,
-            armor=armor,
+            # armor=armor,
         )
         #clearText = gpgOutcome.data
         return gpgOutcome
