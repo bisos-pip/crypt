@@ -1,0 +1,54 @@
+#+title: Development Status & Continuation Handoff
+#+TAGS: me ai aiAndMe
+
+# Provenance (installed once by aiActivity.cs --- not regenerated):
+#   Date:      2026-10-10T23:43:41+00:00
+#   User:      bystar
+#   Templates: /bisos/apps/defaults/ai-templates
+#   Command:   /bisos/venv/py3/devbin/aiActivity.cs -i initiate --activity=bisos-pip
+
+####+BEGIN: b:ai:file/particulars
+* AI Working Context
+  Working Directory: /bisos/git/auth/bxRepos/bisos-pip/crypt
+  File: /bisos/git/auth/bxRepos/bisos-pip/crypt/AI-DevStatus.org
+  Activity: bisos-pip
+  Companion Docs: AI-WORKFLOW.org, AI-Activity.org, AI-DevStatus.org, README.org
+####+END:
+
+This file is a working-state handoff so development can continue on another
+machine (which has this repo but NOT the developer's =~=). It captures the
+architecture, what works, what is untested and the design decisions made so far.
+
+This file is maintained by Claude. Updates are typically triggered by the
+=/bx-update-status= slash command, after major interactions, or before a release.
+
+Note to a fresh Claude: this file is intentionally sparse at project start.
+Fill in the sections below when asked to update, following the structure provided.
+
+* Current State
+  (2026-10-10) AI collaboration files initiated (aiActivity.cs, activity bisos-pip).
+  - bisos.crypt is the *mechanism* home of BISOS certificates (decision 2026-10-10, recorded
+    in bisos-pip/pals/palsWithBcm/README.org 1.1). README.org now has the umbrella section
+    "BISOS Certificates --- Umbrella Design" (three axes, authorities per 3G scope,
+    principles, lifecycle, custody) and a real Overview.
+  - bpoVault (KeePass per BPO) reviewed: open/read/update/list work; create needs the
+    passhole `ph` CLI; close/delete are stubs; GPG-protected unlock (bpo/ramz/) is not
+    implemented; vaultEntryUpdate prints the secret. Fixes are Stage 1 of AI-WorkPlan.org.
+  - X.509 primitives and the certbot front are Stage 2 --- not started.
+  - No code changed in this repo yet: only README.org and the AI files.
+
+* Architecture
+  [Key components, file structure, entry points]
+
+* What Works
+  [Verified functionality]
+
+* What Is Untested
+  [Known gaps]
+
+* Key Design Decisions
+  [Non-obvious choices and their rationale]
+
+# Local Variables:
+# eval: (setq-local toc-org-max-depth 4)
+# End:

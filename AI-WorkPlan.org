@@ -1,0 +1,158 @@
+#+title: Work Plan
+#+DATE: <2026-06-10 Wed 13:54>
+#+AUTHOR: Mohsen BANAN
+#+OPTIONS: toc:4
+#+TAGS: me ai aiAndMe
+
+# Provenance (installed once by aiActivity.cs --- not regenerated):
+#   Date:      2026-10-10T23:43:41+00:00
+#   User:      bystar
+#   Templates: /bisos/apps/defaults/ai-templates
+#   Command:   /bisos/venv/py3/devbin/aiActivity.cs -i initiate --activity=bisos-pip
+
+####+BEGIN: b:ai:file/particulars
+* AI Working Context
+  Working Directory: /bisos/git/auth/bxRepos/bisos-pip/crypt
+  File: /bisos/git/auth/bxRepos/bisos-pip/crypt/AI-WorkPlan.org
+  Activity: bisos-pip
+  Companion Docs: AI-WORKFLOW.org, AI-Activity.org, AI-DevStatus.org, README.org
+####+END:
+
+This Work Plan file drives the AI collaborative development.
+Interactions are broken down into "Stages". Each Stage has a set
+of TODOs that I work with Claude to accomplish.
+
+Note to a fresh Claude: read this file together with AI-WORKFLOW.org,
+AI-Activity.org and AI-DevStatus.org to orient yourself. The =<<Context Confirmation>>=
+TODO below is the standard first step, or use =/bx-confirm0= as the automated equivalent.
+TODOs tagged =:ai:= are assigned to Claude. After completing a TODO, summarize results
+under =----- Results: ------= and mark it DONE.
+
+* Stage 0: Confirm AI's Understanding of This Repo's Context
+
+Goal: Confirm AI's understanding of the context and capture that in [[Context Confirmation]] TODO.
+
+
+* Stage 0 TODOs
+** +
+** LOOP [#A] <<Context Confirmation>> for AI (typically triggered by /bx-confirm0) :aiAndMe:
+SCHEDULED: <2026-06-09 Tue>
+Must be repeated each time a new Claude instance is started here.
+Based on the series of files starting from CLAUDE.md in this repo,
+describe succinctly what you have understood.
+Enumerate explicitly which files you have imported and which you have considered.
+Prompt the user to confirm that the desired/appropriate model (/model) is being used for this project.
+Since this is to be repeated, leave the todo tag as LOOP.
+** -
+
+* Stage 1: Finish bpoVault --- Make It Fit to Hold CA Private Keys
+
+Goal: bpoVault (KeePass .kdbx per BPO, <bpoBaseDir>/vault/) becomes the custody of BISOS's
+CA private keys (umbrella design: README.org "BISOS Certificates --- Umbrella Design").
+Found 2026-10-10: open/read/update/list work; the rest below does not.
+Prerequisite for the site CA. NOT for the platform CA, whose key never leaves its platform.
+
+* Stage 1 TODOs
+** +
+** TODO [#A] <<1.1>> Stop vaultEntryUpdate printing the secret :ai:
+SCHEDULED: <2026-10-10 Sat>
+:PROPERTIES:
+:ORIGIN: Claude
+:IMPORTANCE: High
+:REPO: this
+:FOUND: <2026-10-10 Sat>
+:END:
+py3/bisos/crypt/bpoVault.py:330 --- a leftover debug line
+=print(f"KKK {entryName}, {entryValue}")= writes the entry's value to stdout.
+vaultEntryRead has a commented-out print of the same kind (line ~360): remove both.
+----- Results: ------
+
+** TODO [#A] <<1.2>> GPG-protected unlock --- implement the bpo/ramz design :aiAndMe:
+SCHEDULED: <2026-10-10 Sat>
+:PROPERTIES:
+:ORIGIN: Mohsen (bisos.crypt panel), Claude
+:IMPORTANCE: High
+:REPO: this
+:FOUND: <2026-10-10 Sat>
+:END:
+Per the bisos.crypt panel: a vault's password is not kept on the platform; it is encrypted
+with the BPO's GPG key (bpo/gpgKeys/, bpoGpg.py) and stored as bpo/ramz/vaults-<name>.gpg.
+Today the password is a command-line parameter (bpo-vault.cs ... --passwd), which leaks into
+shell history and process listings. Design questions for Mohsen first:
+- Is ramz/ a directory of the vault repo, or its own repo (the panel names vault and secrets repos)?
+- Which GPG key: one per BPO, or one per vault? Where does its passphrase come from
+  (gpg-agent / pinentry, or the OS keyring via cryptKeyring.py)?
+Then: vaultOpen(vault) with no passwd obtains it via ramz; --passwd stays only as an override.
+----- Results: ------
+
+** TODO [#A] <<1.3>> Create vaults with pykeepass, not the passhole CLI :ai:
+SCHEDULED: <2026-10-10 Sat>
+:PROPERTIES:
+:ORIGIN: Claude (TODO already in the code)
+:IMPORTANCE: Medium
+:REPO: this
+:FOUND: <2026-10-10 Sat>
+:END:
+bpoVault.py:222 runs =ph init ... --password {passwd}= --- an external CLI (not installed on the
+dev host) that also takes the password on its command line. pykeepass.create_database()
+does the same in-process. Then drop passhole as a dependency.
+----- Results: ------
+
+** TODO [#B] <<1.4>> Implement vaultClose and vaultEntryDelete :ai:
+SCHEDULED: <2026-10-10 Sat>
+:PROPERTIES:
+:ORIGIN: Claude
+:IMPORTANCE: Medium
+:REPO: this
+:FOUND: <2026-10-10 Sat>
+:END:
+bpoVault.py:267 and :391 are stubs ("UnImplemented"). vaultClose should end the
+pykeepass_cache session; vaultEntryDelete should delete and save. Also decide how a binary
+secret (a PEM private key) is stored: password field vs KeePass attachment.
+----- Results: ------
+
+** TODO [#A] <<1.5>> bisos.bpo's bpoFpsCls passes the literal 'prompt' as the vault password :aiAndMe:
+SCHEDULED: <2026-10-10 Sat>
+:PROPERTIES:
+:ORIGIN: Claude
+:IMPORTANCE: High
+:REPO: bisos-pip/bpo
+:BASE: this
+:FOUND: <2026-10-10 Sat>
+:END:
+bisos-pip/bpo/py3/bisos/bpo/bpoFpsCls.py:165 and :208 ---
+=thisBpoVault.vaultEntryRead('fpsVault', 'prompt', 'fpsKey')=. Looks like a placeholder for
+"ask the user". Once 1.2 exists, it should call vaultOpen without a password (ramz unlock).
+The fix lands in bisos.bpo; it depends on 1.2 here.
+----- Results: ------
+** -
+
+* Stage 2: X.509 Primitives --- the Mechanism Axis of BISOS Certificates
+
+Goal: bisos.crypt provides the certificate mechanism (umbrella design, "The Three Axes"):
+private keys, CSRs, a small CA's signing, and an ACME front over Debian's certbot. Used by
+the platform CA (bisos.platform, palsWithBcm 1.4) and by bisos.dnsCap's *-cert.pcs.
+
+* Stage 2 TODOs
+** +
+** TODO [#A] <<2.1>> x509 module: keys, CSRs, CA create/sign, inspect :ai:
+SCHEDULED: <2026-10-10 Sat>
+On python3-cryptography (already used by cryptKeyring.py). Key types: ECDSA P-256 default,
+RSA-2048 option. CA: self-signed root with name constraints (e.g. permitted .here) and a
+short-ish validity; leaf: SAN-only, serverAuth EKU, short validity. Inspect: expiry, SANs,
+issuer --- for renewal decisions. No daemon.
+----- Results: ------
+
+** TODO [#B] <<2.2>> ACME front: drive certbot (HTTP-01 first, DNS-01 via dnsCap hooks) :ai:
+SCHEDULED: <2026-10-10 Sat>
+certbot itself comes from Debian (bisos.debian packaging + renewal timer). This repo holds
+the invocation: staging vs production, account per BXO, auth/cleanup hooks that call
+bisos.dnsCap to add/remove _acme-challenge TXT (palsWithBcm 1.2: batch DNS path).
+----- Results: ------
+** -
+
+
+# Local Variables:
+# eval: (setq-local toc-org-max-depth 4)
+# eval: (setq-local org-log-done 'time)
+# End:

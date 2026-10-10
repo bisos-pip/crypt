@@ -8,7 +8,11 @@
 ~See Also~: [[https://pypi.org/project/bisos.facter][At PYPI]] | [[https://github.com/bisos-pip/pycs][bisos.PyCS]] | [[https://github.com/bisos-pip/cmdb][bisos.cmdb]]
 
 * Overview
-bisos.crypt is a python package that uses the PyCS-Framework for NOTYET.
+bisos.crypt is a python package that uses the PyCS-Framework for BISOS's keys, secrets and
+cryptography: BPO-anchored vaults (KeePass databases per BPO), OpenPGP keys and PKCS
+encryption, symmetric encryption, and the OS keyring. It is also where the *mechanism* of
+BISOS certificates lives (X.509 keys, CSRs, CA signing, ACME) --- see
+[[#bisos-certificates-----umbrella-design][BISOS Certificates --- Umbrella Design]] below.
 It is a BISOS-Capability and a Standalone-BISOS-Package.
 
 /bisos.crypt/ is based on PyCS-Foundation and can be used both as a Command and
@@ -21,6 +25,7 @@ management of multiple systems.
 - [[#part-of-bisos-----bystar-internet-services-operating-system][Part of BISOS --- ByStar Internet Services Operating System]]
 - [[#bisoscrypt-is-a-command-services-pycs-facility][bisos.crypt is a Command Services (PyCS) Facility]]
 -  [[#uses-of-bisoscrypt][Uses of bisos.crypt]]
+- [[#bisos-certificates-----umbrella-design][BISOS Certificates --- Umbrella Design]]
 - [[#bisoscrypt-as-a-standalone-piece-of-bisos][bisos.crypt as a Standalone Piece of BISOS]]
 - [[#installation][Installation]]
   - [[#installation-with-pip][Installation With pip]]
@@ -74,6 +79,97 @@ See https://github.com/bisos-pip/b for an overview.
 
 Within BISOS,  bisos.crypt is used as a common facility.
 
+
+* BISOS Certificates --- Umbrella Design
+
+This section is the umbrella description of how BISOS handles certificates, across
+packages. It is written for humans and for AI (Claude). Decided 2026-10-10; the decision
+record is in =bisos-pip/pals/palsWithBcm/README.org= (TODOs 1.1 and 1.2).
+
+There is deliberately no =bisos.certificates= package. A certificate touches three
+independent questions, and each has a natural home in an existing package.
+
+** The Three Axes
+
+| Axis            | Question                              | Home                                                                       |
+|-----------------+---------------------------------------+----------------------------------------------------------------------------|
+| *Mechanism*     | How is a key or certificate made?     | *bisos.crypt*: X.509 keys, CSRs, CA signing, ACME --- beside OpenPGP, symmetric, vault |
+| (Debian part)   | Where do trusted roots and certbot go? | *bisos.debian*: system trust store (update-ca-certificates), certbot package and timer |
+| *Authority*     | Who vouches for the binding?          | The owning BXO: platform CA -> *bisos.platform*; site CA, PALS names -> later, their own |
+| *Consumption*   | Which capability uses which cert?     | *bisos.dnsCap*: a planted =*-cert.pcs= beside each =*-here-dns.pcs=          |
+
+The consumption side starts in bisos.dnsCap because a server certificate binds a key to a
+DNS name, and much of its life is DNS: the DNS-01 challenge, CAA records (which CAs may
+issue), DANE TLSA records, DNSSEC (Knot). If non-DNS uses grow --- Kafka TLS listeners,
+client certificates --- the aspect can move to its own =certCap= without changing its
+=*-cert.pcs= interface.
+
+** Authorities, by ByStar-3G Scope
+
+| Scope                                    | Names                      | Issuer                                  | Trusted by                         |
+|------------------------------------------+----------------------------+-----------------------------------------+------------------------------------|
+| rawByName --- one platform, no registration | =first.last.byname.here=   | *Platform CA*, made when the platform is | That platform only                 |
+|                                          |                            | materialized (bisos.platform)           |                                    |
+| Site --- several platforms               | =*.intra=                  | *Site CA* (site BPO)                    | The site's platforms               |
+| sitedByName / federatedByName            | =first.last.byname.net=,   | *Public CA via ACME* (Let's Encrypt)    | Everyone                           |
+|                                          | =first.last.byname.com=    |                                         |                                    |
+| Persons                                  | identities, not host names | OpenPGP (bisos.crypt), S/MIME, SSH      | Correspondents                     |
+
+A public CA cannot issue for =.here= or =.intra=: they are not delegated in public DNS.
+
+** Principles
+
+1. *Names and policy are data; keys are materialized.* The BXO that owns a name (platform,
+   site, PALS) carries the name and its policy --- issuer, key type, wildcard or not. The
+   platform that uses a certificate generates its key and obtains the certificate there.
+   Moving a PALS between abodes re-issues; it never copies a server's private key.
+2. *Only CA keys travel, and only encrypted* --- in their BPO's vault (bpoVault, below). A
+   platform CA's key never leaves its platform: a new platform makes a new CA.
+3. *Possession is asserted through DNS; the certificate follows.* Whoever controls a name's
+   DNS can obtain its certificate. That is exactly the claim a PALS makes.
+4. *Short lifetimes, full automation.* Public certificate lifetimes fall to 47 days by
+   2029 (CA/Browser Forum SC-081). Renewal is a systemd timer, never a person. Revocation
+   relies on expiry: Let's Encrypt ended OCSP in 2025.
+5. *Scoped DNS credentials.* The ACME client may change only =_acme-challenge= records ---
+   via the batch DNS path (dnsCap regenerates the zone) or a Knot key limited to TXT there.
+6. *Certificate Transparency makes every public name public.* Names that must not be known
+   stay on a private CA or under one wildcard.
+7. *Public Suffix List* entries for byname.net / byname.com (and the other By* domains)
+   before the factory: users' sites must not share cookies, and ACME rate limits apply per
+   registered domain.
+
+** Lifecycle, and Which Package Does Each Step
+
+| Step      | What                                                     | Package                        |
+|-----------+----------------------------------------------------------+--------------------------------|
+| Declare   | =*-cert.pcs=: names, issuer, key type                    | bisos.dnsCap                   |
+| Issue     | Key + CSR; sign (platform/site CA) or ACME (public)      | bisos.crypt (+ certbot via bisos.debian) |
+| Prove     | DNS-01 TXT, CAA, later TLSA                              | bisos.dnsCap (Knot zones)      |
+| Trust     | Install CA roots: system store and Firefox               | bisos.debian (+ browser policy) |
+| Use       | TLS vhost (80->443, HSTS), mail STARTTLS, DoH endpoint   | bisos.webCap, mail, bisos.dnsCap (Unbound) |
+| Renew     | systemd timer                                            | bisos.debian                   |
+| Custody   | CA private keys, encrypted                               | bisos.crypt (bpoVault)         |
+
+** Custody: bpoVault, and What Must Be Finished First
+
+Each BPO has a vault directory, =<bpoBaseDir>/vault/=, holding KeePass databases
+(=<name>.kdbx=). The intended unlock model: a vault's password is not kept on the
+platform; it is encrypted with the BPO's own GPG key (=bpo/gpgKeys/=) and stored as
+=bpo/ramz/vaults-<name>.gpg=.
+
+State as of 2026-10-10 (bpoVault.py): open, add group, add/update entry, read entry and
+list work. Creating a vault relies on the =passhole= (=ph=) CLI; close and delete are stubs;
+the GPG-protected unlock is not implemented --- passwords are passed on the command line.
+These are tracked in this repo's =AI-WorkPlan.org= (Stage 1) and must be completed before a
+site CA's key is placed in a vault.
+
+** Status and Pointers
+
+- Decisions: =bisos-pip/pals/palsWithBcm/README.org=, TODOs 1.1 (packages) and 1.2 (DNS).
+- DNS side, built (not yet run on a host): bisos.dnsCap --- Knot DNS (authoritative,
+  tinydns-style) and Unbound (local resolver, =.intra= via Knot).
+- Next: finish bpoVault (this repo); X.509 primitives (this repo); platform CA in
+  bisos.platform (palsWithBcm 1.4); =*-cert.pcs= in bisos.dnsCap; TLS template in bisos.webCap.
 
 * bisos.crypt as a Standalone Piece of BISOS
 
