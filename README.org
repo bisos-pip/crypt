@@ -108,14 +108,14 @@ client certificates --- the aspect can move to its own =certCap= without changin
 
 | Scope                                    | Names                      | Issuer                                  | Trusted by                         |
 |------------------------------------------+----------------------------+-----------------------------------------+------------------------------------|
-| rawByName --- one platform, no registration | =first.last.byname.here=   | *Platform CA*, made when the platform is | That platform only                 |
+| rawByName --- one platform, no registration | =first.last.byname.internal=   | *Platform CA*, made when the platform is | That platform only                 |
 |                                          |                            | materialized (bisos.platform)           |                                    |
 | Site --- several platforms               | =*.intra=                  | *Site CA* (site BPO)                    | The site's platforms               |
 | sitedByName / federatedByName            | =first.last.byname.net=,   | *Public CA via ACME* (Let's Encrypt)    | Everyone                           |
 |                                          | =first.last.byname.com=    |                                         |                                    |
 | Persons                                  | identities, not host names | OpenPGP (bisos.crypt), S/MIME, SSH      | Correspondents                     |
 
-A public CA cannot issue for =.here= or =.intra=: they are not delegated in public DNS.
+A public CA cannot issue for =.internal= or =.intra=: they are not delegated in public DNS.
 
 ** Principles
 

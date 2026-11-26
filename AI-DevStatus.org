@@ -26,6 +26,9 @@ Note to a fresh Claude: this file is intentionally sparse at project start.
 Fill in the sections below when asked to update, following the structure provided.
 
 * Current State
+- 2026-11-26 (from a bisos-pip/b session): every =<name>.here= in this repo is now =<name>.internal=
+  (=.here= is an https-only gTLD in Chrome; bisos-pip/banna AI-WorkPlan.org Stage 4, banna's
+  =tcpPorts.hereFqdn=). Text renamed, not tested here; AI-WorkPlan.org keeps =.here= as history.
   (2026-10-10) AI collaboration files initiated (aiActivity.cs, activity bisos-pip).
   - bisos.crypt is the *mechanism* home of BISOS certificates (decision 2026-10-10, recorded
     in bisos-pip/pals/palsWithBcm/README.org 1.1). README.org now has the umbrella section
